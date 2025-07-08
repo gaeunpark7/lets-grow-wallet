@@ -7,7 +7,7 @@
 	<key>CFBundleDisplayName</key>
 	<string>Lets Grow Wallet</string>
 	<key>CFBundleExecutable</key>
-	<string>$(EXECUTABLE_NAME)</string>
+	<string>Let's Grow Wallet</string>
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
