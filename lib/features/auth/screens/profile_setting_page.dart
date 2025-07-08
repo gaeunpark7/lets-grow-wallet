@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:lets_grow_wallet/features/account_book/screens/main_page.dart';
+import 'package:lets_grow_wallet/features/auth/screens/login_page.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ProfileSettingPage extends StatefulWidget {
   const ProfileSettingPage({super.key});
@@ -17,6 +20,43 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
   void dispose() {
     _nicknameController.dispose();
     super.dispose();
+  }
+
+  Future<void> _saveUserProfile() async {
+    final supabase = Supabase.instance.client;
+    final user = supabase.auth.currentUser;
+    if (user == null) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("유저 정보가 없습니다. 다시 로그인 해주세요.")));
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (ctx) => LoginPage()),
+        );
+      }
+      return;
+    }
+    try {
+      await supabase.from('user').upsert({
+        'id': user.id,
+        'email': user.email,
+        'nickname': _nicknameController.text,
+        'create_at': DateTime.now().toString(),
+        'coin': 0,
+      });
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (ctx) => MainPage()),
+      );
+    } catch (e) {
+      print('닉네임 저장 오류: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("닉네임 저장 실패")));
+      }
+    }
   }
 
   @override
@@ -101,6 +141,7 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text("${_nicknameController.text}님 만나서 반가워요!")),
             );
+            _saveUserProfile();
           }
         },
         child: const Text(
