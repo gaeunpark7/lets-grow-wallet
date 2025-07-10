@@ -52,14 +52,15 @@ class _MainPageState extends State<MainPage> {
           context: context,
           builder: (context) {
             return AlertDialog(
-              title: const Text("캐릭터 획득"),
+              title: Center(child: const Text("캐릭터 획득")),
+              backgroundColor: Colors.white,
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Image.network(
                     defaultCharacter,
-                    width: 100,
-                    height: 100,
+                    width: 130,
+                    height: 130,
                     fit: BoxFit.cover,
                   ), // 예시 이미지
                   const SizedBox(height: 16),
