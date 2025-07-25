@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lets_grow_wallet/features/account_book/screens/add_expense_page.dart';
+import 'package:lets_grow_wallet/features/account_book/screens/home_page.dart';
+import 'package:lets_grow_wallet/features/account_book/widgets/custom_bottom_bar.dart';
 import 'package:lets_grow_wallet/features/auth/screens/login_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -11,6 +13,24 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  int _selectedIndex = 0;
+
+  final List<Widget> pages = [
+    HomePage(),
+    Container(
+      color: Colors.white,
+      child: Center(child: Text('통계')),
+    ),
+    Container(
+      color: Colors.white,
+      child: Center(child: Text('캘린더')),
+    ),
+    Container(
+      color: Colors.white,
+      child: Center(child: Text('설정')),
+    ),
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -87,44 +107,74 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.white,
-        body: Column(
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                Supabase.instance.client.auth
-                    .signOut()
-                    .then((_) {
-                      if (mounted) {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(builder: (ctx) => LoginPage()),
-                        );
-                      }
-                    })
-                    .catchError((error) {
-                      if (mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("로그아웃 실패: $error")),
-                        );
-                      }
-                    });
-              },
-              child: Text("로그아웃"),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (ctx) => AddExpensePage()),
-                );
-              },
-              child: Text("추가"),
-            ),
-          ],
+        body: pages[_selectedIndex],
+        bottomNavigationBar: CustomBottomBar(
+          selectedIndex: _selectedIndex,
+          onTabSelected: (index) => setState(() => _selectedIndex = index),
         ),
+        floatingActionButton: SizedBox(
+          width: 72,
+          height: 72,
+          child: FloatingActionButton(
+            backgroundColor: Colors.white,
+            foregroundColor: const Color.fromARGB(255, 22, 117, 189),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(50),
+              side: BorderSide(
+                color: const Color.fromARGB(255, 22, 117, 189),
+                width: 3,
+              ),
+            ),
+
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (ctx) => AddExpensePage()),
+              );
+            },
+
+            child: const Icon(Icons.add, size: 70),
+          ),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       ),
     );
   }
 }
+        // backgroundColor: Colors.white,
+        // body: Column(
+        //   children: [
+        //     ElevatedButton(
+        //       onPressed: () {
+        //         Supabase.instance.client.auth
+        //             .signOut()
+        //             .then((_) {
+        //               if (mounted) {
+        //                 Navigator.pushReplacement(
+        //                   context,
+        //                   MaterialPageRoute(builder: (ctx) => LoginPage()),
+        //                 );
+        //               }
+        //             })
+        //             .catchError((error) {
+        //               if (mounted) {
+        //                 ScaffoldMessenger.of(context).showSnackBar(
+        //                   SnackBar(content: Text("로그아웃 실패: $error")),
+        //                 );
+        //               }
+        //             });
+        //       },
+        //       child: Text("로그아웃"),
+        //     ),
+        //     const SizedBox(height: 20),
+        //     ElevatedButton(
+        //       onPressed: () {
+        //         Navigator.push(
+        //           context,
+        //           MaterialPageRoute(builder: (ctx) => AddExpensePage()),
+        //         );
+        //       },
+        //       child: Text("추가"),
+        //     ),
+        //   ],
+        // ),

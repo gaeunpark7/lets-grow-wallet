@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:lets_grow_wallet/features/account_book/screens/add_income_page.dart';
+import 'package:lets_grow_wallet/features/account_book/screens/main_page.dart';
 import 'package:lets_grow_wallet/features/account_book/services/transaction_service.dart';
 import 'package:lets_grow_wallet/features/account_book/widgets/category_selector.dart';
 import 'package:lets_grow_wallet/features/account_book/widgets/date_selector.dart';
+import 'package:lets_grow_wallet/features/account_book/widgets/payment_amount_row.dart';
+import 'package:lets_grow_wallet/features/account_book/widgets/single_button.dart';
+import 'package:lets_grow_wallet/features/account_book/widgets/title_button.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 import '../model/transaction_model.dart';
@@ -100,36 +105,6 @@ class _AddExpensePageState extends State<AddExpensePage> {
     }
   }
 
-  Widget singleButton({
-    required String text,
-    required bool selected,
-    required VoidCallback onTap,
-    BorderRadius? borderRadius,
-  }) {
-    return Expanded(
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          decoration: BoxDecoration(
-            color: selected ? Colors.blue : Colors.white,
-            border: Border.all(color: Colors.black, width: 1),
-            borderRadius: borderRadius,
-          ),
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          child: Center(
-            child: Text(
-              text,
-              style: TextStyle(
-                color: selected ? Colors.white : Colors.black,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -146,22 +121,32 @@ class _AddExpensePageState extends State<AddExpensePage> {
                 Row(
                   children: [
                     Expanded(
-                      child: title_button(
-                        Colors.white,
-                        Border.all(color: Colors.black, width: 1),
-                        "수입",
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (ctx) => AddIncomePage(),
+                            ),
+                          );
+                        },
+                        child: TitleButton(
+                          color: Colors.white,
+                          border: Border.all(color: Colors.black, width: 1),
+                          text: "수입",
+                        ),
                       ),
                     ),
                     Expanded(
-                      child: title_button(
-                        Colors.blue,
-                        Border(
+                      child: TitleButton(
+                        color: Colors.blue,
+                        border: Border(
                           left: BorderSide.none,
                           top: BorderSide(color: Colors.black),
                           right: BorderSide(color: Colors.black),
                           bottom: BorderSide(color: Colors.black),
                         ),
-                        "지출",
+                        text: "지출",
                       ),
                     ),
                   ],
@@ -199,63 +184,17 @@ class _AddExpensePageState extends State<AddExpensePage> {
                 ),
                 const SizedBox(height: 18),
                 // 결제수단 + 금액 입력
-                Row(
-                  children: [
-                    singleButton(
-                      text: "카드",
-                      selected: selectedPayType == 0,
-                      onTap: () {
-                        setState(() {
-                          selectedPayType = 0;
-                        });
-                      },
-                    ),
-                    singleButton(
-                      text: "현금",
-                      selected: selectedPayType == 1,
-                      onTap: () {
-                        setState(() {
-                          selectedPayType = 1;
-                        });
-                      },
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      flex: 2,
-                      child: SizedBox(
-                        height: 38,
-                        child: TextFormField(
-                          controller: amountController,
-                          keyboardType: TextInputType.number,
-                          maxLength: 12,
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            hintText: "금액",
-                            isDense: true,
-                            counterText: "",
-                            contentPadding: EdgeInsets.symmetric(
-                              vertical: 8,
-                              horizontal: 12,
-                            ),
-                          ),
-                          onChanged: (value) {
-                            final formatted = formatAmount(
-                              value.replaceAll(',', ''),
-                            );
-                            if (formatted != value) {
-                              amountController.value = TextEditingValue(
-                                text: formatted,
-                                selection: TextSelection.collapsed(
-                                  offset: formatted.length,
-                                ),
-                              );
-                            }
-                          },
-                        ),
-                      ),
-                    ),
-                  ],
+                PaymentAmountRow(
+                  selectedPayType: selectedPayType,
+                  onPayTypeChanged: (type) {
+                    setState(() {
+                      selectedPayType = type;
+                    });
+                  },
+                  amountController: amountController,
+                  formatAmount: formatAmount,
                 ),
+
                 const SizedBox(height: 24),
                 TextField(
                   controller: memoController,
@@ -286,7 +225,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
                       final userId =
                           Supabase.instance.client.auth.currentUser?.id;
                       if (userId == null) {
-                        // 로그인 안 된 경우 처리(예: 알림, 로그인 페이지 이동 등)
+                        // 로그인 안 된 경우 처리
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('로그인이 필요합니다.')),
                         );
@@ -324,7 +263,10 @@ class _AddExpensePageState extends State<AddExpensePage> {
                       );
                       await addTransaction(transaction);
                       // 저장 후 처리(예: 화면 닫기, 메시지 등)
-                      Navigator.pop(context, true);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (ctx) => MainPage()),
+                      );
                     },
                     child: const Text("지출 추가"),
                   ),
@@ -332,22 +274,6 @@ class _AddExpensePageState extends State<AddExpensePage> {
                 const SizedBox(height: 24),
               ],
             ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Container title_button(Color color, Border border, String text) {
-    return Container(
-      decoration: BoxDecoration(color: color, border: border),
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      child: Center(
-        child: Text(
-          text,
-          style: const TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
           ),
         ),
       ),
