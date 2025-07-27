@@ -256,7 +256,7 @@ class _AddIncomePageState extends State<AddIncomePage> {
                         memo: memoController.text,
                         date: selectedDate,
                         createdAt: DateTime.now(),
-                        type: 'expense',
+                        type: 'income',
                       );
                       await addTransaction(transaction);
                       // 저장 후 처리(예: 화면 닫기, 메시지 등)
