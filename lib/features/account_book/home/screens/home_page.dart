@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:lets_grow_wallet/features/account_book/screens/home_page_detail.dart';
+import 'package:lets_grow_wallet/features/account_book/home/screens/home_page_detail.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../model/transaction_model.dart';
+import '../../model/transaction_model.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

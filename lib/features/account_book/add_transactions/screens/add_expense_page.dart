@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:lets_grow_wallet/features/account_book/screens/add_income_page.dart';
-import 'package:lets_grow_wallet/features/account_book/screens/main_page.dart';
+import 'package:lets_grow_wallet/features/account_book/add_transactions/screens/add_income_page.dart';
+import 'package:lets_grow_wallet/features/account_book/main/main_page.dart';
 import 'package:lets_grow_wallet/features/account_book/services/transaction_service.dart';
-import 'package:lets_grow_wallet/features/account_book/widgets/category_selector.dart';
-import 'package:lets_grow_wallet/features/account_book/widgets/date_selector.dart';
-import 'package:lets_grow_wallet/features/account_book/widgets/payment_amount_row.dart';
-import 'package:lets_grow_wallet/features/account_book/widgets/single_button.dart';
-import 'package:lets_grow_wallet/features/account_book/widgets/title_button.dart';
+import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/category_selector.dart';
+import 'package:lets_grow_wallet/features/account_book/main/widgets/date_selector.dart';
+import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/payment_amount_row.dart';
+import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/single_button.dart';
+import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/title_button.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
-import '../model/transaction_model.dart';
-import '../model/category_model.dart';
+import '../../model/transaction_model.dart';
+import '../../model/category_model.dart';
 // import 'package:lets_grow_wallet/utils/category_utils.dart';
 
 class AddExpensePage extends StatefulWidget {

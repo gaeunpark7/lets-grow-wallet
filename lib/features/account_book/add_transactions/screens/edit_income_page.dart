@@ -1,26 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:lets_grow_wallet/features/account_book/screens/add_expense_page.dart';
-import 'package:lets_grow_wallet/features/account_book/screens/main_page.dart';
+import 'package:lets_grow_wallet/features/account_book/add_transactions/screens/add_expense_page.dart';
+import 'package:lets_grow_wallet/features/account_book/main/main_page.dart';
 import 'package:lets_grow_wallet/features/account_book/services/transaction_service.dart';
-import 'package:lets_grow_wallet/features/account_book/widgets/category_selector.dart';
-import 'package:lets_grow_wallet/features/account_book/widgets/date_selector.dart';
-import 'package:lets_grow_wallet/features/account_book/widgets/payment_amount_row.dart';
-import 'package:lets_grow_wallet/features/account_book/widgets/single_button.dart';
-import 'package:lets_grow_wallet/features/account_book/widgets/title_button.dart';
+import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/category_selector.dart';
+import 'package:lets_grow_wallet/features/account_book/main/widgets/date_selector.dart';
+import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/payment_amount_row.dart';
+import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/single_button.dart';
+import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/title_button.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
-import '../model/transaction_model.dart';
-import '../model/category_model.dart';
+import '../../model/transaction_model.dart';
+import '../../model/category_model.dart';
 
-class AddIncomePage extends StatefulWidget {
-  const AddIncomePage({super.key});
+class EditIncomePage extends StatefulWidget {
+  final TransactionModel transaction;
+  const EditIncomePage({super.key, required this.transaction});
 
   @override
-  State<AddIncomePage> createState() => _AddIncomePageState();
+  State<EditIncomePage> createState() => _EditIncomePageState();
 }
 
-class _AddIncomePageState extends State<AddIncomePage> {
+class _EditIncomePageState extends State<EditIncomePage> {
   final titleController = TextEditingController();
   final amountController = TextEditingController();
   final memoController = TextEditingController();
@@ -33,7 +34,14 @@ class _AddIncomePageState extends State<AddIncomePage> {
   @override
   void initState() {
     super.initState();
-    loadCategories();
+    // 초기값 설정
+    final tx = widget.transaction;
+    titleController.text = tx.title;
+    amountController.text = NumberFormat('#,###').format(tx.amount);
+    memoController.text = tx.memo;
+    selectedDate = tx.date;
+    selectedPayType = tx.paymentMethod;
+    loadCategories(tx.categoryId);
   }
 
   @override
@@ -51,16 +59,19 @@ class _AddIncomePageState extends State<AddIncomePage> {
     return NumberFormat('#,###').format(number);
   }
 
-  //supabase transaction model
-  Future<void> addTransaction(TransactionModel transaction) async {
-    try {
-      final supabase = Supabase.instance.client;
-      final response = await supabase
-          .from('transactions')
-          .insert(transaction.toMap());
-    } catch (e) {
-      rethrow;
+  //기존 카테고리 불러오기
+  Future<void> loadCategories(String? currentCategoryId) async {
+    final service = TransactionServiceIncome();
+    final fetched = await service.fetchCategories();
+    int? idx;
+    if (currentCategoryId != null) {
+      idx = fetched.indexWhere((c) => c.id == currentCategoryId);
+      if (idx == -1) idx = null;
     }
+    setState(() {
+      categories = fetched;
+      selectedCategoryIdx = idx;
+    });
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -95,19 +106,31 @@ class _AddIncomePageState extends State<AddIncomePage> {
     }
   }
 
-  //기본 카테고리 불러오기
-  Future<void> loadCategories() async {
-    final service = TransactionServiceIncome();
-    final fetched = await service.fetchCategories();
-    setState(() {
-      categories = fetched;
-    });
+  //수정
+  Future<void> updateTransaction(TransactionModel transaction) async {
+    try {
+      final supabase = Supabase.instance.client;
+      await supabase
+          .from('transactions')
+          .update(transaction.toMap())
+          .eq('id', transaction.id);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.blue,
+          title: const Text(
+            '수입 수정',
+            style: TextStyle(fontSize: 20, color: Colors.white),
+          ),
+          centerTitle: true,
+        ),
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
           child: Padding(
@@ -117,38 +140,6 @@ class _AddIncomePageState extends State<AddIncomePage> {
               children: [
                 const SizedBox(height: 18),
                 // 지출/수입 선택 (지출만 파란색)
-                Row(
-                  children: [
-                    Expanded(
-                      child: TitleButton(
-                        color: Colors.blue,
-                        border: Border.all(color: Colors.black, width: 1),
-                        text: "수입",
-                      ),
-                    ),
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (ctx) => const AddExpensePage(),
-                          ),
-                        ),
-                        child: TitleButton(
-                          color: Colors.white,
-                          border: Border(
-                            left: BorderSide.none,
-                            top: BorderSide(color: Colors.black),
-                            right: BorderSide(color: Colors.black),
-                            bottom: BorderSide(color: Colors.black),
-                          ),
-                          text: "지출",
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 18),
                 // 날짜 선택
                 DateSelector(
                   selectedDate: selectedDate,
@@ -243,7 +234,7 @@ class _AddIncomePageState extends State<AddIncomePage> {
                       }
                       if (selectedCategoryIdx == null) return;
                       final transaction = TransactionModel(
-                        id: Uuid().v4(),
+                        id: widget.transaction.id,
                         userId: userId, // 실제 로그인 유저 uuid로 대체
                         title: titleController.text,
                         amount:
@@ -255,11 +246,14 @@ class _AddIncomePageState extends State<AddIncomePage> {
                         paymentMethod: selectedPayType,
                         memo: memoController.text,
                         date: selectedDate,
-                        createdAt: DateTime.now(),
+                        createdAt: widget.transaction.createdAt,
                         type: 'income',
                       );
-                      await addTransaction(transaction);
-                      // 저장 후 처리(예: 화면 닫기, 메시지 등)
+                      await updateTransaction(transaction);
+                      ScaffoldMessenger.of(
+                        context,
+                      ).showSnackBar(const SnackBar(content: Text('수정되었습니다.')));
+
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (ctx) => MainPage()),

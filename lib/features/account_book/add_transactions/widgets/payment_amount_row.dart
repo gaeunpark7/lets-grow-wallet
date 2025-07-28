@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lets_grow_wallet/features/account_book/widgets/single_button.dart';
+import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/single_button.dart';
 
 class PaymentAmountRow extends StatelessWidget {
   final int selectedPayType;

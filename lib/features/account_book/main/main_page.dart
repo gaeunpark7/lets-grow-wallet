@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lets_grow_wallet/features/account_book/screens/add_expense_page.dart';
-import 'package:lets_grow_wallet/features/account_book/screens/home_page.dart';
-import 'package:lets_grow_wallet/features/account_book/widgets/custom_bottom_bar.dart';
+import 'package:lets_grow_wallet/features/account_book/add_transactions/screens/add_expense_page.dart';
+import 'package:lets_grow_wallet/features/account_book/home/screens/home_page.dart';
+import 'package:lets_grow_wallet/features/account_book/main/widgets/custom_bottom_bar.dart';
 import 'package:lets_grow_wallet/features/auth/screens/login_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
