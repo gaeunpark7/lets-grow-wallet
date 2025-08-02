@@ -189,6 +189,7 @@ class _EditExpensePageState extends State<EditExpensePage> {
                 const SizedBox(height: 24),
                 TextField(
                   controller: memoController,
+                  maxLength: 50,
                   maxLines: 4,
                   minLines: 3,
                   decoration: const InputDecoration(

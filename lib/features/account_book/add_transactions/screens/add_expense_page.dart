@@ -200,6 +200,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
                   controller: memoController,
                   maxLines: 4,
                   minLines: 3,
+                  maxLength: 50,
                   decoration: const InputDecoration(
                     hintText: '메모 입력',
                     border: OutlineInputBorder(),
