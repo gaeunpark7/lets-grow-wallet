@@ -1,4 +1,5 @@
-import 'package:lets_grow_wallet/features/account_book/model/montyle_stat_model.dart';
+import 'package:lets_grow_wallet/features/calender/model/daily_stat_model.dart';
+import 'package:lets_grow_wallet/features/calender/model/montyle_stat_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class StatService {
@@ -20,5 +21,19 @@ class StatService {
     if (result.isEmpty) return null;
 
     return MonthlyStat.fromMap(result.first);
+  }
+
+  Future<DailyStat?> fetchDailyStat(DateTime date) async {
+    final user = supabase.auth.currentUser;
+
+    final result = await supabase
+        .from('daily_stats')
+        .select()
+        .eq('user_id', user!.id)
+        .eq('day', date.toIso8601String().split('T')[0]); // '2025-08-08'
+
+    if (result.isEmpty) return null;
+
+    return DailyStat.fromMap(result.first);
   }
 }
