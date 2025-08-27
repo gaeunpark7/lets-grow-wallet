@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/screens/add_expense_page.dart';
-import 'package:lets_grow_wallet/features/account_book/main/main_page.dart';
+import 'package:lets_grow_wallet/features/main/main_page.dart';
 import 'package:lets_grow_wallet/features/account_book/services/transaction_service.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/category_selector.dart';
-import 'package:lets_grow_wallet/features/account_book/main/widgets/date_selector.dart';
+import 'package:lets_grow_wallet/features/main/widgets/date_selector.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/payment_amount_row.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/single_button.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/title_button.dart';
