@@ -1,5 +1,5 @@
-import 'package:lets_grow_wallet/features/calender/model/daily_stat_model.dart';
-import 'package:lets_grow_wallet/features/calender/model/montyle_stat_model.dart';
+import 'package:lets_grow_wallet/features/account_book/calender/model/daily_stat_model.dart';
+import 'package:lets_grow_wallet/features/account_book/calender/model/montyle_stat_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class StatService {
