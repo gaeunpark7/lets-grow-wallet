@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lets_grow_wallet/features/user/screens/user_profile_setting.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:lets_grow_wallet/features/auth/screens/login_page.dart';
 import 'package:lets_grow_wallet/features/auth/screens/profile_setting_page.dart';
@@ -64,58 +65,30 @@ class _MyPageState extends State<MyPage> {
             : Column(
                 children: [
                   const SizedBox(height: 32),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CircleAvatar(
-                        radius: 50,
-                        backgroundColor: Colors.grey[200],
-                      ),
-                      const SizedBox(width: 24),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            userProfile!.nickname,
-                            style: const TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            userProfile!.email,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                  UserProfileSetting(userProfile: userProfile),
                   const SizedBox(height: 32),
                   ListTile(
-                    leading: const Icon(Icons.edit),
-                    title: const Text("프로필 수정"),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (ctx) => ProfileSettingPage(),
-                        ),
-                      );
-                    },
+                    leading: const Icon(Icons.workspace_premium_outlined),
+                    title: const Text("프리미엄"),
+                    trailing: Icon(Icons.chevron_right),
                   ),
                   ListTile(
-                    leading: const Icon(Icons.logout),
-                    title: const Text("로그아웃"),
-                    onTap: _logout,
+                    leading: const Icon(Icons.notification_important_outlined),
+                    title: const Text("공지사항"),
+                    trailing: Icon(Icons.chevron_right),
+                    onTap: () {},
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.feedback_outlined),
+                    title: const Text("오류문의"),
+                    trailing: Icon(Icons.chevron_right),
+                    onTap: () {},
                   ),
                   const Divider(),
                   ListTile(
                     leading: const Icon(Icons.info_outline),
                     title: const Text("앱 정보"),
+                    trailing: Icon(Icons.chevron_right),
                     onTap: () {
                       showAboutDialog(
                         context: context,
@@ -124,6 +97,12 @@ class _MyPageState extends State<MyPage> {
                         applicationLegalese: "© 2024 LetsGrow",
                       );
                     },
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.logout),
+                    title: const Text("로그아웃"),
+                    trailing: Icon(Icons.chevron_right),
+                    onTap: () {},
                   ),
                 ],
               ),
