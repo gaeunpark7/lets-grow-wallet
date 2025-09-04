@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lets_grow_wallet/features/account_book/calender/model/daily_stat_model.dart';
-import 'package:lets_grow_wallet/features/account_book/calender/services/stat_service.dart';
+import 'package:lets_grow_wallet/features/account_book/model/daily_stat_model.dart';
+import 'package:lets_grow_wallet/features/account_book/services/stat_service.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class Calender extends StatefulWidget {

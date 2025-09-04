@@ -3,16 +3,16 @@ import 'package:lets_grow_wallet/features/user/model/user_profile_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:lets_grow_wallet/features/user/services/user_profile_service.dart';
 
-class UserProfileSetting extends StatefulWidget {
-  const UserProfileSetting({super.key, required this.userProfile});
+class MyPageUserProfilePage extends StatefulWidget {
+  const MyPageUserProfilePage({super.key, required this.userProfile});
 
   final UserProfileModel? userProfile;
 
   @override
-  State<UserProfileSetting> createState() => _UserProfileSettingState();
+  State<MyPageUserProfilePage> createState() => _MyPageUserProfileState();
 }
 
-class _UserProfileSettingState extends State<UserProfileSetting> {
+class _MyPageUserProfileState extends State<MyPageUserProfilePage> {
   final nicknameController = TextEditingController();
   final formKey = GlobalKey<FormState>();
   final _userProfileService = UserProfileService();
@@ -33,7 +33,7 @@ class _UserProfileSettingState extends State<UserProfileSetting> {
         nicknameController.text,
       );
       if (mounted) {
-        Navigator.of(context).pop(true); // true를 반환해서 부모에서 리로드 가능
+        Navigator.of(context).pop();
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text("닉네임이 변경되었습니다.")));
@@ -70,6 +70,7 @@ class _UserProfileSettingState extends State<UserProfileSetting> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+                SizedBox(width: 5),
                 GestureDetector(
                   onTap: () async {
                     await showDialog(
@@ -116,12 +117,22 @@ class _UserProfileSettingState extends State<UserProfileSetting> {
                 hintText: "새로운 닉네임을 입력하세요.",
                 filled: true,
                 fillColor: Color.fromARGB(255, 251, 251, 251),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.black),
+                ),
               ),
               maxLength: 7,
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return "닉네임을 입력하세요";
+                } else if (value.length < 2) {
+                  return "닉네임은 2자 이상이어야 합니다.";
+                } else if (value.length > 7) {
+                  return "닉네임은 7자 이하이어야 합니다.";
+                } else if (!RegExp(r'^[a-zA-Z0-9가-힣]+$').hasMatch(value)) {
+                  return "닉네임은 한글, 영어, 숫자만 사용할 수 있습니다.";
                 }
+
                 return null;
               },
             ),
@@ -143,7 +154,9 @@ class _UserProfileSettingState extends State<UserProfileSetting> {
                   backColor: Colors.black,
                   textColor: Colors.white,
                   ontap: () {
-                    _saveNickname();
+                    if (formKey.currentState!.validate()) {
+                      _saveNickname();
+                    }
                   },
                   text: "확인",
                 ),

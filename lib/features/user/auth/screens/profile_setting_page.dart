@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lets_grow_wallet/features/main/main_page.dart';
-import 'package:lets_grow_wallet/features/auth/screens/login_page.dart';
+import 'package:lets_grow_wallet/features/user/auth/screens/login_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ProfileSettingPage extends StatefulWidget {

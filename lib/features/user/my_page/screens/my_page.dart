@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:lets_grow_wallet/features/user/screens/user_profile_setting.dart';
+import 'package:lets_grow_wallet/features/user/my_page/screens/my_page_userprofile.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:lets_grow_wallet/features/auth/screens/login_page.dart';
-import 'package:lets_grow_wallet/features/auth/screens/profile_setting_page.dart';
+import 'package:lets_grow_wallet/features/user/auth/screens/login_page.dart';
+import 'package:lets_grow_wallet/features/user/auth/screens/profile_setting_page.dart';
 import 'package:lets_grow_wallet/features/user/services/user_profile_service.dart';
 import 'package:lets_grow_wallet/features/user/model/user_profile_model.dart';
 
@@ -65,12 +65,13 @@ class _MyPageState extends State<MyPage> {
             : Column(
                 children: [
                   const SizedBox(height: 32),
-                  UserProfileSetting(userProfile: userProfile),
+                  MyPageUserProfilePage(userProfile: userProfile),
                   const SizedBox(height: 32),
                   ListTile(
                     leading: const Icon(Icons.workspace_premium_outlined),
                     title: const Text("프리미엄"),
                     trailing: Icon(Icons.chevron_right),
+                    onTap: () {},
                   ),
                   ListTile(
                     leading: const Icon(Icons.notification_important_outlined),
