@@ -5,10 +5,12 @@ class TitleButton extends StatelessWidget {
   final Color color;
   final Border? border;
   final String text;
+  final Color textColor;
   const TitleButton({
     required this.color,
     this.border,
     required this.text,
+    this.textColor = Colors.white,
     super.key,
   });
 
@@ -20,10 +22,7 @@ class TitleButton extends StatelessWidget {
       child: Center(
         child: Text(
           text,
-          style: const TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: textColor, fontWeight: FontWeight.bold),
         ),
       ),
     );

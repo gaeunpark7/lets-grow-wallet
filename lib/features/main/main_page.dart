@@ -6,6 +6,7 @@ import 'package:lets_grow_wallet/features/main/widgets/custom_bottom_bar.dart';
 import 'package:lets_grow_wallet/features/user/auth/screens/login_page.dart';
 import 'package:lets_grow_wallet/features/account_book/calender/screens/calender.dart';
 import 'package:lets_grow_wallet/features/user/my_page/screens/my_page.dart';
+import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MainPage extends StatefulWidget {
@@ -106,13 +107,11 @@ class _MainPageState extends State<MainPage> {
           height: 72,
           child: FloatingActionButton(
             backgroundColor: Colors.white,
-            foregroundColor: const Color.fromARGB(255, 22, 117, 189),
+            foregroundColor: MainColors.mainLight,
+            elevation: 0,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(50),
-              side: BorderSide(
-                color: const Color.fromARGB(255, 22, 117, 189),
-                width: 3,
-              ),
+              side: BorderSide(color: MainColors.mainLight, width: 3),
             ),
 
             onPressed: () {

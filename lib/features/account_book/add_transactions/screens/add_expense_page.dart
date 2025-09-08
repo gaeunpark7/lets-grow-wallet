@@ -8,6 +8,7 @@ import 'package:lets_grow_wallet/features/main/widgets/date_selector.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/payment_amount_row.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/single_button.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/title_button.dart';
+import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 import '../../model/transaction_model.dart';
@@ -84,14 +85,12 @@ class _AddExpensePageState extends State<AddExpensePage> {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: ColorScheme.light(
-              primary: Colors.blue.shade400,
-              onPrimary: Colors.white,
+              primary: MainColors.mainLight,
+              onPrimary: MainColors.main,
               onSurface: Colors.black87,
             ),
             textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(
-                foregroundColor: Colors.blue.shade400,
-              ),
+              style: TextButton.styleFrom(foregroundColor: MainColors.mainDark),
             ),
           ),
           child: child!,
@@ -121,6 +120,14 @@ class _AddExpensePageState extends State<AddExpensePage> {
                 Row(
                   children: [
                     Expanded(
+                      child: TitleButton(
+                        color: MainColors.mainLight,
+                        border: Border(),
+                        text: "지출",
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
                       child: GestureDetector(
                         onTap: () {
                           Navigator.push(
@@ -131,45 +138,60 @@ class _AddExpensePageState extends State<AddExpensePage> {
                           );
                         },
                         child: TitleButton(
-                          color: Colors.white,
-                          border: Border.all(color: Colors.black, width: 1),
+                          color: MainColors.main,
+                          // border: Border.all(color: Colors.black, width: 1),
                           text: "수입",
+                          textColor: MainColors.mainDark,
                         ),
-                      ),
-                    ),
-                    Expanded(
-                      child: TitleButton(
-                        color: Colors.blue,
-                        border: Border(
-                          left: BorderSide.none,
-                          top: BorderSide(color: Colors.black),
-                          right: BorderSide(color: Colors.black),
-                          bottom: BorderSide(color: Colors.black),
-                        ),
-                        text: "지출",
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 18),
                 // 날짜 선택
-                DateSelector(
-                  selectedDate: selectedDate,
-                  onTap: () => _selectDate(context),
-                ),
-                const SizedBox(height: 18),
-                // 제목 입력
-                TextField(
-                  controller: titleController,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: "제목을 입력하세요",
-                    isDense: true,
-                    contentPadding: EdgeInsets.symmetric(
-                      vertical: 10,
-                      horizontal: 12,
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 150,
+                      child: DateSelector(
+                        selectedDate: selectedDate,
+                        onTap: () => _selectDate(context),
+                      ),
                     ),
-                  ),
+                    SizedBox(width: 12),
+                    // 제목 입력
+                    Expanded(
+                      child: TextField(
+                        controller: titleController,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.zero,
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.zero,
+                            borderSide: BorderSide(
+                              color: MainColors.mainDark,
+                              width: 0.5,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.zero,
+                            borderSide: BorderSide(
+                              color: MainColors.mainDark,
+                              width: 2,
+                            ),
+                          ),
+                          hintText: "제목을 입력하세요",
+                          hintStyle: TextStyle(color: MainColors.mainDark),
+                          isDense: true,
+                          contentPadding: EdgeInsets.symmetric(
+                            vertical: 10,
+                            horizontal: 12,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 18),
                 // 카테고리 선택
@@ -203,7 +225,22 @@ class _AddExpensePageState extends State<AddExpensePage> {
                   maxLength: 50,
                   decoration: const InputDecoration(
                     hintText: '메모 입력',
-                    border: OutlineInputBorder(),
+                    hintStyle: TextStyle(color: MainColors.mainDark),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.zero),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.zero,
+                      borderSide: BorderSide(
+                        color: MainColors.mainDark,
+                        width: 0.5,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.zero,
+                      borderSide: BorderSide(
+                        color: MainColors.mainDark,
+                        width: 2,
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 18),
@@ -212,7 +249,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
                   height: 48,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
+                      backgroundColor: MainColors.mainLight,
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -248,7 +285,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
                       if (selectedCategoryIdx == null) return;
                       final transaction = TransactionModel(
                         id: Uuid().v4(),
-                        userId: userId, // 실제 로그인 유저 uuid로 대체
+                        userId: userId,
                         title: titleController.text,
                         amount:
                             int.tryParse(
@@ -263,13 +300,16 @@ class _AddExpensePageState extends State<AddExpensePage> {
                         type: 'expense',
                       );
                       await addTransaction(transaction);
-                      // 저장 후 처리(예: 화면 닫기, 메시지 등)
+                      // 저장 후 처리(메시지 / 화면 닫기)
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (ctx) => MainPage()),
                       );
                     },
-                    child: const Text("지출 추가"),
+                    child: const Text(
+                      "지출 추가",
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 24),

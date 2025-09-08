@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:lets_grow_wallet/utils/colors.dart';
 
 class DateSelector extends StatelessWidget {
   final DateTime selectedDate;
@@ -20,22 +21,25 @@ class DateSelector extends StatelessWidget {
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
         decoration: BoxDecoration(
-          color: Colors.grey[100],
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: Colors.black12),
+          // color: Colors.grey[100],
+          // borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: MainColors.mainDark, width: 0.5),
         ),
         child: Center(
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.calendar_today, size: 18, color: Colors.blue),
-              const SizedBox(width: 8),
+              // const Icon(Icons.calendar_today, size: 18, color: Colors.blue),
+              // const SizedBox(width: 8),
               Text(
                 dateString,
-                style: const TextStyle(fontSize: 16, color: Colors.black87),
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: MainColors.mainDark,
+                ),
               ),
-              const SizedBox(width: 8),
-              const Icon(Icons.arrow_drop_down, color: Colors.blue),
+              // const SizedBox(width: 8),
+              // const Icon(Icons.arrow_drop_down, color: Colors.blue),
             ],
           ),
         ),

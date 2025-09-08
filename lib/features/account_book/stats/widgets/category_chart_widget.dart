@@ -1,6 +1,7 @@
+import 'dart:math';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
+import 'package:lets_grow_wallet/utils/colors.dart';
 
 class CategoryChartWidget extends StatelessWidget {
   final List<({String id, String name, int amount})> data;
@@ -8,71 +9,103 @@ class CategoryChartWidget extends StatelessWidget {
   const CategoryChartWidget({super.key, required this.data});
 
   static const _palette = <Color>[
-    Color(0xFFEF5350),
-    Color(0xFFFFA726),
-    Color(0xFFFFEE58),
-    Color(0xFF66BB6A),
-    Color(0xFF42A5F5),
-    Color(0xFFAB47BC),
-    Color(0xFF26C6DA),
-    Color(0xFF8D6E63),
-    Color(0xFF78909C),
+    // Color.fromARGB(255, 92, 105, 172),
+    Color(0xFF7986CB),
+    Color(0xFF9FA8DA),
+    Color(0xFFC5CAE9),
+    Color(0xFFE8EAF6),
+    Color(0xFFF5F5FA),
+    Color(0xFFB3E5FC),
+    Color(0xFFB2DFDB),
+    Color(0xFFC8E6C9),
+    Color(0xFFFFF9C4),
+    Color(0xFFFFE4B5),
   ];
 
-  Color _colorFor(String id) {
-    final h = id.codeUnits.fold<int>(0, (p, c) => p + c);
-    return _palette[h % _palette.length];
-  }
+  Color _colorForIndex(int idx) => _palette[idx % _palette.length];
 
   @override
   Widget build(BuildContext context) {
     final total = data.fold<int>(0, (p, e) => p + e.amount);
-    final f = NumberFormat.decimalPattern('ko');
 
     if (data.isEmpty || total == 0) {
       return const SizedBox(
-        height: 340,
+        height: 320,
         child: Center(child: Text('데이터가 없어요')),
       );
     }
 
-    //파이 섹션  데이터
-    final sections = data.map((e) {
-      final ratio = total == 0 ? 0.0 : (e.amount / total) * 100.0;
-      final showLabel = ratio >= 8; //8% 이상 카테고리만 표시
-      // final moneyText = '₩${f.format(e.amount)}';
+    // 퍼센트 내림차순 정렬
+    final sorted = [...data];
+    sorted.sort((a, b) => b.amount.compareTo(a.amount));
 
+    // 차트 크기 키우기
+    const chartSize = 320.0;
+    const pieRadius = 120.0;
+    final center = Offset(chartSize / 2, chartSize / 2);
+    final labelRadius = pieRadius + 24; // 라벨 위치 반지름
+
+    // 파이 섹션 데이터
+    final sections = List.generate(sorted.length, (i) {
+      final e = sorted[i];
       return PieChartSectionData(
         value: e.amount.toDouble(),
-        title: showLabel ? '${e.name}\n${ratio.toStringAsFixed(1)}% ' : '',
-        titleStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
-        radius: 100,
-        badgeWidget: showLabel
-            ? null
-            : Padding(
-                padding: const EdgeInsets.all(4.0),
+        title: '',
+        radius: pieRadius,
+        color: _colorForIndex(i),
+      );
+    });
+
+    // 각 섹션의 중간 각도 계산
+    double startAngle = -pi / 2;
+    final midAngles = <double>[];
+    for (final e in sorted) {
+      final sweep = total == 0 ? 0.0 : (e.amount / total) * 2 * pi;
+      final mid = startAngle + sweep / 2;
+      midAngles.add(mid);
+      startAngle += sweep;
+    }
+
+    return SizedBox(
+      height: chartSize,
+      width: chartSize,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          PieChart(
+            PieChartData(
+              sections: sections,
+              centerSpaceRadius: 0,
+              sectionsSpace: 0,
+              startDegreeOffset: -90,
+              pieTouchData: PieTouchData(enabled: false),
+            ),
+          ),
+          // 퍼센트 라벨 바깥에 배치 - 가운데 정렬
+          ...List.generate(sorted.length, (i) {
+            final e = sorted[i];
+            final percent = total == 0 ? 0.0 : (e.amount / total * 100);
+            if (percent < 6) return const SizedBox.shrink();
+            final angle = midAngles[i];
+            final dx = center.dx + labelRadius * cos(angle);
+            final dy = center.dy + labelRadius * sin(angle);
+            return Positioned(
+              left: dx - 24, // 가운데 정렬 (텍스트 폭의 절반만큼 빼줌)
+              top: dy - 14,
+              child: SizedBox(
+                width: 48,
                 child: Text(
-                  // '₩${f.format(e.amount)}',
-                  "${e.name} ${ratio.toStringAsFixed(1)}%",
+                  '${percent.toStringAsFixed(0)}%',
+                  textAlign: TextAlign.center,
                   style: const TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600,
+                    fontSize: 18,
+                    color: MainColors.mainDark,
                   ),
                 ),
               ),
-        badgePositionPercentageOffset: 1.15,
-        color: _colorFor(e.id),
-      );
-    }).toList();
-
-    return SizedBox(
-      height: 260,
-      child: PieChart(
-        PieChartData(
-          sections: sections,
-          sectionsSpace: 2,
-          centerSpaceRadius: 0, //여백 x
-        ),
+            );
+          }),
+        ],
       ),
     );
   }
