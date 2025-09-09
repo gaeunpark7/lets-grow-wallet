@@ -95,7 +95,7 @@ class _MyPageState extends State<MyPage> {
                         context: context,
                         applicationName: "레츠고 가계부",
                         applicationVersion: "1.0.0",
-                        applicationLegalese: "© 2024 LetsGrow",
+                        applicationLegalese: "© 2025 LetsGrow",
                       );
                     },
                   ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/single_button.dart';
+import 'package:lets_grow_wallet/utils/colors.dart';
 
 class PaymentAmountRow extends StatelessWidget {
   final int selectedPayType;
@@ -24,6 +25,7 @@ class PaymentAmountRow extends StatelessWidget {
           selected: selectedPayType == 0,
           onTap: () => onPayTypeChanged(0),
         ),
+        SizedBox(width: 5),
         SingleButton(
           text: "현금",
           selected: selectedPayType == 1,
@@ -39,13 +41,20 @@ class PaymentAmountRow extends StatelessWidget {
               keyboardType: TextInputType.number,
               maxLength: 12,
               decoration: const InputDecoration(
-                border: OutlineInputBorder(),
+                border: OutlineInputBorder(borderRadius: BorderRadius.zero),
                 hintText: "금액",
+                hintStyle: TextStyle(color: MainColors.mainDark),
                 isDense: true,
                 counterText: "",
                 contentPadding: EdgeInsets.symmetric(
                   vertical: 8,
                   horizontal: 12,
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: MainColors.mainDark, width: 1),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: MainColors.mainDark, width: 2),
                 ),
               ),
               onChanged: (value) {

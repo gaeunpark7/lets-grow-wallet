@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lets_grow_wallet/utils/colors.dart';
 
 class CustomBottomBar extends StatelessWidget {
   final int selectedIndex;
@@ -15,7 +16,7 @@ class CustomBottomBar extends StatelessWidget {
     return BottomAppBar(
       shape: const CircularNotchedRectangle(),
       notchMargin: 3.0,
-      color: const Color.fromARGB(255, 22, 117, 189),
+      color: MainColors.mainLight,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Row(

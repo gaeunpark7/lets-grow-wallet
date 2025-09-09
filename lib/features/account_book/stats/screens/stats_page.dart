@@ -3,6 +3,7 @@ import 'package:lets_grow_wallet/features/account_book/provider/stat_provider.da
 import 'package:lets_grow_wallet/features/account_book/stats/screens/stats_expense_view.dart';
 import 'package:lets_grow_wallet/features/account_book/stats/screens/stats_income_view.dart';
 import 'package:lets_grow_wallet/features/account_book/stats/widgets/montly_header.dart';
+import 'package:lets_grow_wallet/utils/colors.dart';
 
 class StatsPage extends StatefulWidget {
   const StatsPage({super.key});
@@ -33,22 +34,47 @@ class _StatsPageState extends State<StatsPage>
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: MonthHeader(onKindChanged: (_) {}, current: StatsKind.income),
-        bottom: TabBar(
-          controller: _tabController,
-          labelColor: Colors.black,
-          indicatorColor: Colors.black,
-          labelStyle: TextStyle(fontSize: 18),
-
-          tabs: [
-            Tab(text: "수입"),
-            Tab(text: "지출"),
-          ],
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(56),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _buildSelectButton(context, 0, "수입"),
+                const SizedBox(width: 12),
+                _buildSelectButton(context, 1, "지출"),
+              ],
+            ),
+          ),
         ),
       ),
       body: TabBarView(
         controller: _tabController,
+        physics: const NeverScrollableScrollPhysics(),
         children: [StatsIncomeView(), StatsExpenseView()],
       ),
+    );
+  }
+
+  _buildSelectButton(BuildContext context, int index, String text) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: _tabController.index == index
+            ? MainColors.mainLight
+            : MainColors.main,
+        foregroundColor: _tabController.index == index
+            ? Colors.white
+            : MainColors.mainDark,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+        minimumSize: Size(MediaQuery.of(context).size.width * 0.4, 45),
+        elevation: 0,
+        shadowColor: Colors.transparent, // 그림자 제거
+      ),
+      onPressed: () {
+        setState(() => _tabController.index = index);
+      },
+      child: Text(text, style: const TextStyle(fontSize: 16)),
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lets_grow_wallet/features/account_book/provider/stat_provider.dart';
+import 'package:lets_grow_wallet/utils/colors.dart';
 
 class MonthHeader extends ConsumerWidget {
   final ValueChanged<StatsKind> onKindChanged;
@@ -30,7 +31,7 @@ class MonthHeader extends ConsumerWidget {
         IconButton(
           onPressed: () => ref.read(selectedMonthProvider.notifier).state =
               _addMonths(month, -1),
-          icon: const Icon(Icons.chevron_left),
+          icon: const Icon(Icons.chevron_left, color: MainColors.mainDark),
         ),
         GestureDetector(
           onTap: () async {
@@ -38,13 +39,26 @@ class MonthHeader extends ConsumerWidget {
           },
           child: Text(
             label,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: const TextStyle(
+              fontSize: 18,
+              color: MainColors.mainDark,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
         IconButton(
-          onPressed: () => ref.read(selectedMonthProvider.notifier).state =
-              _addMonths(month, 1),
-          icon: const Icon(Icons.chevron_right),
+          onPressed: () {
+            // 다음달은 볼 수 없음.
+            final now = DateTime.now();
+            final thisMonth = DateTime(now.year, now.month, 1);
+            if (month.isBefore(thisMonth)) {
+              ref.read(selectedMonthProvider.notifier).state = _addMonths(
+                month,
+                1,
+              );
+            }
+          },
+          icon: const Icon(Icons.chevron_right, color: MainColors.mainDark),
         ),
       ],
     );

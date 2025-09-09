@@ -8,6 +8,7 @@ import 'package:lets_grow_wallet/features/main/widgets/date_selector.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/payment_amount_row.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/single_button.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/title_button.dart';
+import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 import '../../model/transaction_model.dart';
@@ -74,14 +75,12 @@ class _AddIncomePageState extends State<AddIncomePage> {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: ColorScheme.light(
-              primary: Colors.blue.shade400,
+              primary: MainColors.mainLight,
               onPrimary: Colors.white,
               onSurface: Colors.black87,
             ),
             textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(
-                foregroundColor: Colors.blue.shade400,
-              ),
+              style: TextButton.styleFrom(foregroundColor: MainColors.mainDark),
             ),
           ),
           child: child!,
@@ -120,13 +119,6 @@ class _AddIncomePageState extends State<AddIncomePage> {
                 Row(
                   children: [
                     Expanded(
-                      child: TitleButton(
-                        color: Colors.blue,
-                        border: Border.all(color: Colors.black, width: 1),
-                        text: "수입",
-                      ),
-                    ),
-                    Expanded(
                       child: GestureDetector(
                         onTap: () => Navigator.push(
                           context,
@@ -135,38 +127,66 @@ class _AddIncomePageState extends State<AddIncomePage> {
                           ),
                         ),
                         child: TitleButton(
-                          color: Colors.white,
-                          border: Border(
-                            left: BorderSide.none,
-                            top: BorderSide(color: Colors.black),
-                            right: BorderSide(color: Colors.black),
-                            bottom: BorderSide(color: Colors.black),
-                          ),
+                          color: MainColors.main,
+                          border: Border(),
                           text: "지출",
+                          textColor: MainColors.mainDark,
                         ),
+                      ),
+                    ),
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: TitleButton(
+                        color: MainColors.mainLight,
+                        // border: Border.all(color: Colors.black, width: 1),
+                        text: "수입",
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 18),
                 // 날짜 선택
-                DateSelector(
-                  selectedDate: selectedDate,
-                  onTap: () => _selectDate(context),
-                ),
-                const SizedBox(height: 18),
-                // 제목 입력
-                TextField(
-                  controller: titleController,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: "제목을 입력하세요",
-                    isDense: true,
-                    contentPadding: EdgeInsets.symmetric(
-                      vertical: 10,
-                      horizontal: 12,
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 150,
+                      child: DateSelector(
+                        selectedDate: selectedDate,
+                        onTap: () => _selectDate(context),
+                      ),
                     ),
-                  ),
+                    SizedBox(width: 12),
+                    // 제목 입력
+                    Expanded(
+                      child: TextField(
+                        controller: titleController,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.zero,
+                          ),
+                          hintText: "제목을 입력하세요",
+                          hintStyle: TextStyle(color: MainColors.mainDark),
+                          isDense: true,
+                          contentPadding: EdgeInsets.symmetric(
+                            vertical: 10,
+                            horizontal: 12,
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: MainColors.mainDark,
+                              width: 0.5,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: MainColors.mainDark,
+                              width: 2,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 18),
                 // 카테고리 선택
@@ -200,7 +220,19 @@ class _AddIncomePageState extends State<AddIncomePage> {
                   minLines: 3,
                   decoration: const InputDecoration(
                     hintText: '메모 입력',
-                    border: OutlineInputBorder(),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.zero),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: MainColors.mainDark,
+                        width: 0.5,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: MainColors.mainDark,
+                        width: 2,
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 18),
@@ -209,7 +241,7 @@ class _AddIncomePageState extends State<AddIncomePage> {
                   height: 48,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
+                      backgroundColor: MainColors.mainLight,
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),

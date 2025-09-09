@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lets_grow_wallet/features/account_book/provider/stat_provider.dart';
 import 'package:lets_grow_wallet/features/account_book/stats/widgets/category_chart_widget.dart';
 import 'package:lets_grow_wallet/features/account_book/stats/widgets/category_state_tile.dart';
+import 'package:lets_grow_wallet/features/account_book/stats/widgets/stats_ai_message.dart';
 
 class StatsExpenseView extends ConsumerWidget {
   const StatsExpenseView({super.key});
@@ -17,11 +18,12 @@ class StatsExpenseView extends ConsumerWidget {
       error: (e, st) => Center(child: Text('에러: $e')),
       data: (list) {
         final data = pickAmounts(list, StatsKind.expense);
-        return SingleChildScrollView(
-          child: Container(
-            color: Colors.white,
+        return Container(
+          color: Colors.white,
+          child: SingleChildScrollView(
             child: Column(
               children: [
+                StatsAIMessage(),
                 CategoryChartWidget(data: data),
                 Divider(),
                 CategoryStatList(data: data),
