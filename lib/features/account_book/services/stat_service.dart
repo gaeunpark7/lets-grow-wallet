@@ -6,7 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class StatService {
   final supabase = Supabase.instance.client;
   //월별 통계
-  Future<MonthlyStat?> fetchMonthlyStat(DateTime date) async {
+  Future<MonthlyStat?> fetchMonthlyStat(DateTime date, DateTime lastDay) async {
     final start = DateTime(date.year, date.month);
     final end = DateTime(date.year, date.month + 1);
 

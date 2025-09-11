@@ -18,10 +18,16 @@ class _HomePageState extends State<HomePage> {
   final statService = StatService();
   late final Future stat;
 
+  late DateTime start;
+  late DateTime end;
+
   @override
   void initState() {
     super.initState();
-    stat = statService.fetchMonthlyStat(DateTime.now());
+    final now = DateTime.now();
+    start = DateTime(now.year, now.month, 1);
+    end = DateTime(now.year, now.month + 1, 1); // 다음달 1일
+    stat = statService.fetchMonthlyStat(start, end);
     loadTodayTransactions();
   }
 
@@ -59,7 +65,7 @@ class _HomePageState extends State<HomePage> {
       body: Column(
         children: [
           FutureBuilder<MonthlyStat?>(
-            future: statService.fetchMonthlyStat(DateTime.now()),
+            future: statService.fetchMonthlyStat(start, end),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return const Padding(
