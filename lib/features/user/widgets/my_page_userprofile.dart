@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lets_grow_wallet/features/user/model/user_profile_model.dart';
+import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:lets_grow_wallet/features/user/services/user_profile_service.dart';
 
@@ -49,47 +50,84 @@ class _MyPageUserProfileState extends State<MyPageUserProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        CircleAvatar(
-          radius: 50,
-          backgroundColor: Colors.grey[200],
-          child: Icon(Icons.person, size: 50),
-        ),
-        const SizedBox(width: 24),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Text(
-                  widget.userProfile!.nickname,
-                  style: const TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      padding: const EdgeInsets.all(16),
+      color: MainColors.main,
+      child: Stack(
+        children: [
+          Align(
+            alignment: Alignment.topRight,
+            child: GestureDetector(
+              onTap: () async {
+                await showDialog(
+                  context: context,
+                  builder: (ctx) => _buildDialog(),
+                );
+              },
+              child: CircleAvatar(
+                radius: 15,
+                backgroundColor: MainColors.mainLight,
+                child: const Icon(Icons.edit, color: Colors.white, size: 16),
+              ),
+            ),
+          ),
+          Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  //프로필 이미지
+                  CircleAvatar(
+                    radius: 40,
+                    backgroundColor: MainColors.mainLight,
+                    child: Icon(Icons.person, size: 60, color: Colors.white),
+                  ),
+                  const SizedBox(width: 15),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Lv 8"),
+                        Row(
+                          children: [
+                            Text(
+                              widget.userProfile!.nickname,
+                              style: const TextStyle(
+                                fontSize: 22,
+                                // fontWeight: FontWeight.bold,
+                                color: MainColors.mainDark,
+                              ),
+                            ),
+                            SizedBox(width: 5),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              //이메일
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(8),
+                color: Colors.white,
+                child: Center(
+                  child: Text(
+                    widget.userProfile!.email,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: MainColors.mainDark,
+                    ),
                   ),
                 ),
-                SizedBox(width: 5),
-                GestureDetector(
-                  onTap: () async {
-                    await showDialog(
-                      context: context,
-                      builder: (ctx) => _buildDialog(),
-                    );
-                  },
-                  child: const Icon(Icons.settings),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Text(
-              widget.userProfile!.email,
-              style: const TextStyle(fontSize: 16, color: Colors.grey),
-            ),
-          ],
-        ),
-      ],
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 

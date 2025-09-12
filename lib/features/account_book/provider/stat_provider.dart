@@ -12,7 +12,9 @@ final monthlyStatProvider = FutureProvider.family<MonthlyStat?, DateTime>((
   month,
 ) {
   final svc = ref.watch(statServiceProvider);
-  return svc.fetchMonthlyStat(month);
+  final start = DateTime(month.year, month.month, 1);
+  final end = DateTime(month.year, month.month + 1, 1); // 다음달 1일
+  return svc.fetchMonthlyStat(start, end);
 });
 
 // 일별 통계

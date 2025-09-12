@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lets_grow_wallet/features/user/my_page/screens/my_page_userprofile.dart';
+import 'package:lets_grow_wallet/features/user/widgets/my_page_userprofile.dart';
+import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:lets_grow_wallet/features/user/auth/screens/login_page.dart';
 import 'package:lets_grow_wallet/features/user/auth/screens/profile_setting_page.dart';
@@ -51,13 +52,7 @@ class _MyPageState extends State<MyPage> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          title: const Text(
-            "마이페이지",
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          backgroundColor: Colors.white,
-        ),
+        appBar: AppBar(backgroundColor: MainColors.mainLight),
         body: isLoading
             ? const Center(child: CircularProgressIndicator())
             : userProfile == null
