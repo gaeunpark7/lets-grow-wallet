@@ -59,32 +59,25 @@ class _MyPageState extends State<MyPage> {
             ? const Center(child: Text("유저 정보를 불러올 수 없습니다."))
             : Column(
                 children: [
+                  Padding(
+                    padding: EdgeInsetsGeometry.symmetric(horizontal: 20),
+                  ),
                   const SizedBox(height: 32),
                   MyPageUserProfilePage(userProfile: userProfile),
                   const SizedBox(height: 32),
-                  ListTile(
-                    leading: const Icon(Icons.workspace_premium_outlined),
-                    title: const Text("프리미엄"),
-                    trailing: Icon(Icons.chevron_right),
-                    onTap: () {},
+                  Divider(color: MainColors.mainDark, thickness: 0.5),
+                  _buildListTile(
+                    icon: Icons.workspace_premium_outlined,
+                    text: "프리미엄",
                   ),
-                  ListTile(
-                    leading: const Icon(Icons.notification_important_outlined),
-                    title: const Text("공지사항"),
-                    trailing: Icon(Icons.chevron_right),
-                    onTap: () {},
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.feedback_outlined),
-                    title: const Text("오류문의"),
-                    trailing: Icon(Icons.chevron_right),
-                    onTap: () {},
-                  ),
-                  const Divider(),
-                  ListTile(
-                    leading: const Icon(Icons.info_outline),
-                    title: const Text("앱 정보"),
-                    trailing: Icon(Icons.chevron_right),
+                  const Divider(color: MainColors.mainDark, thickness: 0.5),
+                  _buildListTile(icon: Icons.notifications, text: "공지사항"),
+                  const Divider(color: MainColors.mainDark, thickness: 0.5),
+                  _buildListTile(icon: Icons.feedback_outlined, text: "오류문의"),
+                  const Divider(color: MainColors.mainDark, thickness: 0.5),
+                  _buildListTile(
+                    icon: Icons.info_outline,
+                    text: "앱 정보",
                     onTap: () {
                       showAboutDialog(
                         context: context,
@@ -94,15 +87,41 @@ class _MyPageState extends State<MyPage> {
                       );
                     },
                   ),
-                  ListTile(
-                    leading: const Icon(Icons.logout),
-                    title: const Text("로그아웃"),
-                    trailing: Icon(Icons.chevron_right),
-                    onTap: () {},
+                  const Divider(color: MainColors.mainDark, thickness: 0.5),
+                  _buildListTile(
+                    icon: Icons.logout,
+                    text: "로그아웃",
+                    onTap: _logout,
                   ),
+                  const Divider(color: MainColors.mainDark, thickness: 0.5),
                 ],
               ),
       ),
+    );
+  }
+}
+
+class _buildListTile extends StatelessWidget {
+  final IconData icon;
+  final String text;
+  final void Function()? onTap;
+
+  const _buildListTile({
+    super.key,
+    required this.icon,
+    required this.text,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: Icon(icon, color: MainColors.point, size: 28),
+      trailing: Text(
+        text,
+        style: const TextStyle(color: MainColors.mainDark, fontSize: 16),
+      ),
+      onTap: onTap,
     );
   }
 }

@@ -88,7 +88,13 @@ class _MyPageUserProfileState extends State<MyPageUserProfilePage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Lv 8"),
+                        Text(
+                          "Lv 8",
+                          style: TextStyle(
+                            color: MainColors.mainDark,
+                            fontSize: 16,
+                          ),
+                        ),
                         Row(
                           children: [
                             Text(
