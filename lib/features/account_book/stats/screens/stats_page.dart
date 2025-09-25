@@ -32,6 +32,7 @@ class _StatsPageState extends State<StatsPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
         title: MonthHeader(onKindChanged: (_) {}, current: StatsKind.income),
         bottom: PreferredSize(

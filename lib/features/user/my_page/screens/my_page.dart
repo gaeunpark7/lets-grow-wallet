@@ -52,7 +52,13 @@ class _MyPageState extends State<MyPage> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
-        appBar: AppBar(backgroundColor: MainColors.mainLight),
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(30),
+          child: AppBar(
+            backgroundColor: MainColors.mainLight,
+            automaticallyImplyLeading: false,
+          ),
+        ),
         body: isLoading
             ? const Center(child: CircularProgressIndicator())
             : userProfile == null
