@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lets_grow_wallet/features/account_book/dashboard/screens/home_page_detail.dart';
 import 'package:lets_grow_wallet/features/account_book/services/stat_service.dart';
+import 'package:lets_grow_wallet/features/account_book/shop/screens/item_shop_page.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../model/transaction_model.dart';
@@ -75,6 +76,7 @@ class _homePageState extends State<HomePage> {
           padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Column(
             children: [
+              SizedBox(height: 10),
               SizedBox(
                 height: 120,
                 child: Row(
@@ -88,16 +90,13 @@ class _homePageState extends State<HomePage> {
                       "이번달의 목표는?",
                       style: TextStyle(
                         color: MainColors.mainDark,
+                        // fontSize: 24,
                         fontSize: screenWidth * 0.06, // 반응형 폰트
                         fontWeight: FontWeight.w900,
                       ),
                     ),
                     Spacer(),
-                    Icon(
-                      Icons.edit_note_outlined,
-                      size: 30,
-                      color: MainColors.point,
-                    ),
+                    Icon(Icons.edit_square, size: 30, color: MainColors.point),
                     Spacer(),
                   ],
                 ),
@@ -111,9 +110,12 @@ class _homePageState extends State<HomePage> {
               // 고정된 테이블 헤더
               Table(
                 border: TableBorder(
-                  top: BorderSide(color: Colors.black, width: 1),
-                  bottom: BorderSide(color: Colors.black, width: 1.2),
-                  verticalInside: BorderSide(color: Colors.black, width: 1),
+                  top: BorderSide(color: MainColors.mainDark, width: 1),
+                  bottom: BorderSide(color: MainColors.mainDark, width: 1.2),
+                  verticalInside: BorderSide(
+                    color: MainColors.mainDark,
+                    width: 1,
+                  ),
                 ),
                 columnWidths: const {
                   0: FlexColumnWidth(1), // 날짜
@@ -146,9 +148,12 @@ class _homePageState extends State<HomePage> {
                       final isCash = tx.paymentMethod == 1;
                       return Table(
                         border: TableBorder(
-                          bottom: BorderSide(color: Colors.black, width: 1),
+                          bottom: BorderSide(
+                            color: MainColors.mainDark,
+                            width: 1,
+                          ),
                           verticalInside: BorderSide(
-                            color: Colors.black,
+                            color: MainColors.mainDark,
                             width: 1,
                           ),
                         ),
@@ -201,9 +206,12 @@ class _homePageState extends State<HomePage> {
                       // 데이터가 없는 경우 빈 행 렌더링
                       return Table(
                         border: TableBorder(
-                          bottom: BorderSide(color: Colors.black, width: 1),
+                          bottom: BorderSide(
+                            color: MainColors.mainDark,
+                            width: 1,
+                          ),
                           verticalInside: BorderSide(
-                            color: Colors.black,
+                            color: MainColors.mainDark,
                             width: 1,
                           ),
                         ),
@@ -230,7 +238,57 @@ class _homePageState extends State<HomePage> {
                   },
                 ),
               ),
-              const SizedBox(height: 10),
+              Container(
+                height: 5,
+                decoration: BoxDecoration(
+                  border: Border(
+                    top: BorderSide(color: MainColors.mainDark, width: 1),
+                  ),
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: _buildTotal(
+                      text: "카드",
+                      textColor: MainColors.mainDark,
+                      topBorder: 1,
+                      rightBorder: 1,
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: _buildTotal(
+                      text: "테스트",
+                      textColor: MainColors.mainDark,
+                      topBorder: 1,
+
+                      rightBorder: 1,
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: _buildTotal(
+                      text: "현금",
+                      textColor: Colors.red,
+                      topBorder: 1,
+
+                      rightBorder: 1,
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: _buildTotal(
+                      text: "테스트",
+                      topBorder: 1,
+
+                      textColor: Colors.red,
+                    ),
+                  ),
+                ],
+              ),
 
               // 결과
               FutureBuilder<MonthlyStat?>(
@@ -253,7 +311,6 @@ class _homePageState extends State<HomePage> {
                         child: _buildTotal(
                           text: "수익",
                           textColor: MainColors.mainDark,
-                          topBorder: 1,
                           rightBorder: 1,
                         ),
                       ),
@@ -264,7 +321,6 @@ class _homePageState extends State<HomePage> {
                               "+${NumberFormat('#,###').format(stat.totalIncome)}",
                           textColor: MainColors.mainDark,
                           rightBorder: 1,
-                          topBorder: 1,
                         ),
                       ),
                       Expanded(
@@ -273,7 +329,6 @@ class _homePageState extends State<HomePage> {
                           text: "지출",
                           textColor: Colors.red,
                           rightBorder: 1,
-                          topBorder: 1,
                         ),
                       ),
                       Expanded(
@@ -282,13 +337,14 @@ class _homePageState extends State<HomePage> {
                           text:
                               "-${NumberFormat('#,###').format(stat.totalExpense)}",
                           textColor: Colors.red,
-                          topBorder: 1,
                         ),
                       ),
                     ],
                   );
                 },
               ),
+
+              SizedBox(height: 5),
               FutureBuilder<MonthlyStat?>(
                 future: statService.fetchMonthlyStat(start, end),
                 builder: (context, snapshot) {
@@ -308,18 +364,21 @@ class _homePageState extends State<HomePage> {
                         child: _buildTotal(
                           text: "잔액",
                           textColor: const Color.fromARGB(255, 119, 98, 169),
+                          topBorder: 1,
                           rightBorder: 1,
                         ),
                       ),
                       Expanded(
-                        flex: 2,
+                        flex: 5,
                         child: _buildTotal(
                           text: NumberFormat('#,###').format(totalSum),
                           textColor: const Color.fromARGB(255, 119, 98, 169),
+                          topBorder: 1,
+
                           rightBorder: 1,
                         ),
                       ),
-                      Expanded(flex: 3, child: Container()),
+                      // Expanded(flex: 3, child: Container()),
                     ],
                   );
                 },
@@ -329,7 +388,12 @@ class _homePageState extends State<HomePage> {
           ),
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (ctx) => ItemShopPage()),
+            );
+          },
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(50),
           ),
@@ -346,7 +410,10 @@ class _homePageState extends State<HomePage> {
       child: Text(
         text,
         textAlign: TextAlign.center,
-        style: TextStyle(fontWeight: FontWeight.bold),
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          color: MainColors.mainDark,
+        ),
       ),
     );
   }
@@ -359,6 +426,7 @@ class _homePageState extends State<HomePage> {
         textAlign: TextAlign.center,
         maxLines: 1, // 텍스트 줄 제한
         overflow: TextOverflow.ellipsis, // 줄바꿈 방지
+        style: TextStyle(color: MainColors.mainDark),
       ),
     );
   }

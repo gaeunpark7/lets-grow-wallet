@@ -4,7 +4,7 @@ import 'package:lets_grow_wallet/features/account_book/dashboard/screens/home_pa
 import 'package:lets_grow_wallet/features/account_book/stats/screens/stats_page.dart';
 import 'package:lets_grow_wallet/features/main/widgets/custom_bottom_bar.dart';
 import 'package:lets_grow_wallet/features/user/auth/screens/login_page.dart';
-import 'package:lets_grow_wallet/features/account_book/calender/screens/calender.dart';
+import 'package:lets_grow_wallet/features/account_book/calendar/screens/calendar.dart';
 import 'package:lets_grow_wallet/features/user/my_page/screens/my_page.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -19,7 +19,7 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
 
-  final List<Widget> pages = [HomePage(), StatsPage(), Calender(), MyPage()];
+  final List<Widget> pages = [HomePage(), StatsPage(), Calendar(), MyPage()];
 
   @override
   void initState() {
