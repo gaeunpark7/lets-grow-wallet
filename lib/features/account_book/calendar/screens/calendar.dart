@@ -4,14 +4,14 @@ import 'package:lets_grow_wallet/features/account_book/services/stat_service.dar
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-class Calender extends StatefulWidget {
-  const Calender({super.key});
+class Calendar extends StatefulWidget {
+  const Calendar({super.key});
 
   @override
-  State<Calender> createState() => _CalenderState();
+  State<Calendar> createState() => _CalendarState();
 }
 
-class _CalenderState extends State<Calender> {
+class _CalendarState extends State<Calendar> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
   Map<DateTime, DailyStat> _statMap = {};
