@@ -23,32 +23,34 @@ class _ItemShopPageState extends State<ItemShopPage> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
-        appBar: AppBar(backgroundColor: Colors.white, title: ShopAppbar()),
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          title: ShopAppbar(),
+          iconTheme: IconThemeData(color: MainColors.mainDark),
+        ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Expanded(
-                flex: 1,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ShopTitleButton(
-                      text: "상점",
-                      backColor: MainColors.mainLight,
+              // SizedBox(height: 4),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ShopTitleButton(text: "상점", backColor: MainColors.mainLight),
+                  SizedBox(width: 10),
+                  ShopTitleButton(
+                    text: "테마",
+                    textColor: MainColors.mainDark,
+                    backColor: MainColors.main,
+                    onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (ctx) => ThemeShopPage()),
                     ),
-                    SizedBox(width: 10),
-                    ShopTitleButton(
-                      text: "테마",
-                      textColor: MainColors.mainDark,
-                      backColor: MainColors.main,
-                      onPressed: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (ctx) => ThemeShopPage()),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
               SizedBox(height: 12),
               //아이템 그리드뷰

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lets_grow_wallet/utils/colors.dart';
 
 class ShopItemDetail extends StatefulWidget {
   String image;
@@ -25,8 +26,7 @@ class _ShopItemDetailState extends State<ShopItemDetail> {
       child: Container(
         width: MediaQuery.of(context).size.width * 1,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5),
-          border: Border.all(color: Colors.grey),
+          border: Border.all(color: MainColors.mainLight),
         ),
         child: Padding(
           padding: const EdgeInsets.all(12),
@@ -37,12 +37,12 @@ class _ShopItemDetailState extends State<ShopItemDetail> {
                 width: MediaQuery.of(context).size.width * 0.25,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5),
-                  border: Border.all(color: Colors.grey),
+                  border: Border.all(color: MainColors.mainLight),
                 ),
                 child: Center(
                   child: Text(
                     widget.image,
-                    style: TextStyle(fontSize: 16, color: Colors.grey),
+                    style: TextStyle(fontSize: 16, color: MainColors.mainLight),
                   ),
                 ),
               ),
@@ -53,12 +53,22 @@ class _ShopItemDetailState extends State<ShopItemDetail> {
                 children: [
                   Text(
                     widget.name,
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: MainColors.mainDark,
+                    ),
                   ),
                   SizedBox(height: 8),
-                  Text("가격:${widget.price}"),
+                  Text(
+                    "가격:${widget.price}",
+                    style: TextStyle(color: MainColors.mainDark),
+                  ),
                   SizedBox(height: 8),
-                  Text(widget.description),
+                  Text(
+                    widget.description,
+                    style: TextStyle(color: MainColors.mainDark),
+                  ),
                 ],
               ),
             ],

@@ -9,14 +9,14 @@ class ShopAppbar extends StatelessWidget {
     final mediaQuery = MediaQuery.of(context);
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
-
       children: [
         Container(
           height: 40,
           width: 40,
           decoration: BoxDecoration(
+            color: Colors.white,
             shape: BoxShape.circle,
-            border: Border.all(color: MainColors.mainDark, width: 1),
+            border: Border.all(color: MainColors.mainLight, width: 1),
           ),
           child: Icon(
             Icons.workspace_premium_outlined,
@@ -28,7 +28,7 @@ class ShopAppbar extends StatelessWidget {
           height: 40,
           width: mediaQuery.size.width * 0.35,
           decoration: BoxDecoration(
-            border: Border.all(color: MainColors.mainDark, width: 1),
+            border: Border.all(color: MainColors.mainLight, width: 1),
             borderRadius: BorderRadius.circular(20),
             color: Colors.white,
           ),
