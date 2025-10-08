@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lets_grow_wallet/features/account_book/dashboard/screens/home_page_detail.dart';
+import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/monthly_header.dart';
+import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/table_header.dart';
+import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/table_list.dart';
 import 'package:lets_grow_wallet/features/account_book/services/stat_service.dart';
 import 'package:lets_grow_wallet/features/account_book/shop/screens/item_shop_page.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
@@ -72,180 +75,45 @@ class _homePageState extends State<HomePage> {
             titleSpacing: 0,
           ),
         ),
+        //메인 목표
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Column(
             children: [
               SizedBox(height: 10),
-              SizedBox(
-                height: 120,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Spacer(),
-                    Spacer(),
-                    Spacer(),
-                    Text(
-                      "이번달의 목표는?",
-                      style: TextStyle(
-                        color: MainColors.mainDark,
-                        // fontSize: 24,
-                        fontSize: screenWidth * 0.06, // 반응형 폰트
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                    Spacer(),
-                    Icon(Icons.edit_square, size: 30, color: MainColors.point),
-                    Spacer(),
-                  ],
-                ),
-              ),
+              MonthlyHeader(),
+              //년도, 일
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Text("$year년  $month월", style: TextStyle(fontSize: 15)),
+                  Text(
+                    "$year년  $month월",
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: MainColors.mainDark,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ],
               ),
               // 고정된 테이블 헤더
-              Table(
-                border: TableBorder(
-                  top: BorderSide(color: MainColors.mainDark, width: 1),
-                  bottom: BorderSide(color: MainColors.mainDark, width: 1.2),
-                  verticalInside: BorderSide(
-                    color: MainColors.mainDark,
-                    width: 1,
-                  ),
-                ),
-                columnWidths: const {
-                  0: FlexColumnWidth(1), // 날짜
-                  1: FlexColumnWidth(3), // 내역
-                  2: FlexColumnWidth(3), // 지출
-                  3: FlexColumnWidth(1), // 카드
-                  4: FlexColumnWidth(1), // 현금
-                },
-                children: [
-                  TableRow(
-                    children: [
-                      _buildHeaderCell("날짜"),
-                      _buildHeaderCell("내역"),
-                      _buildHeaderCell("금액"),
-                      _buildHeaderCell("카드"),
-                      _buildHeaderCell("현금"),
-                    ],
-                  ),
-                ],
-              ),
-              // 고정된 빈 테이블
+              TableHeader(),
+              //테이블 리스트
               Expanded(
-                child: ListView.builder(
-                  itemCount: todayTransactions.length + 15,
-                  itemBuilder: (context, index) {
-                    if (index < todayTransactions.length) {
-                      // 데이터가 있는 경우
-                      final tx = todayTransactions[index];
-                      final isExpense = tx.type == 'expense';
-                      final isCash = tx.paymentMethod == 1;
-                      return Table(
-                        border: TableBorder(
-                          bottom: BorderSide(
-                            color: MainColors.mainDark,
-                            width: 1,
-                          ),
-                          verticalInside: BorderSide(
-                            color: MainColors.mainDark,
-                            width: 1,
-                          ),
-                        ),
-                        columnWidths: const {
-                          0: FlexColumnWidth(1), // 날짜
-                          1: FlexColumnWidth(3), // 내역
-                          2: FlexColumnWidth(3), // 지출
-                          3: FlexColumnWidth(1), // 카드
-                          4: FlexColumnWidth(1), // 현금
-                        },
-                        children: [
-                          TableRow(
-                            children: [
-                              _buildCell(DateFormat('d').format(tx.date)),
-                              InkWell(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (ctx) =>
-                                          HomePageDetail(transaction: tx),
-                                    ),
-                                  );
-                                },
-                                child: _buildCell(tx.title),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  isExpense
-                                      ? "-${NumberFormat('#,###').format(tx.amount)}"
-                                      : "+${NumberFormat('#,###').format(tx.amount)}",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: isExpense
-                                        ? Colors.red
-                                        : MainColors.mainDark,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                              _buildCell(tx.paymentMethod == 0 ? "O" : " "),
-                              _buildCell(tx.paymentMethod == 1 ? "O" : " "),
-                            ],
-                          ),
-                        ],
-                      );
-                    } else {
-                      // 데이터가 없는 경우 빈 행 렌더링
-                      return Table(
-                        border: TableBorder(
-                          bottom: BorderSide(
-                            color: MainColors.mainDark,
-                            width: 1,
-                          ),
-                          verticalInside: BorderSide(
-                            color: MainColors.mainDark,
-                            width: 1,
-                          ),
-                        ),
-                        columnWidths: const {
-                          0: FlexColumnWidth(1), // 날짜
-                          1: FlexColumnWidth(3), // 내역
-                          2: FlexColumnWidth(3), // 지출
-                          3: FlexColumnWidth(1), // 카드
-                          4: FlexColumnWidth(1), // 현금
-                        },
-                        children: [
-                          TableRow(
-                            children: [
-                              _buildCell(""),
-                              _buildCell(""),
-                              _buildCell(""),
-                              _buildCell(""),
-                              _buildCell(""),
-                            ],
-                          ),
-                        ],
-                      );
-                    }
-                  },
+                child: TableList(
+                  transactions: todayTransactions,
+                  categories: const [],
                 ),
               ),
               Container(
                 height: 5,
                 decoration: BoxDecoration(
                   border: Border(
-                    top: BorderSide(color: MainColors.mainDark, width: 1),
+                    top: BorderSide(color: MainColors.point, width: 1),
                   ),
                 ),
               ),
+              //결과
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -272,7 +140,7 @@ class _homePageState extends State<HomePage> {
                     flex: 1,
                     child: _buildTotal(
                       text: "현금",
-                      textColor: Colors.red,
+                      textColor: MainColors.mainDark,
                       topBorder: 1,
 
                       rightBorder: 1,
@@ -284,7 +152,7 @@ class _homePageState extends State<HomePage> {
                       text: "테스트",
                       topBorder: 1,
 
-                      textColor: Colors.red,
+                      textColor: MainColors.mainDark,
                     ),
                   ),
                 ],
@@ -300,6 +168,24 @@ class _homePageState extends State<HomePage> {
                       child: CircularProgressIndicator(),
                     );
                   }
+                  if (snapshot.hasError) {
+                    // 에러 상태
+                    return const Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: Text("데이터를 불러오는 중 오류가 발생했습니다."),
+                    );
+                  }
+                  // 데이터가 없거나 null일 경우 대비 - 수정 필요, 무한로딩
+                  // final stat =
+                  //     snapshot.data ??
+                  //     MonthlyStat(
+                  //       totalIncome: 0,
+                  //       totalExpense: 0,
+                  //       cashBalance: 0,
+                  //       cardBalance: 0,
+                  //       month: DateTime.now(),
+                  //     );
+
                   final stat = snapshot.data!;
                   final totalSum = stat.totalIncome - stat.totalExpense;
 
@@ -310,7 +196,7 @@ class _homePageState extends State<HomePage> {
                         flex: 1,
                         child: _buildTotal(
                           text: "수익",
-                          textColor: MainColors.mainDark,
+                          textColor: MainColors.income,
                           rightBorder: 1,
                         ),
                       ),
@@ -318,8 +204,8 @@ class _homePageState extends State<HomePage> {
                         flex: 2,
                         child: _buildTotal(
                           text:
-                              "+${NumberFormat('#,###').format(stat.totalIncome)}",
-                          textColor: MainColors.mainDark,
+                              "+${NumberFormat('#,###').format(stat.totalIncome) ?? "0"}",
+                          textColor: MainColors.income,
                           rightBorder: 1,
                         ),
                       ),
@@ -327,7 +213,7 @@ class _homePageState extends State<HomePage> {
                         flex: 1,
                         child: _buildTotal(
                           text: "지출",
-                          textColor: Colors.red,
+                          textColor: MainColors.expense,
                           rightBorder: 1,
                         ),
                       ),
@@ -335,8 +221,8 @@ class _homePageState extends State<HomePage> {
                         flex: 2,
                         child: _buildTotal(
                           text:
-                              "-${NumberFormat('#,###').format(stat.totalExpense)}",
-                          textColor: Colors.red,
+                              "-${NumberFormat('#,###').format(stat.totalExpense) ?? "0"}",
+                          textColor: MainColors.expense,
                         ),
                       ),
                     ],
@@ -371,11 +257,11 @@ class _homePageState extends State<HomePage> {
                       Expanded(
                         flex: 5,
                         child: _buildTotal(
-                          text: NumberFormat('#,###').format(totalSum),
+                          text: NumberFormat('#,###').format(totalSum) ?? "0",
                           textColor: const Color.fromARGB(255, 119, 98, 169),
                           topBorder: 1,
 
-                          rightBorder: 1,
+                          rightBorder: 0,
                         ),
                       ),
                       // Expanded(flex: 3, child: Container()),
@@ -399,20 +285,6 @@ class _homePageState extends State<HomePage> {
           ),
           backgroundColor: MainColors.mainLight,
           child: Icon(Icons.mood, color: Colors.white, size: 40),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildHeaderCell(String text) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Text(
-        text,
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          fontWeight: FontWeight.bold,
-          color: MainColors.mainDark,
         ),
       ),
     );
@@ -453,12 +325,12 @@ class _buildTotal extends StatelessWidget {
         border: Border(
           top: topBorder == 0
               ? BorderSide.none
-              : BorderSide(color: Colors.black, width: 1),
-          bottom: BorderSide(color: Colors.black, width: 1),
+              : BorderSide(color: MainColors.point, width: 1),
+          bottom: BorderSide(color: MainColors.point, width: 1),
           left: BorderSide.none,
           right: rightBorder == 0
               ? BorderSide.none
-              : BorderSide(color: Colors.black, width: 1),
+              : BorderSide(color: MainColors.point, width: 1),
         ),
       ),
       alignment: Alignment.center,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lets_grow_wallet/features/account_book/shop/model/shop_item.dart';
+import 'package:lets_grow_wallet/utils/colors.dart';
 
 class ShopItemGridview extends StatefulWidget {
   final Function(Map<String, dynamic>) onItemSelected;
@@ -18,8 +19,7 @@ class _ShopItemGridviewState extends State<ShopItemGridview> {
       child: Container(
         width: mediaQuery.size.width * 1,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5),
-          border: Border.all(color: Colors.grey),
+          border: Border.all(color: MainColors.mainLight),
         ),
 
         child: Padding(
@@ -52,18 +52,28 @@ class _ShopItemGridviewState extends State<ShopItemGridview> {
                       height: mediaQuery.size.height * 0.16,
                       width: mediaQuery.size.width * 0.25,
                       decoration: BoxDecoration(
+                        border: Border.all(color: MainColors.mainLight),
                         borderRadius: BorderRadius.circular(5),
-                        border: Border.all(color: Colors.grey),
                       ),
                       child: Center(
                         child: Text(
                           "이미지 ${index + 1}",
-                          style: TextStyle(fontSize: 16, color: Colors.grey),
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: MainColors.mainLight,
+                          ),
                         ),
                       ),
                     ),
                     const SizedBox(height: 8),
-                    Text(item.name, style: TextStyle(fontSize: 14)),
+                    Text(
+                      item.name,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: MainColors.mainDark,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     // const SizedBox(height: 12),
                   ],
                 ),

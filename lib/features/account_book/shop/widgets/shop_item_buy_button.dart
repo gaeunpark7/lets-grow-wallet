@@ -10,21 +10,25 @@ class ShopItemBuyButton extends StatelessWidget {
       onTap: () {},
       child: Expanded(
         flex: 1,
-        child: FilledButton(
-          style: FilledButton.styleFrom(
-            side: BorderSide.none,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-            foregroundColor: Colors.white,
-            backgroundColor: MainColors.mainLight,
-            fixedSize: Size(
-              MediaQuery.of(context).size.width * 1,
-              MediaQuery.of(context).size.height * 0.1,
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height * 0.06,
+          child: FilledButton(
+            style: FilledButton.styleFrom(
+              side: BorderSide.none,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+              foregroundColor: Colors.white,
+              backgroundColor: MainColors.mainLight,
+              // fixedSize: Size(
+              //   MediaQuery.of(context).size.width,
+              //   // MediaQuery.of(context).size.height * 0.01,
+              // ),
             ),
-          ),
-          onPressed: () {},
-          child: Text(
-            "구매",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            onPressed: () {},
+            child: Text(
+              "구매",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
           ),
         ),
       ),

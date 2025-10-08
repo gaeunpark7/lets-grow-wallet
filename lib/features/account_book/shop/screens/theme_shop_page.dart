@@ -20,16 +20,20 @@ class _ThemeShopPageState extends State<ThemeShopPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(backgroundColor: Colors.white, title: ShopAppbar()),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: Column(
-          children: [
-            Expanded(
-              flex: 1,
-              child: Row(
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          title: ShopAppbar(),
+          iconTheme: IconThemeData(color: MainColors.mainDark),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Column(
+            children: [
+              Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(width: 10),
@@ -42,32 +46,33 @@ class _ThemeShopPageState extends State<ThemeShopPage> {
                       MaterialPageRoute(builder: (ctx) => ItemShopPage()),
                     ),
                   ),
+                  SizedBox(width: 10),
                   ShopTitleButton(text: "테마", backColor: MainColors.mainLight),
                 ],
               ),
-            ),
-            SizedBox(height: 12),
-            //아이템 그리드뷰
-            ShopItemGridview(
-              onItemSelected: (item) {
-                setState(() {
-                  selectedItem = item;
-                });
-              },
-            ),
-            SizedBox(height: 12),
-            //아이템 상세보기
-            ShopItemDetail(
-              image: selectedItem?["itemImage"] ?? "이미지",
-              name: selectedItem?["itemName"] ?? items[0].name,
-              price: selectedItem?["itemPrice"] ?? items[0].price,
-              description: selectedItem?["itemDesc"] ?? items[0].description,
-            ),
-            SizedBox(height: 12),
-            //구매 버튼
-            ShopItemBuyButton(),
-            SizedBox(height: 12),
-          ],
+              SizedBox(height: 12),
+              //아이템 그리드뷰
+              ShopItemGridview(
+                onItemSelected: (item) {
+                  setState(() {
+                    selectedItem = item;
+                  });
+                },
+              ),
+              SizedBox(height: 12),
+              //아이템 상세보기
+              ShopItemDetail(
+                image: selectedItem?["itemImage"] ?? "이미지",
+                name: selectedItem?["itemName"] ?? items[0].name,
+                price: selectedItem?["itemPrice"] ?? items[0].price,
+                description: selectedItem?["itemDesc"] ?? items[0].description,
+              ),
+              SizedBox(height: 12),
+              //구매 버튼
+              ShopItemBuyButton(),
+              SizedBox(height: 12),
+            ],
+          ),
         ),
       ),
     );
