@@ -1,53 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 
-class MonthlyHeader extends StatefulWidget {
-  const MonthlyHeader({super.key});
-
-  @override
-  State<MonthlyHeader> createState() => _MonthlyHeaderState();
-}
-
-class _MonthlyHeaderState extends State<MonthlyHeader> {
-  var goalController = TextEditingController();
-  var expenseController = TextEditingController();
-  var incomeController = TextEditingController();
-  int selectedButton = 0; //기본 0, 눌리면 1
-
-  @override
-  void dispose() {
-    goalController.dispose();
-    expenseController.dispose();
-    incomeController.dispose();
-    super.dispose();
-  }
+class GoalsDialog extends StatelessWidget {
+  const GoalsDialog({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width; // 반응형 너비
-    return SizedBox(
-      height: 120,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Spacer(),
-          Spacer(),
-          Spacer(),
-          Text(
-            "이번달의 목표는?",
-            style: TextStyle(
-              color: MainColors.mainDark,
-              fontSize: screenWidth * 0.06, // 반응형 폰트
-              fontWeight: FontWeight.w900,
-            ),
-          ),
-          Spacer(),
-          GestureDetector(
-            onTap: () {
-              showDialog(
-                context: context,
-                builder: (ctx) => Dialog(
+    var goalController = TextEditingController();
+    var incomeController = TextEditingController();
+    var expenseController = TextEditingController();
+    return  Dialog(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -141,82 +103,5 @@ class _MonthlyHeaderState extends State<MonthlyHeader> {
                     ),
                   ),
                 ),
-              );
-            },
-            child: Icon(Icons.edit_square, size: 30, color: MainColors.point),
-          ),
-          Spacer(),
-        ],
-      ),
-    );
-  }
 }
-
-class _buildGoalsAmount extends StatelessWidget {
-  const _buildGoalsAmount({
-    super.key,
-    required this.textController,
-    required this.text,
-    required this.hintText,
-    this.isSelected = false,
-    required this.onPressed,
-  });
-
-  final TextEditingController textController;
-  final String text;
-  final String hintText;
-  final bool isSelected;
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        FilledButton(
-          style: FilledButton.styleFrom(
-            backgroundColor: isSelected
-                ? MainColors.mainLight
-                : MainColors.main,
-            foregroundColor: isSelected ? Colors.white : MainColors.mainDark,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5),
-            ),
-            fixedSize: Size(MediaQuery.of(context).size.width * 0.19, 45),
-          ),
-          onPressed: onPressed,
-          child: Text(
-            text,
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-        ),
-        SizedBox(width: 10),
-        Expanded(
-          child: SizedBox(
-            child: TextField(
-              controller: textController,
-              enabled: isSelected,
-              decoration: InputDecoration(
-                hintText: hintText,
-                hintStyle: TextStyle(color: MainColors.mainLight),
-                border: OutlineInputBorder(borderRadius: BorderRadius.zero),
-                contentPadding: EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: 12,
-                ),
-                //선택했을 때
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: MainColors.mainLight, width: 2),
-                ),
-                //기본
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.zero,
-                  borderSide: BorderSide(color: MainColors.mainLight, width: 1),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
 }

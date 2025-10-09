@@ -123,6 +123,7 @@ class _HomePageDetailState extends State<HomePageDetail> {
             Text(
               "지출: ${tx.type == 'expense' ? NumberFormat('#,###').format(tx.amount) : '0'}원",
             ),
+            Text("카테고리: ${tx.categoryId ?? '없음'}  "),
             Text("결제수단: ${tx.paymentMethod == 1 ? '현금' : '카드'}"),
             Text("메모: ${tx.memo}"),
           ],

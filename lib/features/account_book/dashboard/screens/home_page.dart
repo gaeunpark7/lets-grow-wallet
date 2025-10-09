@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lets_grow_wallet/features/account_book/dashboard/screens/home_page_detail.dart';
+import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/build_total.dart';
 import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/monthly_header.dart';
+import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/stat_future_builder.dart';
 import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/table_header.dart';
 import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/table_list.dart';
+import 'package:lets_grow_wallet/features/account_book/model/category_model.dart';
 import 'package:lets_grow_wallet/features/account_book/services/stat_service.dart';
+import 'package:lets_grow_wallet/features/account_book/services/transaction_service.dart';
 import 'package:lets_grow_wallet/features/account_book/shop/screens/item_shop_page.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -20,7 +24,9 @@ class HomePage extends StatefulWidget {
 
 class _homePageState extends State<HomePage> {
   List<TransactionModel> todayTransactions = [];
+  List<Category> categories = [];
   final statService = StatService();
+  final transactionService = TransactionService();
   late final Future stat;
 
   late DateTime start;
@@ -34,6 +40,7 @@ class _homePageState extends State<HomePage> {
     end = DateTime(now.year, now.month + 1, 1);
     stat = statService.fetchMonthlyStat(start, end);
     loadTodayTransactions();
+    // loadCategories(); // 카테고리 데이터 로드
   }
 
   //이번달의 데이터만 불러옴 + 내림차순
@@ -45,7 +52,7 @@ class _homePageState extends State<HomePage> {
 
     final response = await supabase
         .from('transactions')
-        .select()
+        .select('*, categories(name)')
         .gte('date', start.toIso8601String()) // 시작 날짜 조건
         .lt('date', end.toIso8601String()) // 끝 날짜 조건
         .order('date', ascending: false); // 내림차순 정렬
@@ -56,6 +63,9 @@ class _homePageState extends State<HomePage> {
           .toList();
     });
   }
+
+  @override
+  bool _isFabExpanded = false;
 
   @override
   Widget build(BuildContext context) {
@@ -99,12 +109,8 @@ class _homePageState extends State<HomePage> {
               // 고정된 테이블 헤더
               TableHeader(),
               //테이블 리스트
-              Expanded(
-                child: TableList(
-                  transactions: todayTransactions,
-                  categories: const [],
-                ),
-              ),
+              Expanded(child: TableList(transactions: todayTransactions)),
+              //여백
               Container(
                 height: 5,
                 decoration: BoxDecoration(
@@ -119,7 +125,7 @@ class _homePageState extends State<HomePage> {
                 children: [
                   Expanded(
                     flex: 1,
-                    child: _buildTotal(
+                    child: BuildTotal(
                       text: "카드",
                       textColor: MainColors.mainDark,
                       topBorder: 1,
@@ -128,36 +134,36 @@ class _homePageState extends State<HomePage> {
                   ),
                   Expanded(
                     flex: 2,
-                    child: _buildTotal(
-                      text: "테스트",
+                    child: StatFutureBuilder(
+                      future: statService.fetchMonthlyStat(start, end),
+                      valueBuilder: (stat) =>
+                          NumberFormat('#,###').format(stat.cardBalance),
                       textColor: MainColors.mainDark,
                       topBorder: 1,
-
                       rightBorder: 1,
                     ),
                   ),
                   Expanded(
                     flex: 1,
-                    child: _buildTotal(
+                    child: BuildTotal(
                       text: "현금",
                       textColor: MainColors.mainDark,
                       topBorder: 1,
-
                       rightBorder: 1,
                     ),
                   ),
                   Expanded(
                     flex: 2,
-                    child: _buildTotal(
-                      text: "테스트",
-                      topBorder: 1,
-
+                    child: StatFutureBuilder(
+                      future: statService.fetchMonthlyStat(start, end),
+                      valueBuilder: (stat) =>
+                          NumberFormat('#,###').format(stat.cashBalance),
                       textColor: MainColors.mainDark,
+                      topBorder: 1,
                     ),
                   ),
                 ],
               ),
-
               // 결과
               FutureBuilder<MonthlyStat?>(
                 future: statService.fetchMonthlyStat(start, end),
@@ -175,17 +181,6 @@ class _homePageState extends State<HomePage> {
                       child: Text("데이터를 불러오는 중 오류가 발생했습니다."),
                     );
                   }
-                  // 데이터가 없거나 null일 경우 대비 - 수정 필요, 무한로딩
-                  // final stat =
-                  //     snapshot.data ??
-                  //     MonthlyStat(
-                  //       totalIncome: 0,
-                  //       totalExpense: 0,
-                  //       cashBalance: 0,
-                  //       cardBalance: 0,
-                  //       month: DateTime.now(),
-                  //     );
-
                   final stat = snapshot.data!;
                   final totalSum = stat.totalIncome - stat.totalExpense;
 
@@ -194,7 +189,7 @@ class _homePageState extends State<HomePage> {
                     children: [
                       Expanded(
                         flex: 1,
-                        child: _buildTotal(
+                        child: BuildTotal(
                           text: "수익",
                           textColor: MainColors.income,
                           rightBorder: 1,
@@ -202,7 +197,7 @@ class _homePageState extends State<HomePage> {
                       ),
                       Expanded(
                         flex: 2,
-                        child: _buildTotal(
+                        child: BuildTotal(
                           text:
                               "+${NumberFormat('#,###').format(stat.totalIncome) ?? "0"}",
                           textColor: MainColors.income,
@@ -211,7 +206,7 @@ class _homePageState extends State<HomePage> {
                       ),
                       Expanded(
                         flex: 1,
-                        child: _buildTotal(
+                        child: BuildTotal(
                           text: "지출",
                           textColor: MainColors.expense,
                           rightBorder: 1,
@@ -219,7 +214,7 @@ class _homePageState extends State<HomePage> {
                       ),
                       Expanded(
                         flex: 2,
-                        child: _buildTotal(
+                        child: BuildTotal(
                           text:
                               "-${NumberFormat('#,###').format(stat.totalExpense) ?? "0"}",
                           textColor: MainColors.expense,
@@ -231,113 +226,108 @@ class _homePageState extends State<HomePage> {
               ),
 
               SizedBox(height: 5),
-              FutureBuilder<MonthlyStat?>(
-                future: statService.fetchMonthlyStat(start, end),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return const Padding(
-                      padding: EdgeInsets.all(16.0),
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                  final stat = snapshot.data!;
-                  final totalSum = stat.totalIncome - stat.totalExpense;
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: _buildTotal(
-                          text: "잔액",
-                          textColor: const Color.fromARGB(255, 119, 98, 169),
-                          topBorder: 1,
-                          rightBorder: 1,
-                        ),
-                      ),
-                      Expanded(
-                        flex: 5,
-                        child: _buildTotal(
-                          text: NumberFormat('#,###').format(totalSum) ?? "0",
-                          textColor: const Color.fromARGB(255, 119, 98, 169),
-                          topBorder: 1,
-
-                          rightBorder: 0,
-                        ),
-                      ),
-                      // Expanded(flex: 3, child: Container()),
-                    ],
-                  );
-                },
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: BuildTotal(
+                      text: "잔액",
+                      textColor: const Color.fromARGB(255, 119, 98, 169),
+                      topBorder: 1,
+                      rightBorder: 1,
+                    ),
+                  ),
+                  Expanded(
+                    flex: 5,
+                    child: StatFutureBuilder(
+                      future: statService.fetchMonthlyStat(start, end),
+                      valueBuilder: (stat) {
+                        final totalSum = stat.totalIncome - stat.totalExpense;
+                        return NumberFormat('#,###').format(totalSum);
+                      },
+                      textColor: const Color.fromARGB(255, 119, 98, 169),
+                      topBorder: 1,
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 50),
             ],
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (ctx) => ItemShopPage()),
-            );
-          },
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(50),
-          ),
-          backgroundColor: MainColors.mainLight,
-          child: Icon(Icons.mood, color: Colors.white, size: 40),
+        //fab버튼
+        floatingActionButton: Stack(
+          alignment: Alignment.bottomRight,
+          children: [
+            // FAB 1
+            if (_isFabExpanded)
+              Padding(
+                padding: const EdgeInsets.only(left: 180, bottom: 8),
+                child: FloatingActionButton(
+                  heroTag: "fab1",
+                  mini: true,
+                  backgroundColor: MainColors.mainLight,
+                  onPressed: () {
+                    // TODO: 원하는 동작
+                  },
+                  child: Icon(Icons.add, color: Colors.white),
+                ),
+              ),
+            // FAB 2
+            if (_isFabExpanded)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 120.0, right: 8),
+                child: FloatingActionButton(
+                  heroTag: "fab2",
+                  mini: true,
+                  backgroundColor: MainColors.mainLight,
+                  onPressed: () {
+                    // TODO: 원하는 동작
+                  },
+                  child: Icon(Icons.edit, color: Colors.white),
+                ),
+              ),
+            // FAB 3
+            if (_isFabExpanded)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 60.0, right: 8),
+                child: FloatingActionButton(
+                  heroTag: "fab3",
+                  mini: true,
+                  backgroundColor: MainColors.mainLight,
+                  onPressed: () {
+                    // TODO: 원하는 동작
+                  },
+                  child: Icon(Icons.star, color: Colors.white),
+                ),
+              ),
+            // Main FAB
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0, bottom: 8.0),
+              child: FloatingActionButton(
+                onPressed: () {
+                  setState(() {
+                    _isFabExpanded = !_isFabExpanded;
+                  });
+                },
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50),
+                ),
+                backgroundColor: MainColors.mainLight,
+                child: AnimatedRotation(
+                  turns: _isFabExpanded ? 0.125 : 0,
+                  duration: Duration(milliseconds: 200),
+                  child: Icon(
+                    _isFabExpanded ? Icons.close : Icons.mood,
+                    color: Colors.white,
+                    size: 40,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildCell(String text) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Text(
-        text,
-        textAlign: TextAlign.center,
-        maxLines: 1, // 텍스트 줄 제한
-        overflow: TextOverflow.ellipsis, // 줄바꿈 방지
-        style: TextStyle(color: MainColors.mainDark),
-      ),
-    );
-  }
-}
-
-class _buildTotal extends StatelessWidget {
-  final String? text;
-  final int topBorder;
-  final int rightBorder;
-  final Color textColor;
-  const _buildTotal({
-    super.key,
-    this.text,
-    this.topBorder = 0,
-    this.rightBorder = 0,
-    this.textColor = Colors.black,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 30,
-      decoration: BoxDecoration(
-        border: Border(
-          top: topBorder == 0
-              ? BorderSide.none
-              : BorderSide(color: MainColors.point, width: 1),
-          bottom: BorderSide(color: MainColors.point, width: 1),
-          left: BorderSide.none,
-          right: rightBorder == 0
-              ? BorderSide.none
-              : BorderSide(color: MainColors.point, width: 1),
-        ),
-      ),
-      alignment: Alignment.center,
-      child: Text(
-        text ?? "",
-        textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 14, color: textColor),
       ),
     );
   }

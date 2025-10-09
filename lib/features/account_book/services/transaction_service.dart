@@ -6,10 +6,22 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class TransactionService {
   final supabase = Supabase.instance.client;
 
+  //내역 추가 - 소비
   Future<void> addTransaction(TransactionModel transaction) async {
     await supabase.from('transactions').insert(transaction.toMap());
   }
 
+  //  거래 내역 조회 (조인)
+  // Future<List<TransactionModel>> fetchTransactions() async {
+  //   final response = await supabase
+  //       .from('transactions')
+  //       .select('*, categories(name)')
+  //       .order('date', ascending: false);
+  //   print(response);
+  //   return (response as List).map((e) => TransactionModel.fromMap(e)).toList();
+  // }
+
+  //카테고리 목록 조회
   Future<List<Category>> fetchCategories() async {
     final supabase = Supabase.instance.client;
     final response = await supabase
@@ -30,6 +42,7 @@ class TransactionService {
   }
 }
 
+//수입 내역 추가
 class TransactionServiceIncome {
   final supabase = Supabase.instance.client;
 
