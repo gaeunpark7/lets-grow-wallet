@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/goals_dialog.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 
 class MonthlyHeader extends StatefulWidget {
@@ -47,99 +48,16 @@ class _MonthlyHeaderState extends State<MonthlyHeader> {
             onTap: () {
               showDialog(
                 context: context,
-                builder: (ctx) => Dialog(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  backgroundColor: Colors.white,
-                  child: Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: StatefulBuilder(
-                      builder: (context, setState) {
-                        return Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            TextField(
-                              controller: goalController,
-                              decoration: InputDecoration(
-                                enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: MainColors.mainLight,
-                                    width: 2,
-                                  ),
-                                ),
-                                focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: MainColors.mainLight,
-                                    width: 2,
-                                  ),
-                                ),
-                                labelText: " 이번달의 목표는?",
-                                labelStyle: TextStyle(
-                                  color: MainColors.mainDark,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
-                                ),
-                                suffixIcon: Icon(
-                                  Icons.mood_outlined,
-                                  color: MainColors.mainLight,
-                                  size: 30,
-                                ),
-                                contentPadding: EdgeInsets.only(bottom: 4),
-                              ),
-                            ),
-
-                            SizedBox(height: 12),
-                            _buildGoalsAmount(
-                              textController: expenseController,
-                              text: "지출",
-                              hintText: "목표 금액을 입력하세요.",
-                              isSelected: selectedButton == 1,
-                              onPressed: () {
-                                setState(() {
-                                  selectedButton = 1;
-                                });
-                              },
-                            ),
-                            SizedBox(height: 12),
-                            _buildGoalsAmount(
-                              textController: incomeController,
-                              text: "수입",
-                              hintText: "목표 금액을 입력하세요",
-                              isSelected: selectedButton == 0, // 상태 전달
-                              onPressed: () {
-                                setState(() {
-                                  selectedButton = 0; // 버튼 상태 변경
-                                });
-                              },
-                            ),
-                            SizedBox(height: 12),
-                            FilledButton(
-                              style: FilledButton.styleFrom(
-                                backgroundColor: MainColors.mainLight,
-                                foregroundColor: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(5),
-                                ),
-                                fixedSize: Size(
-                                  MediaQuery.of(context).size.width * 1,
-                                  50,
-                                ),
-                              ),
-                              onPressed: () {},
-                              child: Text(
-                                "목표 설정",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-                  ),
+                builder: (ctx) => GoalDialog(
+                  goalController: goalController,
+                  expenseController: expenseController,
+                  incomeController: incomeController,
+                  selectedButton: selectedButton,
+                  onButtonSelected: (int index) {
+                    setState(() {
+                      selectedButton = index;
+                    });
+                  },
                 ),
               );
             },
@@ -148,75 +66,6 @@ class _MonthlyHeaderState extends State<MonthlyHeader> {
           Spacer(),
         ],
       ),
-    );
-  }
-}
-
-class _buildGoalsAmount extends StatelessWidget {
-  const _buildGoalsAmount({
-    super.key,
-    required this.textController,
-    required this.text,
-    required this.hintText,
-    this.isSelected = false,
-    required this.onPressed,
-  });
-
-  final TextEditingController textController;
-  final String text;
-  final String hintText;
-  final bool isSelected;
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        FilledButton(
-          style: FilledButton.styleFrom(
-            backgroundColor: isSelected
-                ? MainColors.mainLight
-                : MainColors.main,
-            foregroundColor: isSelected ? Colors.white : MainColors.mainDark,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5),
-            ),
-            fixedSize: Size(MediaQuery.of(context).size.width * 0.19, 45),
-          ),
-          onPressed: onPressed,
-          child: Text(
-            text,
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-        ),
-        SizedBox(width: 10),
-        Expanded(
-          child: SizedBox(
-            child: TextField(
-              controller: textController,
-              enabled: isSelected,
-              decoration: InputDecoration(
-                hintText: hintText,
-                hintStyle: TextStyle(color: MainColors.mainLight),
-                border: OutlineInputBorder(borderRadius: BorderRadius.zero),
-                contentPadding: EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: 12,
-                ),
-                //선택했을 때
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: MainColors.mainLight, width: 2),
-                ),
-                //기본
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.zero,
-                  borderSide: BorderSide(color: MainColors.mainLight, width: 1),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

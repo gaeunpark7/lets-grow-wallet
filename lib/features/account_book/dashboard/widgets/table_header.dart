@@ -14,8 +14,8 @@ class TableHeader extends StatelessWidget {
       ),
       columnWidths: const {
         0: FlexColumnWidth(1), // 날짜
-        1: FlexColumnWidth(3), // 내역
-        2: FlexColumnWidth(3), // 지출
+        1: FlexColumnWidth(3.5), // 내역
+        2: FlexColumnWidth(2.5), // 지출
         3: FlexColumnWidth(1), // 카드
         4: FlexColumnWidth(1), // 현금
       },

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lets_grow_wallet/features/account_book/dashboard/screens/home_page_detail.dart';
 import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/build_total.dart';
+import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/floating_menu_button.dart';
 import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/monthly_header.dart';
 import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/stat_future_builder.dart';
 import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/table_header.dart';
@@ -31,6 +32,7 @@ class _homePageState extends State<HomePage> {
 
   late DateTime start;
   late DateTime end;
+  // bool _isFabExpanded = false;
 
   @override
   void initState() {
@@ -63,9 +65,6 @@ class _homePageState extends State<HomePage> {
           .toList();
     });
   }
-
-  @override
-  bool _isFabExpanded = false;
 
   @override
   Widget build(BuildContext context) {
@@ -198,6 +197,14 @@ class _homePageState extends State<HomePage> {
                       Expanded(
                         flex: 2,
                         child: BuildTotal(
+                          text: "수익",
+                          textColor: MainColors.income,
+                          rightBorder: 1,
+                        ),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: BuildTotal(
                           text:
                               "+${NumberFormat('#,###').format(stat.totalIncome) ?? "0"}",
                           textColor: MainColors.income,
@@ -256,78 +263,9 @@ class _homePageState extends State<HomePage> {
             ],
           ),
         ),
-        //fab버튼
-        floatingActionButton: Stack(
-          alignment: Alignment.bottomRight,
-          children: [
-            // FAB 1
-            if (_isFabExpanded)
-              Padding(
-                padding: const EdgeInsets.only(left: 180, bottom: 8),
-                child: FloatingActionButton(
-                  heroTag: "fab1",
-                  mini: true,
-                  backgroundColor: MainColors.mainLight,
-                  onPressed: () {
-                    // TODO: 원하는 동작
-                  },
-                  child: Icon(Icons.add, color: Colors.white),
-                ),
-              ),
-            // FAB 2
-            if (_isFabExpanded)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 120.0, right: 8),
-                child: FloatingActionButton(
-                  heroTag: "fab2",
-                  mini: true,
-                  backgroundColor: MainColors.mainLight,
-                  onPressed: () {
-                    // TODO: 원하는 동작
-                  },
-                  child: Icon(Icons.edit, color: Colors.white),
-                ),
-              ),
-            // FAB 3
-            if (_isFabExpanded)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 60.0, right: 8),
-                child: FloatingActionButton(
-                  heroTag: "fab3",
-                  mini: true,
-                  backgroundColor: MainColors.mainLight,
-                  onPressed: () {
-                    // TODO: 원하는 동작
-                  },
-                  child: Icon(Icons.star, color: Colors.white),
-                ),
-              ),
-            // Main FAB
-            Padding(
-              padding: const EdgeInsets.only(right: 8.0, bottom: 8.0),
-              child: FloatingActionButton(
-                onPressed: () {
-                  setState(() {
-                    _isFabExpanded = !_isFabExpanded;
-                  });
-                },
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(50),
-                ),
-                backgroundColor: MainColors.mainLight,
-                child: AnimatedRotation(
-                  turns: _isFabExpanded ? 0.125 : 0,
-                  duration: Duration(milliseconds: 200),
-                  child: Icon(
-                    _isFabExpanded ? Icons.close : Icons.mood,
-                    color: Colors.white,
-                    size: 40,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
+
+        // fab버튼
+        floatingActionButton: FloatingMenuButton(),
       ),
     );
   }
