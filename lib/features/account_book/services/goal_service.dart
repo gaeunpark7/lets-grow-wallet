@@ -1,0 +1,64 @@
+import 'package:supabase_flutter/supabase_flutter.dart';
+import '../model/goal_model.dart';
+
+class GoalService {
+  final SupabaseClient _client;
+
+  GoalService(this._client);
+
+  Future<bool> isGoalExists(
+    String userId,
+    String month,
+    String goalType,
+  ) async {
+    final response = await _client
+        .from('goals')
+        .select()
+        .eq('user_id', userId)
+        .eq('month', month)
+        .eq('goal_type', goalType)
+        .maybeSingle(); // 단일 결과를 가져옴
+
+    if (response == null) {
+      return false; // 데이터가 없으면 false 반환
+    }
+
+    return true; // 데이터가 있으면 true 반환
+  }
+
+  Future<void> saveGoal(GoalModel goal) async {
+    final exists = await isGoalExists(goal.userId!, goal.month, goal.goalType);
+
+    if (exists) {
+      throw Exception('이미 해당 달에 목표가 존재합니다.');
+    }
+
+    final response = await _client.from('goals').insert(goal.toJson());
+
+    if (response == null) {
+      throw Exception('Error saving goal: 데이터 삽입 실패');
+    }
+  }
+
+  //이번달 목표 가져오기.
+  Future<String?> getGoalTitle(String userId, String month) async {
+    try {
+      final response = await _client
+          .from('goals')
+          .select('title')
+          .eq('user_id', userId)
+          .eq('month', month)
+          .maybeSingle();
+      print('Supabase 응답: $response');
+
+      if (response == null) {
+        return null; // 목표가 없으면 null 반환
+      }
+
+      return response['title'] as String?;
+    } catch (e) {
+      print('목표를 가져오는 중 오류 발생: $e'); // 디버깅용 로그 추가
+      throw Exception('목표를 가져오는 중 오류가 발생했습니다: $e');
+    }
+  }
+}
