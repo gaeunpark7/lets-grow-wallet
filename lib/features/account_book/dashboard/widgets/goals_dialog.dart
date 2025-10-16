@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class GoalDialog extends StatefulWidget {
   final TextEditingController goalController;
@@ -22,6 +23,59 @@ class GoalDialog extends StatefulWidget {
 }
 
 class _GoalDialogState extends State<GoalDialog> {
+  int selectedButton = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedButton = widget.selectedButton; // 초기값 설정
+  }
+
+  Future<void> _saveGoal() async {
+    final supabase = Supabase.instance.client;
+    // 현재 날짜를 기준으로 이번 달을 계산
+    final now = DateTime.now();
+    final month = "${now.year}-${now.month.toString().padLeft(2, '0')}";
+
+    try {
+      // 소비 데이터 삽입
+      if (widget.expenseController.text.isNotEmpty) {
+        await supabase.from('goals').insert({
+          'user_id': supabase.auth.currentUser?.id, // 현재 사용자 ID
+          'month': month, // 이번 달
+          'goal_type': 'expense', // 소비
+          'target_amount': int.tryParse(widget.expenseController.text), // 목표 금액
+          'title': widget.goalController.text, // 목표 제목
+          'created_at': DateTime.now().toIso8601String(), // 생성 시간
+        });
+      }
+
+      // 수입 데이터 삽입
+      if (widget.incomeController.text.isNotEmpty) {
+        await supabase.from('goals').insert({
+          'user_id': supabase.auth.currentUser?.id, // 현재 사용자 ID
+          'month': month, // 이번 달
+          'goal_type': 'income', // 수입
+          'target_amount': int.tryParse(widget.incomeController.text), // 목표 금액
+          'title': widget.goalController.text, // 목표 제목
+          'created_at': DateTime.now().toIso8601String(), // 생성 시간
+        });
+      }
+
+      // 성공 메시지 출력
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('목표가 성공적으로 저장되었습니다!')));
+
+      Navigator.of(context).pop(); // 다이얼로그 닫기
+    } catch (e) {
+      // 에러 메시지 출력
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('저장 중 오류가 발생했습니다: $e')));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -60,9 +114,10 @@ class _GoalDialogState extends State<GoalDialog> {
               textController: widget.expenseController,
               text: "지출",
               hintText: "목표 금액을 입력하세요.",
-              isSelected: widget.selectedButton == 1,
+              isSelected: selectedButton == 1,
               onPressed: () {
                 setState(() {
+                  selectedButton = 1;
                   widget.onButtonSelected(1);
                 });
               },
@@ -72,9 +127,10 @@ class _GoalDialogState extends State<GoalDialog> {
               textController: widget.incomeController,
               text: "수입",
               hintText: "목표 금액을 입력하세요.",
-              isSelected: widget.selectedButton == 0,
+              isSelected: selectedButton == 0,
               onPressed: () {
                 setState(() {
+                  selectedButton = 0;
                   widget.onButtonSelected(0);
                 });
               },
@@ -89,9 +145,7 @@ class _GoalDialogState extends State<GoalDialog> {
                 ),
                 fixedSize: Size(MediaQuery.of(context).size.width * 1, 50),
               ),
-              onPressed: () {
-                Navigator.of(context).pop(); // 다이얼로그 닫기
-              },
+              onPressed: _saveGoal, // Supabase로 데이터 저장
               child: const Text(
                 "목표 설정",
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
