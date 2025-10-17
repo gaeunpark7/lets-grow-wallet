@@ -194,14 +194,7 @@ class _homePageState extends State<HomePage> {
                           rightBorder: 1,
                         ),
                       ),
-                      Expanded(
-                        flex: 2,
-                        child: BuildTotal(
-                          text: "수익",
-                          textColor: MainColors.income,
-                          rightBorder: 1,
-                        ),
-                      ),
+
                       Expanded(
                         flex: 2,
                         child: BuildTotal(
