@@ -26,6 +26,7 @@ class GoalService {
     return true; // 데이터가 있으면 true 반환
   }
 
+  // 목표 저장- 중복방지
   Future<void> saveGoal(GoalModel goal) async {
     final exists = await isGoalExists(goal.userId!, goal.month, goal.goalType);
 
@@ -48,14 +49,11 @@ class GoalService {
           .select('title')
           .eq('user_id', userId)
           .eq('month', month)
+          .limit(1)
           .maybeSingle();
       print('Supabase 응답: $response');
 
-      if (response == null) {
-        return null; // 목표가 없으면 null 반환
-      }
-
-      return response['title'] as String?;
+      return response?['title'] as String?;
     } catch (e) {
       print('목표를 가져오는 중 오류 발생: $e'); // 디버깅용 로그 추가
       throw Exception('목표를 가져오는 중 오류가 발생했습니다: $e');

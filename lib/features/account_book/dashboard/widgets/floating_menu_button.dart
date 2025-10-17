@@ -28,7 +28,7 @@ class _FloatingMenuButtonState extends State<FloatingMenuButton> {
               mini: true,
               backgroundColor: MainColors.mainLight,
               onPressed: () {},
-              child: const Icon(Icons.add, color: Colors.white),
+              child: const Icon(Icons.pets, color: Colors.white),
             ),
           ),
 
@@ -44,7 +44,7 @@ class _FloatingMenuButtonState extends State<FloatingMenuButton> {
               mini: true,
               backgroundColor: MainColors.mainLight,
               onPressed: () {},
-              child: const Icon(Icons.edit, color: Colors.white),
+              child: const Icon(Icons.star, color: Colors.white),
             ),
           ),
 
@@ -60,7 +60,7 @@ class _FloatingMenuButtonState extends State<FloatingMenuButton> {
               mini: true,
               backgroundColor: MainColors.mainLight,
               onPressed: () {},
-              child: const Icon(Icons.star, color: Colors.white),
+              child: const Icon(Icons.shopping_cart, color: Colors.white),
             ),
           ),
 

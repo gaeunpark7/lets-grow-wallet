@@ -24,7 +24,6 @@ class TableList extends StatelessWidget {
           final tx = transactions[index];
           final isExpense = tx.type == 'expense';
           final categoryIcon = getCategoryIcon(tx.categoryName.toString());
-          // final isCash = tx.paymentMethod == 1;
 
           return Table(
             border: TableBorder(
@@ -38,9 +37,12 @@ class TableList extends StatelessWidget {
               3: FlexColumnWidth(1), // 카드
               4: FlexColumnWidth(1), // 현금
             },
+            defaultVerticalAlignment:
+                TableCellVerticalAlignment.middle, // 셀 높이 중앙 정렬
             children: [
               TableRow(
                 children: [
+                  //날짜 - 중앙정렬 문제 해결
                   _CellWidget(text: DateFormat('d').format(tx.date)),
                   InkWell(
                     onTap: () {
@@ -73,18 +75,12 @@ class TableList extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  _CellWidget(
-                    text: "",
-                    icon: tx.paymentMethod == 0
-                        ? Icons.check
-                        : null, // 카드일 때 체크 아이콘
-                  ),
-                  _CellWidget(
-                    text: "",
-                    icon: tx.paymentMethod == 1
-                        ? Icons.check
-                        : null, // 현금일 때 체크 아이콘
-                  ),
+                  _PaymentCellWidget(
+                    icon: tx.paymentMethod == 0 ? Icons.check : null,
+                  ), // 카드일 때 체크 아이콘
+                  _PaymentCellWidget(
+                    icon: tx.paymentMethod == 1 ? Icons.check : null,
+                  ), // 현금일 때 체크 아이콘
                 ],
               ),
             ],
@@ -136,25 +132,22 @@ class _CellWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget? leadingIcon;
     if (icon != null) {
-      if (icon == Icons.check) {
-        leadingIcon = Icon(icon, color: MainColors.mainDark, size: 16);
-      } else {
-        leadingIcon = CircleAvatar(
-          radius: 12,
-          backgroundColor: MainColors.mainLight,
-          child: Icon(icon, color: MainColors.main, size: 16),
-        );
-      }
+      leadingIcon = CircleAvatar(
+        radius: 12,
+        backgroundColor: MainColors.mainLight,
+        child: Icon(icon, color: MainColors.main, size: 16),
+      );
     }
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
         mainAxisAlignment: alignment,
+        // crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           if (leadingIcon != null) leadingIcon,
-          if (icon != null && icon != Icons.check) const SizedBox(width: 8),
-          Expanded(
+          if (icon != null) const SizedBox(width: 3),
+          Flexible(
             child: Text(
               text,
               textAlign: TextAlign.center,
@@ -165,6 +158,25 @@ class _CellWidget extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+//카드, 현금 셀(exapnded 이슈)
+class _PaymentCellWidget extends StatelessWidget {
+  final IconData? icon;
+
+  const _PaymentCellWidget({super.key, this.icon});
+
+  @override
+  Widget build(BuildContext context) {
+    Widget? leadingIcon;
+    if (icon != null) {
+      leadingIcon = Icon(icon, color: MainColors.mainDark, size: 16);
+    }
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Center(child: leadingIcon),
     );
   }
 }
