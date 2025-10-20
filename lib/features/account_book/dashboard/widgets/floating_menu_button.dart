@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lets_grow_wallet/features/account_book/shop/screens/item_shop_page.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 
 class FloatingMenuButton extends StatefulWidget {
@@ -59,7 +60,12 @@ class _FloatingMenuButtonState extends State<FloatingMenuButton> {
               heroTag: "fab3",
               mini: true,
               backgroundColor: MainColors.mainLight,
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (ctx) => ItemShopPage()),
+                );
+              },
               child: const Icon(Icons.shopping_cart, color: Colors.white),
             ),
           ),

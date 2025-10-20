@@ -9,6 +9,7 @@ import 'package:lets_grow_wallet/features/main/widgets/date_selector.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/payment_amount_row.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/single_button.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/title_button.dart';
+import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 import '../../model/transaction_model.dart';
@@ -86,14 +87,12 @@ class _EditExpensePageState extends State<EditExpensePage> {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: ColorScheme.light(
-              primary: Colors.blue.shade400,
+              primary: MainColors.mainLight,
               onPrimary: Colors.white,
               onSurface: Colors.black87,
             ),
             textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(
-                foregroundColor: Colors.blue.shade400,
-              ),
+              style: TextButton.styleFrom(foregroundColor: MainColors.mainDark),
             ),
           ),
           child: child!,
@@ -125,10 +124,14 @@ class _EditExpensePageState extends State<EditExpensePage> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.blue,
+          backgroundColor: MainColors.mainLight,
           title: const Text(
             '지출 수정',
-            style: TextStyle(fontSize: 20, color: Colors.white),
+            style: TextStyle(
+              fontSize: 24,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           centerTitle: true,
           automaticallyImplyLeading: false,
@@ -141,27 +144,37 @@ class _EditExpensePageState extends State<EditExpensePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 18),
-                // 지출/수입 선택 (지출만 파란색)
-
                 // 날짜 선택
-                DateSelector(
-                  selectedDate: selectedDate,
-                  onTap: () => _selectDate(context),
-                ),
-                const SizedBox(height: 18),
-                // 제목 입력
-                TextField(
-                  controller: titleController,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: "제목을 입력하세요",
-                    isDense: true,
-                    contentPadding: EdgeInsets.symmetric(
-                      vertical: 10,
-                      horizontal: 12,
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: 150,
+                      child: DateSelector(
+                        selectedDate: selectedDate,
+                        onTap: () => _selectDate(context),
+                      ),
                     ),
-                  ),
+                    const SizedBox(width: 12),
+                    // 제목 입력
+                    Expanded(
+                      child: TextField(
+                        controller: titleController,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          hintText: "제목을 입력하세요",
+                          isDense: true,
+                          contentPadding: EdgeInsets.symmetric(
+                            vertical: 10,
+                            horizontal: 12,
+                          ),
+                        ),
+                        maxLength: 8,
+                      ),
+                    ),
+                  ],
                 ),
+
                 const SizedBox(height: 18),
                 // 카테고리 선택
                 CategorySelector(
@@ -203,7 +216,7 @@ class _EditExpensePageState extends State<EditExpensePage> {
                   height: 48,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
+                      backgroundColor: MainColors.mainLight,
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
