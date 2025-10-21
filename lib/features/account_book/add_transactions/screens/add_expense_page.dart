@@ -150,6 +150,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
                 const SizedBox(height: 18),
                 // 날짜 선택
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(
                       width: 150,
@@ -188,7 +189,9 @@ class _AddExpensePageState extends State<AddExpensePage> {
                             vertical: 10,
                             horizontal: 12,
                           ),
+                          counterText: '', // 카운터 제거로 높이 변경 방지, 어떻게 할지.
                         ),
+                        maxLength: 8,
                       ),
                     ),
                   ],
