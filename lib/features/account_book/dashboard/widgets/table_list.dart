@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lets_grow_wallet/features/account_book/dashboard/screens/home_page_detail.dart';
+import 'package:lets_grow_wallet/features/account_book/dashboard/screens/home_page_detailv2.dart';
 import 'package:lets_grow_wallet/features/account_book/model/category_model.dart';
 import 'package:lets_grow_wallet/features/account_book/model/transaction_model.dart';
 import 'package:lets_grow_wallet/features/account_book/services/transaction_service.dart';
@@ -46,11 +47,9 @@ class TableList extends StatelessWidget {
                   _CellWidget(text: DateFormat('d').format(tx.date)),
                   InkWell(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (ctx) => HomePageDetail(transaction: tx),
-                        ),
+                      showDialog(
+                        context: context,
+                        builder: (ctx) => HomePageDetail(transaction: tx),
                       );
                     },
                     child: _CellWidget(

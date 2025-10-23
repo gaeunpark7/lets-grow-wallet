@@ -142,7 +142,6 @@ class _EditIncomePageState extends State<EditIncomePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 18),
-                // 지출/수입 선택 (지출만 파란색)
                 // 날짜 선택
                 Row(
                   children: [
@@ -167,6 +166,7 @@ class _EditIncomePageState extends State<EditIncomePage> {
                             horizontal: 12,
                           ),
                         ),
+                        maxLength: 8,
                       ),
                     ),
                   ],

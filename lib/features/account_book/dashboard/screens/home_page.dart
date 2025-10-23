@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:lets_grow_wallet/features/account_book/dashboard/screens/home_page_detail.dart';
+import 'package:lets_grow_wallet/features/account_book/dashboard/screens/home_page_detailv2.dart';
 import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/build_total.dart';
 import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/floating_menu_button.dart';
 import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/monthly_header.dart';
