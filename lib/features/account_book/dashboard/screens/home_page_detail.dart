@@ -137,7 +137,7 @@ class _HomePageDetailState extends State<HomePageDetail> {
                 ),
               ],
             ),
-            Divider(color: MainColors.mainLight),
+            Divider(color: MainColors.mainLight, thickness: 1, height: 5),
             SizedBox(height: 12),
             _buildList("카테고리", "${tx.categoryName}"),
             _buildList("유형", tx.type == "income" ? "수입" : "지출"),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lets_grow_wallet/features/account_book/character/screens/character_page.dart';
 import 'package:lets_grow_wallet/features/account_book/shop/screens/item_shop_page.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 
@@ -14,84 +15,100 @@ class _FloatingMenuButtonState extends State<FloatingMenuButton> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.bottomRight,
-      children: [
-        // FAB 1
-        if (_isFabExpanded)
-          Transform.translate(
-            offset: const Offset(-65, -5),
-            child: FloatingActionButton(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(50),
+    return SizedBox(
+      width: double.infinity,
+      height: double.infinity,
+      child: Stack(
+        alignment: Alignment.bottomRight,
+        children: [
+          // FAB 1
+          if (_isFabExpanded)
+            Positioned(
+              right: 65,
+              bottom: 5,
+              child: FloatingActionButton(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50),
+                ),
+                heroTag: "fab1",
+                mini: true,
+                backgroundColor: MainColors.mainLight,
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (ctx) => CharacterPage()),
+                  );
+                },
+                child: const Icon(Icons.pets, color: Colors.white),
               ),
-              heroTag: "fab1",
-              mini: true,
-              backgroundColor: MainColors.mainLight,
-              onPressed: () {},
-              child: const Icon(Icons.pets, color: Colors.white),
             ),
-          ),
 
-        // FAB 2
-        if (_isFabExpanded)
-          Transform.translate(
-            offset: const Offset(-50, -55),
-            child: FloatingActionButton(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(50),
+          // FAB 2
+          if (_isFabExpanded)
+            Positioned(
+              right: 50,
+              bottom: 55,
+              child: FloatingActionButton(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50),
+                ),
+                heroTag: "fab2",
+                mini: true,
+                backgroundColor: MainColors.mainLight,
+                onPressed: () {},
+                child: const Icon(Icons.star, color: Colors.white),
               ),
-              heroTag: "fab2",
-              mini: true,
-              backgroundColor: MainColors.mainLight,
-              onPressed: () {},
-              child: const Icon(Icons.star, color: Colors.white),
             ),
-          ),
 
-        // FAB 3
-        if (_isFabExpanded)
-          Transform.translate(
-            offset: const Offset(0, -65),
-            child: FloatingActionButton(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(50),
+          // FAB 3
+          if (_isFabExpanded)
+            Positioned(
+              right: 0,
+              bottom: 65,
+              child: FloatingActionButton(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50),
+                ),
+                heroTag: "fab3",
+                mini: true,
+                backgroundColor: MainColors.mainLight,
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (ctx) => const ItemShopPage()),
+                  );
+                },
+                child: const Icon(Icons.shopping_cart, color: Colors.white),
               ),
-              heroTag: "fab3",
-              mini: true,
-              backgroundColor: MainColors.mainLight,
+            ),
+
+          // Main FAB
+          Positioned(
+            right: 0,
+            bottom: 0,
+            child: FloatingActionButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (ctx) => ItemShopPage()),
-                );
+                setState(() {
+                  _isFabExpanded = !_isFabExpanded;
+                });
               },
-              child: const Icon(Icons.shopping_cart, color: Colors.white),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(50),
+              ),
+              backgroundColor: MainColors.mainLight,
+              child: AnimatedRotation(
+                turns: _isFabExpanded ? 0.130 : 0,
+                duration: const Duration(milliseconds: 200),
+                child: Icon(
+                  _isFabExpanded ? Icons.add : Icons.cruelty_free_outlined,
+                  color: Colors.white,
+                  size: 40,
+                ),
+              ),
             ),
           ),
-
-        // Main FAB
-        FloatingActionButton(
-          onPressed: () {
-            setState(() {
-              _isFabExpanded = !_isFabExpanded;
-            });
-          },
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(50),
-          ),
-          backgroundColor: MainColors.mainLight,
-          child: AnimatedRotation(
-            turns: _isFabExpanded ? 0.130 : 0, //125
-            duration: const Duration(milliseconds: 200),
-            child: Icon(
-              _isFabExpanded ? Icons.add : Icons.cruelty_free_outlined,
-              color: Colors.white,
-              size: 40,
-            ),
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

@@ -66,39 +66,37 @@ class _GoalDialogState extends State<GoalDialog> {
       // 소비 데이터 삽입
       if (widget.expenseController.text.isNotEmpty) {
         await supabase.from('goals').insert({
-          'user_id': supabase.auth.currentUser?.id, // 현재 사용자 ID
-          'month': month, // 이번 달
-          'goal_type': 'expense', // 소비
+          'user_id': supabase.auth.currentUser?.id,
+          'month': month,
+          'goal_type': 'expense',
           'target_amount': int.tryParse(
             widget.expenseController.text.replaceAll(',', ''),
-          ), // 목표 금액
-          'title': widget.goalController.text, // 목표 제목
-          'created_at': DateTime.now().toIso8601String(), // 생성 시간
+          ),
+          'title': widget.goalController.text,
+          'created_at': DateTime.now().toIso8601String(),
         });
       }
 
       // 수입 데이터 삽입
       if (widget.incomeController.text.isNotEmpty) {
         await supabase.from('goals').insert({
-          'user_id': supabase.auth.currentUser?.id, // 현재 사용자 ID
-          'month': month, // 이번 달
-          'goal_type': 'income', // 수입
+          'user_id': supabase.auth.currentUser?.id,
+          'month': month,
+          'goal_type': 'income',
           'target_amount': int.tryParse(
             widget.incomeController.text.replaceAll(',', ''),
           ), // 목표 금액
-          'title': widget.goalController.text, // 목표 제목
-          'created_at': DateTime.now().toIso8601String(), // 생성 시간
+          'title': widget.goalController.text,
+          'created_at': DateTime.now().toIso8601String(),
         });
       }
 
-      // 성공 메시지 출력
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text('목표가 성공적으로 저장되었습니다!')));
 
       Navigator.of(context).pop(); // 다이얼로그 닫기
     } catch (e) {
-      // 에러 메시지 출력
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('저장 중 오류가 발생했습니다: $e')));
@@ -124,7 +122,7 @@ class _GoalDialogState extends State<GoalDialog> {
                 focusedBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: MainColors.mainLight, width: 2),
                 ),
-                labelText: " 이번달의 목표는?",
+                labelText: "이번달의 목표는?",
                 labelStyle: TextStyle(
                   color: MainColors.mainDark,
                   fontWeight: FontWeight.bold,
