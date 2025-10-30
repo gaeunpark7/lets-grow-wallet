@@ -32,7 +32,6 @@ class _homePageState extends State<HomePage> {
 
   late DateTime start;
   late DateTime end;
-  // bool _isFabExpanded = false;
 
   @override
   void initState() {
@@ -42,7 +41,6 @@ class _homePageState extends State<HomePage> {
     end = DateTime(now.year, now.month + 1, 1);
     stat = statService.fetchMonthlyStat(start, end);
     loadTodayTransactions();
-    // loadCategories(); // 카테고리 데이터 로드
   }
 
   //이번달의 데이터만 불러옴 + 내림차순

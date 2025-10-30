@@ -73,7 +73,7 @@ class _MainPageState extends State<MainPage> {
                     width: 130,
                     height: 130,
                     fit: BoxFit.cover,
-                  ), // 예시 이미지
+                  ),
                   const SizedBox(height: 16),
                   const Text("말랑말랑한 아기곰 담곰이를 얻었어요!"),
                 ],

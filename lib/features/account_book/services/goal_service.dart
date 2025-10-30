@@ -55,7 +55,7 @@ class GoalService {
 
       return response?['title'] as String?;
     } catch (e) {
-      print('목표를 가져오는 중 오류 발생: $e'); // 디버깅용 로그 추가
+      print('목표를 가져오는 중 오류 발생: $e');
       throw Exception('목표를 가져오는 중 오류가 발생했습니다: $e');
     }
   }
