@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lets_grow_wallet/features/account_book/character/screens/character_page.dart';
+import 'package:lets_grow_wallet/features/account_book/quest/screens/quest_page.dart';
 import 'package:lets_grow_wallet/features/account_book/shop/screens/item_shop_page.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 
@@ -55,7 +56,12 @@ class _FloatingMenuButtonState extends State<FloatingMenuButton> {
                 heroTag: "fab2",
                 mini: true,
                 backgroundColor: MainColors.mainLight,
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (ctx) => QuestPage()),
+                  );
+                },
                 child: const Icon(Icons.star, color: Colors.white),
               ),
             ),
