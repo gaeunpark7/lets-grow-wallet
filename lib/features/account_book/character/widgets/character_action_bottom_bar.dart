@@ -23,10 +23,10 @@ class _CharacterActionBottomBarState extends State<CharacterActionBottomBar> {
 
         // 행동 버튼
         if (_showActions) ...[
-          Positioned(left: 90, bottom: 80, child: _actionButton("행동1")),
-          Positioned(left: 145, bottom: 120, child: _actionButton("행동2")),
-          Positioned(right: 145, bottom: 120, child: _actionButton("행동3")),
-          Positioned(right: 90, bottom: 80, child: _actionButton("행동4")),
+          Positioned(left: 90, bottom: 80, child: _actionButton("먹이주기")),
+          Positioned(left: 145, bottom: 120, child: _actionButton("놀아주기")),
+          Positioned(right: 145, bottom: 120, child: _actionButton("쓰다듬기")),
+          Positioned(right: 90, bottom: 80, child: _actionButton("혼자두기")),
         ],
 
         // 메인 버튼

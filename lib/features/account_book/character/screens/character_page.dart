@@ -75,6 +75,15 @@ class _CharacterPageState extends State<CharacterPage> {
             ),
           ),
         ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {},
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(50),
+            
+          ),
+          backgroundColor: MainColors.mainLight,
+          child: Icon(Icons.pets, color: Colors.white),
+        ),
         bottomNavigationBar: CharacterActionBottomBar(),
       ),
     );

@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:lets_grow_wallet/features/account_book/add_transactions/screens/add_expense_page.dart';
 import 'package:lets_grow_wallet/features/main/main_page.dart';
 import 'package:lets_grow_wallet/features/account_book/services/transaction_service.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/category_selector.dart';
 import 'package:lets_grow_wallet/features/main/widgets/date_selector.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/payment_amount_row.dart';
-import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/single_button.dart';
-import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/title_button.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:uuid/uuid.dart';
 import '../../model/transaction_model.dart';
 import '../../model/category_model.dart';
 
@@ -144,6 +140,8 @@ class _EditIncomePageState extends State<EditIncomePage> {
                 const SizedBox(height: 18),
                 // 날짜 선택
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+
                   children: [
                     SizedBox(
                       width: 150,
@@ -164,6 +162,18 @@ class _EditIncomePageState extends State<EditIncomePage> {
                           contentPadding: EdgeInsets.symmetric(
                             vertical: 10,
                             horizontal: 12,
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: MainColors.mainDark,
+                              width: 0.5,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: MainColors.mainDark,
+                              width: 2,
+                            ),
                           ),
                         ),
                         maxLength: 8,
@@ -203,7 +213,19 @@ class _EditIncomePageState extends State<EditIncomePage> {
                   minLines: 3,
                   decoration: const InputDecoration(
                     hintText: '메모 입력',
-                    border: OutlineInputBorder(),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.zero),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: MainColors.mainDark,
+                        width: 1,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: MainColors.mainDark,
+                        width: 2,
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 18),
@@ -272,7 +294,7 @@ class _EditIncomePageState extends State<EditIncomePage> {
                         MaterialPageRoute(builder: (ctx) => MainPage()),
                       );
                     },
-                    child: const Text("지출 추가"),
+                    child: const Text("수입 수정"),
                   ),
                 ),
                 const SizedBox(height: 24),

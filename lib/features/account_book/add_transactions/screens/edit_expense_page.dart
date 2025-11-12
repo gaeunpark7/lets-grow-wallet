@@ -1,17 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:lets_grow_wallet/features/account_book/add_transactions/screens/add_income_page.dart';
 import 'package:lets_grow_wallet/features/main/main_page.dart';
 import 'package:lets_grow_wallet/features/account_book/services/transaction_service.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/category_selector.dart';
 import 'package:lets_grow_wallet/features/main/widgets/date_selector.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/payment_amount_row.dart';
-import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/single_button.dart';
-import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/title_button.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:uuid/uuid.dart';
 import '../../model/transaction_model.dart';
 import '../../model/category_model.dart';
 
@@ -161,12 +156,26 @@ class _EditExpensePageState extends State<EditExpensePage> {
                       child: TextField(
                         controller: titleController,
                         decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.zero,
+                          ),
                           hintText: "제목을 입력하세요",
                           isDense: true,
                           contentPadding: EdgeInsets.symmetric(
                             vertical: 10,
                             horizontal: 12,
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: MainColors.mainDark,
+                              width: 0.5,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: MainColors.mainDark,
+                              width: 2,
+                            ),
                           ),
                         ),
                         maxLength: 8,
@@ -207,7 +216,19 @@ class _EditExpensePageState extends State<EditExpensePage> {
                   minLines: 3,
                   decoration: const InputDecoration(
                     hintText: '메모 입력',
-                    border: OutlineInputBorder(),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.zero),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: MainColors.mainDark,
+                        width: 1,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: MainColors.mainDark,
+                        width: 2,
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 18),
@@ -276,7 +297,7 @@ class _EditExpensePageState extends State<EditExpensePage> {
                         MaterialPageRoute(builder: (ctx) => MainPage()),
                       );
                     },
-                    child: const Text("지출 추가"),
+                    child: const Text("지출 수정"),
                   ),
                 ),
                 const SizedBox(height: 24),
