@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lets_grow_wallet/features/account_book/quest/widgets/quest_list.dart';
+import 'package:lets_grow_wallet/features/account_book/quest/widgets/quest_title.dart';
 import 'package:lets_grow_wallet/features/account_book/shop/widgets/shop_appbar.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 
@@ -25,7 +26,7 @@ class _QuestPageState extends State<QuestPage> {
         appBar: AppBar(backgroundColor: Colors.white, title: ShopAppbar()),
         body: Padding(
           padding: const EdgeInsets.only(
-            top: 12,
+            // top: 12,
             left: 24,
             right: 24,
             bottom: 24,
@@ -39,37 +40,57 @@ class _QuestPageState extends State<QuestPage> {
                   decoration: BoxDecoration(
                     border: Border.all(color: MainColors.mainLight),
                   ),
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 12),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.star,
-                            color: MainColors.mainLight,
-                            size: 60,
-                          ),
-                          Icon(
-                            Icons.star,
-                            color: MainColors.mainLight,
-                            size: 60,
-                          ),
-                          Icon(
-                            Icons.star_outline,
-                            color: MainColors.mainLight,
-                            size: 60,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                      Expanded(
-                        child: ListView.builder(
-                          itemCount: 5,
-                          itemBuilder: (ctx, index) => QuestList(index: index),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Column(
+                      children: [
+                        QuestTitle(title: "일일 미션"),
+                        const SizedBox(height: 6),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.star,
+                              color: MainColors.mainLight,
+                              size: 60,
+                            ),
+                            Icon(
+                              Icons.star,
+                              color: MainColors.mainLight,
+                              size: 60,
+                            ),
+                            //얇은 테두리 별
+                            Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                Icon(
+                                  Icons.star,
+                                  color: MainColors.mainLight,
+                                  size: 60,
+                                ),
+                                Icon(Icons.star, color: Colors.white, size: 50),
+                              ],
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 6),
+                        Column(
+                          children: List.generate(
+                            3,
+                            (index) => QuestList(index: index),
+                          ),
+                        ),
+                        QuestTitle(title: "월별 미션"),
+                        SizedBox(height: 12),
+                        Expanded(
+                          child: ListView.builder(
+                            itemCount: 2,
+                            itemBuilder: (ctx, index) =>
+                                QuestList(index: index),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
