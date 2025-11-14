@@ -68,7 +68,7 @@ class _QuestPageState extends State<QuestPage> {
                                   color: MainColors.mainLight,
                                   size: 60,
                                 ),
-                                Icon(Icons.star, color: Colors.white, size: 50),
+                                Icon(Icons.star, color: Colors.white, size: 52),
                               ],
                             ),
                           ],
