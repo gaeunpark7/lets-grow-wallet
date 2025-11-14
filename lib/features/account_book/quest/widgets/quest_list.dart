@@ -19,7 +19,7 @@ class _QuestListState extends State<QuestList> {
     final progress = currentExp / maxExp;
 
     return Padding(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.only(bottom: 12),
       child: Container(
         height: 105,
         decoration: BoxDecoration(
