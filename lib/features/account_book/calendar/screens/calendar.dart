@@ -23,23 +23,30 @@ class _CalendarState extends State<Calendar> {
   }
 
   Future<void> _loadStats() async {
-    final firstDay = DateTime(_focusedDay.year, _focusedDay.month, 1);
-    final lastDay = DateTime(_focusedDay.year, _focusedDay.month + 1, 0);
-
-    final Map<DateTime, DailyStat> temp = {};
-
-    for (int i = 0; i < lastDay.day; i++) {
-      final day = DateTime(firstDay.year, firstDay.month, i + 1);
-      final stat = await StatService().fetchDailyStat(day); // DailyStat? 리턴
-      if (stat != null) {
-        temp[stat.day] = stat;
-      }
-    }
-
+    final statMap = await StatService().fetchDailyStatsForMonth(_focusedDay);
     setState(() {
-      _statMap = temp;
+      _statMap = statMap;
     });
   }
+
+  // Future<void> _loadStats() async {
+  //   final firstDay = DateTime(_focusedDay.year, _focusedDay.month, 1);
+  //   final lastDay = DateTime(_focusedDay.year, _focusedDay.month + 1, 0);
+
+  //   final Map<DateTime, DailyStat> temp = {};
+
+  //   for (int i = 0; i < lastDay.day; i++) {
+  //     final day = DateTime(firstDay.year, firstDay.month, i + 1);
+  //     final stat = await StatService().fetchDailyStat(day); // DailyStat? 리턴
+  //     if (stat != null) {
+  //       temp[stat.day] = stat;
+  //     }
+  //   }
+
+  //   setState(() {
+  //     _statMap = temp;
+  //   });
+  // }
 
   void _onPageChanged(DateTime focusedDay) {
     setState(() {

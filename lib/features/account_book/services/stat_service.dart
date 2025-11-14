@@ -24,20 +24,41 @@ class StatService {
     return MonthlyStat.fromMap(result.first);
   }
 
-  //일별 통계
-  Future<DailyStat?> fetchDailyStat(DateTime date) async {
-    final user = supabase.auth.currentUser;
+  // 한 달의 일별 통계 가져오기
+  Future<Map<DateTime, DailyStat>> fetchDailyStatsForMonth(
+    DateTime month,
+  ) async {
+    final user = supabase.auth.currentUser!;
+    final start = DateTime(month.year, month.month, 1);
+    final end = DateTime(month.year, month.month + 1, 1);
 
-    final result = await supabase
+    final rows = await supabase
         .from('daily_stats')
         .select()
-        .eq('user_id', user!.id)
-        .eq('day', date.toIso8601String().split('T')[0]); // '2025-08-08'
+        .eq('user_id', user.id)
+        .gte('day', start.toIso8601String().split('T')[0])
+        .lt('day', end.toIso8601String().split('T')[0]);
 
-    if (result.isEmpty) return null;
-
-    return DailyStat.fromMap(result.first);
+    // Map<DateTime, DailyStat> 형태로 변환
+    return {
+      for (var row in rows) DateTime.parse(row['day']): DailyStat.fromMap(row),
+    };
   }
+
+  //일별 통계 - X
+  // Future<DailyStat? fetchDailyStat(DateTime date) async {
+  //   final user = supabase.auth.currentUser;
+
+  //   final result = await supabase
+  //       .from('daily_stats')
+  //       .select()
+  //       .eq('user_id', user!.id)
+  //       .eq('day', date.toIso8601String().split('T')[0]); // '2025-08-08'
+
+  //   if (result.isEmpty) return null;
+
+  //   return DailyStat.fromMap(result.first);
+  // }
 
   // 카테고리 별 통계
   Future<List<MonthlyCategoryStat>> fetchMonthlyCategoryStats(
