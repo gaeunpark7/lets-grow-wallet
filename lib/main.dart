@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lets_grow_wallet/features/account_book/character/screens/character_page.dart';
 import 'package:lets_grow_wallet/features/main/main_page.dart';
 import 'package:lets_grow_wallet/features/user/auth/screens/login_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:riverpod/riverpod.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

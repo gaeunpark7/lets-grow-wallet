@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lets_grow_wallet/features/account_book/character/screens/character_book_page.dart';
 import 'package:lets_grow_wallet/features/account_book/character/widgets/character_action_bottom_bar.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 
@@ -76,10 +77,14 @@ class _CharacterPageState extends State<CharacterPage> {
           ),
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => CharacterBookPage()),
+            );
+          },
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(50),
-            
           ),
           backgroundColor: MainColors.mainLight,
           child: Icon(Icons.pets, color: Colors.white),
