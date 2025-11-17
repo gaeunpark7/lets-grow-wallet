@@ -18,13 +18,13 @@ final monthlyStatProvider = FutureProvider.family<MonthlyStat?, DateTime>((
 });
 
 // 일별 통계
-final dailyStatProvider = FutureProvider.family<DailyStat?, DateTime>((
-  ref,
-  day,
-) {
-  final svc = ref.watch(statServiceProvider);
-  return svc.fetchDailyStat(day);
-});
+// final dailyStatProvider = FutureProvider.family<DailyStat?, DateTime>((
+//   ref,
+//   day,
+// ) {
+//   final svc = ref.watch(statServiceProvider);
+//   return svc.fetchDailyStat(day);
+// });
 
 // 월별 카테고리별 통계
 final monthlyCategoryStatsProvider =
