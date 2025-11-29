@@ -1,16 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:lets_grow_wallet/features/account_book/model/character_model.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 
-class ShopItemDetail extends StatelessWidget {
-  final CharacterModel item;
-  const ShopItemDetail({super.key, required this.item});
+class ShopThemeDetail extends StatefulWidget {
+  String image;
+  String name;
+  String price;
+  String description;
+  ShopThemeDetail({
+    super.key,
+    required this.image,
+    required this.name,
+    required this.price,
+    required this.description,
+  });
 
+  @override
+  State<ShopThemeDetail> createState() => _ShopThemeDetailState();
+}
+
+class _ShopThemeDetailState extends State<ShopThemeDetail> {
   @override
   Widget build(BuildContext context) {
     return Expanded(
       flex: 3,
       child: Container(
+        width: MediaQuery.of(context).size.width * 1,
         decoration: BoxDecoration(
           border: Border.all(color: MainColors.mainLight),
         ),
@@ -22,9 +36,15 @@ class ShopItemDetail extends StatelessWidget {
                 height: MediaQuery.of(context).size.height * 0.16,
                 width: MediaQuery.of(context).size.width * 0.25,
                 decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
                   border: Border.all(color: MainColors.mainLight),
                 ),
-                child: Center(child: Image.network(item.image)),
+                child: Center(
+                  child: Text(
+                    widget.image,
+                    style: TextStyle(fontSize: 16, color: MainColors.mainLight),
+                  ),
+                ),
               ),
               SizedBox(width: 10),
               Column(
@@ -32,7 +52,7 @@ class ShopItemDetail extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    item.name,
+                    widget.name,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -41,12 +61,12 @@ class ShopItemDetail extends StatelessWidget {
                   ),
                   SizedBox(height: 8),
                   Text(
-                    "가격: ${item.price}",
+                    "가격:${widget.price}",
                     style: TextStyle(color: MainColors.mainDark),
                   ),
                   SizedBox(height: 8),
                   Text(
-                    item.description,
+                    widget.description,
                     style: TextStyle(color: MainColors.mainDark),
                   ),
                 ],
