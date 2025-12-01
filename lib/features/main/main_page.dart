@@ -43,9 +43,9 @@ class _MainPageState extends State<MainPage> {
         .eq('user_id', userId);
 
     // 기본 캐릭터 정보
-    const defaultCharacterId = '2bbfdb93-383f-467a-a1d9-3b05f46db9a4';
+    const defaultCharacterId = '589c96d4-64cc-419c-8125-1e27dfb0d44b';
     const defaultCharacter =
-        'https://aoufmcnnuigefetizxav.supabase.co/storage/v1/object/public/character-images//gomi2.jpeg';
+        'https://aoufmcnnuigefetizxav.supabase.co/storage/v1/object/public/character-images/flower_dog1.png';
 
     if (existing.isEmpty) {
       // 캐릭터 지급
@@ -75,7 +75,7 @@ class _MainPageState extends State<MainPage> {
                     fit: BoxFit.cover,
                   ),
                   const SizedBox(height: 16),
-                  const Text("말랑말랑한 아기곰 담곰이를 얻었어요!"),
+                  const Text("귀여운 알을 획득했어요!"),
                 ],
               ),
               actions: [

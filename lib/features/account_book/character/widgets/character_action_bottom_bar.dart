@@ -54,7 +54,7 @@ class _CharacterActionBottomBarState extends State<CharacterActionBottomBar> {
       ],
     );
   }
-
+  
   Widget _actionButton(String text) {
     return Container(
       width: 55,

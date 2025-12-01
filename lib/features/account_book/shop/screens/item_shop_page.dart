@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lets_grow_wallet/features/account_book/shop/model/shop_item.dart';
+import 'package:lets_grow_wallet/features/account_book/model/character_model.dart';
+import 'package:lets_grow_wallet/features/account_book/services/character_service.dart';
 import 'package:lets_grow_wallet/features/account_book/shop/screens/theme_shop_page.dart';
 import 'package:lets_grow_wallet/features/account_book/shop/widgets/shop_appbar.dart';
 import 'package:lets_grow_wallet/features/account_book/shop/widgets/shop_item_buy_button.dart';
@@ -16,7 +17,26 @@ class ItemShopPage extends StatefulWidget {
 }
 
 class _ItemShopPageState extends State<ItemShopPage> {
-  Map<String, dynamic>? selectedItem;
+  List<CharacterModel> characterItems = []; // 받아온 아이템 리스트
+  CharacterModel? selectedItem; // 선택된 아이템
+
+  final _characterService = CharacterService();
+
+  @override
+  void initState() {
+    super.initState();
+    fetchItems();
+  }
+
+  Future<void> fetchItems() async {
+    final result = await _characterService.fetchCharacters();
+    setState(() {
+      characterItems = result;
+      if (result.isNotEmpty) {
+        selectedItem = result[0]; // 초기값 첫번째 아이템
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,22 +75,21 @@ class _ItemShopPageState extends State<ItemShopPage> {
               SizedBox(height: 12),
               //아이템 그리드뷰
               ShopItemGridview(
+                items: characterItems,
                 onItemSelected: (item) {
                   setState(() {
                     selectedItem = item;
                   });
                 },
               ),
+
               SizedBox(height: 12),
               //아이템 상세보기
-              ShopItemDetail(
-                image: selectedItem?["itemImage"] ?? "이미지",
-                name: selectedItem?["itemName"] ?? items[0].name,
-                price: selectedItem?["itemPrice"] ?? items[0].price,
-                description: selectedItem?["itemDesc"] ?? items[0].description,
-              ),
+              selectedItem == null
+                  ? Center(child: CircularProgressIndicator())
+                  : ShopItemDetail(item: selectedItem!),
+
               SizedBox(height: 12),
-              //구매 버튼
               ShopItemBuyButton(),
               SizedBox(height: 12),
             ],

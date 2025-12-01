@@ -1,50 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:lets_grow_wallet/features/account_book/model/character_model.dart';
 import 'package:lets_grow_wallet/features/account_book/shop/model/shop_item.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 
-class ShopItemGridview extends StatefulWidget {
-  final Function(Map<String, dynamic>) onItemSelected;
+class ShopItemGridview extends StatelessWidget {
+  final Function(CharacterModel) onItemSelected;
+  final List<CharacterModel> items;
 
-  const ShopItemGridview({super.key, required this.onItemSelected});
-  @override
-  State<ShopItemGridview> createState() => _ShopItemGridviewState();
-}
+  const ShopItemGridview({
+    super.key,
+    required this.onItemSelected,
+    required this.items,
+  });
 
-class _ShopItemGridviewState extends State<ShopItemGridview> {
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
+
     return Expanded(
       flex: 6,
       child: Container(
-        width: mediaQuery.size.width * 1,
+        width: mediaQuery.size.width,
         decoration: BoxDecoration(
           border: Border.all(color: MainColors.mainLight),
         ),
-
         child: Padding(
           padding: const EdgeInsets.all(12),
           child: GridView.builder(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3,
-              crossAxisSpacing: 10, // 아이템 간의 가로 간격
-              mainAxisSpacing: 10, // 아이템 간의 세로 간격
-              childAspectRatio: 0.6, // 아이템의 가로/세로 비율 설정
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+              childAspectRatio: 0.6,
             ),
             itemCount: items.length,
             itemBuilder: (context, index) {
-              final item = items[index]; // 현재 아이템 가져오기
+              final item = items[index];
+
               return GestureDetector(
-                onTap: () {
-                  setState(() {
-                    widget.onItemSelected({
-                      "itemImage": item.image,
-                      "itemName": item.name,
-                      "itemPrice": item.price,
-                      "itemDesc": item.description,
-                    });
-                  });
-                },
+                onTap: () => onItemSelected(item),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -53,19 +47,38 @@ class _ShopItemGridviewState extends State<ShopItemGridview> {
                       width: mediaQuery.size.width * 0.25,
                       decoration: BoxDecoration(
                         border: Border.all(color: MainColors.mainLight),
-                        borderRadius: BorderRadius.circular(5),
                       ),
-                      child: Center(
-                        child: Text(
-                          "이미지 ${index + 1}",
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: MainColors.mainLight,
-                          ),
-                        ),
-                      ),
+                      child: item.image.isNotEmpty
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: Image.network(
+                                item.image,
+                                fit: BoxFit.contain,
+                                loadingBuilder: (ctx, child, progress) {
+                                  if (progress == null) return child;
+                                  return const Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                },
+                                errorBuilder: (ctx, err, st) {
+                                  print(
+                                    'Image.network error for ${item.name}: $err\n$st',
+                                  );
+
+                                  return const Center(
+                                    child: Icon(Icons.broken_image),
+                                  );
+                                },
+                              ),
+                            )
+                          : Center(
+                              child: Text(
+                                "이미지 없음",
+                                style: TextStyle(color: MainColors.mainLight),
+                              ),
+                            ),
                     ),
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8),
                     Text(
                       item.name,
                       style: TextStyle(
@@ -74,7 +87,6 @@ class _ShopItemGridviewState extends State<ShopItemGridview> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    // const SizedBox(height: 12),
                   ],
                 ),
               );

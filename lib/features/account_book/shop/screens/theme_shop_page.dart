@@ -4,7 +4,8 @@ import 'package:lets_grow_wallet/features/account_book/shop/screens/item_shop_pa
 import 'package:lets_grow_wallet/features/account_book/shop/widgets/shop_appbar.dart';
 import 'package:lets_grow_wallet/features/account_book/shop/widgets/shop_item_buy_button.dart';
 import 'package:lets_grow_wallet/features/account_book/shop/widgets/shop_item_detail.dart';
-import 'package:lets_grow_wallet/features/account_book/shop/widgets/shop_item_gridview.dart';
+import 'package:lets_grow_wallet/features/account_book/shop/widgets/shop_theme_detail.dart';
+import 'package:lets_grow_wallet/features/account_book/shop/widgets/shop_theme_gridview.dart';
 import 'package:lets_grow_wallet/features/account_book/shop/widgets/shop_title_button.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 
@@ -52,7 +53,7 @@ class _ThemeShopPageState extends State<ThemeShopPage> {
               ),
               SizedBox(height: 12),
               //아이템 그리드뷰
-              ShopItemGridview(
+              ShopThemeGridview(
                 onItemSelected: (item) {
                   setState(() {
                     selectedItem = item;
@@ -61,7 +62,7 @@ class _ThemeShopPageState extends State<ThemeShopPage> {
               ),
               SizedBox(height: 12),
               //아이템 상세보기
-              ShopItemDetail(
+              ShopThemeDetail(
                 image: selectedItem?["itemImage"] ?? "이미지",
                 name: selectedItem?["itemName"] ?? items[0].name,
                 price: selectedItem?["itemPrice"] ?? items[0].price,
