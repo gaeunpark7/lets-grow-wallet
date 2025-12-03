@@ -17,13 +17,13 @@ class GoalService {
         .eq('user_id', userId)
         .eq('month', month)
         .eq('goal_type', goalType)
-        .maybeSingle(); // 단일 결과를 가져옴
+        .maybeSingle(); // 단일 결과
 
     if (response == null) {
-      return false; // 데이터가 없으면 false 반환
+      return false;
     }
 
-    return true; // 데이터가 있으면 true 반환
+    return true;
   }
 
   // 목표 저장- 중복방지
@@ -57,6 +57,27 @@ class GoalService {
     } catch (e) {
       print('목표를 가져오는 중 오류 발생: $e');
       throw Exception('목표를 가져오는 중 오류가 발생했습니다: $e');
+    }
+  }
+
+  //특정 달의 모든 목표 조회
+  Future<List<GoalModel>> getGoalsForUserMonth(
+    String userId,
+    String month,
+  ) async {
+    try {
+      final resp = await _client
+          .from('goals')
+          .select('*')
+          .eq('user_id', userId)
+          .eq('month', month);
+      final List data = resp ?? [];
+      return data
+          .map((e) => GoalModel.fromJson(Map<String, dynamic>.from(e)))
+          .toList();
+    } catch (e) {
+      print('getGoalsForUserMonth error: $e');
+      return [];
     }
   }
 }

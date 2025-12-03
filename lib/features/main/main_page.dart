@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/screens/add_expense_page.dart';
 import 'package:lets_grow_wallet/features/account_book/dashboard/screens/home_page.dart';
+import 'package:lets_grow_wallet/features/account_book/model/daily_quest_model.dart';
+import 'package:lets_grow_wallet/features/account_book/services/daily_quest_service.dart';
 import 'package:lets_grow_wallet/features/account_book/stats/screens/stats_page.dart';
 import 'package:lets_grow_wallet/features/main/widgets/custom_bottom_bar.dart';
 import 'package:lets_grow_wallet/features/user/auth/screens/login_page.dart';
@@ -26,10 +28,28 @@ class _MainPageState extends State<MainPage> {
     super.initState();
     final user = Supabase.instance.client.auth.currentUser;
     if (user != null) {
-      // 비동기 함수는 이렇게 따로 실행
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        checkAndGiveDefaultCharacter(user.id);
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        try {
+          // 기본 캐릭터 지급
+          await checkAndGiveDefaultCharacter(user.id);
+
+          // 데일리 퀘스트 초기화 (인스턴스 메서드로 호출)
+          await _initializeDailyQuests();
+        } catch (e, st) {
+          print('MainPage init error: $e\n$st');
+        }
       });
+    }
+  }
+
+  Future<void> _initializeDailyQuests() async {
+    try {
+      final service = DailyQuestService();
+      print('MainPage: initializing daily quests...');
+      await service.createTodayQuestsIfNeeded();
+      print('MainPage: daily quests initialized');
+    } catch (e, st) {
+      print('MainPage: failed to initialize daily quests: $e\n$st');
     }
   }
 
@@ -56,8 +76,7 @@ class _MainPageState extends State<MainPage> {
         // 'created_at': DateTime.now().toIso8601String(),
         'is_active': true,
       });
-
-      // 3. 캐릭터 다이얼로그
+      // 캐릭터 다이얼로그
       if (mounted) {
         showDialog(
           context: context,
@@ -129,40 +148,3 @@ class _MainPageState extends State<MainPage> {
     );
   }
 }
-        // backgroundColor: Colors.white,
-        // body: Column(
-        //   children: [
-        //     ElevatedButton(
-        //       onPressed: () {
-        //         Supabase.instance.client.auth
-        //             .signOut()
-        //             .then((_) {
-        //               if (mounted) {
-        //                 Navigator.pushReplacement(
-        //                   context,
-        //                   MaterialPageRoute(builder: (ctx) => LoginPage()),
-        //                 );
-        //               }
-        //             })
-        //             .catchError((error) {
-        //               if (mounted) {
-        //                 ScaffoldMessenger.of(context).showSnackBar(
-        //                   SnackBar(content: Text("로그아웃 실패: $error")),
-        //                 );
-        //               }
-        //             });
-        //       },
-        //       child: Text("로그아웃"),
-        //     ),
-        //     const SizedBox(height: 20),
-        //     ElevatedButton(
-        //       onPressed: () {
-        //         Navigator.push(
-        //           context,
-        //           MaterialPageRoute(builder: (ctx) => AddExpensePage()),
-        //         );
-        //       },
-        //       child: Text("추가"),
-        //     ),
-        //   ],
-        // ),
