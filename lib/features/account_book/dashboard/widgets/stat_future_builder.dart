@@ -1,3 +1,4 @@
+// ...existing code...
 import 'package:flutter/material.dart';
 import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/build_total.dart';
 import 'package:lets_grow_wallet/features/account_book/model/montyle_stat_model.dart';
@@ -23,13 +24,34 @@ class StatFutureBuilder extends StatelessWidget {
     return FutureBuilder<MonthlyStat?>(
       future: future,
       builder: (context, snapshot) {
-        if (!snapshot.hasData) {
+        // 네트워크 진행 중 - 로딩 표시
+        if (snapshot.connectionState == ConnectionState.waiting ||
+            snapshot.connectionState == ConnectionState.active) {
           return const Center(child: CircularProgressIndicator());
         }
+
+        // 에러 발생: 0 or 빈 텍스트
         if (snapshot.hasError) {
-          return const Text("오류 발생");
+          return BuildTotal(
+            text: "0",
+            textColor: textColor,
+            topBorder: topBorder,
+            rightBorder: rightBorder,
+          );
         }
-        final stat = snapshot.data!;
+
+        // 3) 완료 상태지만 데이터가 null인 경우에도 0으로 표시
+        final stat = snapshot.data;
+        if (stat == null) {
+          return BuildTotal(
+            text: "0",
+            textColor: textColor,
+            topBorder: topBorder,
+            rightBorder: rightBorder,
+          );
+        }
+
+        // 4) 정상 데이터
         return BuildTotal(
           text: valueBuilder(stat),
           textColor: textColor,
