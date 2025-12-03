@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 
 class QuestStar extends StatelessWidget {
-  static const double iconSize = 50;
+  static const double iconSize = 65;
   const QuestStar({super.key});
 
   @override
