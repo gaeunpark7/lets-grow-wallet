@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:lets_grow_wallet/app/router/route_paths.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/screens/add_income_page.dart';
 import 'package:lets_grow_wallet/features/main/main_page.dart';
 import 'package:lets_grow_wallet/features/account_book/services/transaction_service.dart';
@@ -129,14 +131,8 @@ class _AddExpensePageState extends State<AddExpensePage> {
                     const SizedBox(width: 12),
                     Expanded(
                       child: GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (ctx) => AddIncomePage(),
-                            ),
-                          );
-                        },
+                        onTap: () =>
+                            context.push('${Routes.home}/${Routes.addIncome}'),
                         child: TitleButton(
                           color: MainColors.main,
                           // border: Border.all(color: Colors.black, width: 1),
@@ -303,11 +299,10 @@ class _AddExpensePageState extends State<AddExpensePage> {
                         type: 'expense',
                       );
                       await addTransaction(transaction);
-                      // 저장 후 처리(메시지 / 화면 닫기)
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (ctx) => MainPage()),
-                      );
+                      // 저장 후 이전 화면(홈)으로 복귀
+                      if (mounted) {
+                        context.pop();
+                      }
                     },
                     child: const Text(
                       "지출 추가",

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:lets_grow_wallet/app/router/route_paths.dart';
 import 'package:lets_grow_wallet/features/account_book/character/screens/character_book_page.dart';
 import 'package:lets_grow_wallet/features/account_book/character/widgets/character_action_bottom_bar.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
@@ -77,12 +79,9 @@ class _CharacterPageState extends State<CharacterPage> {
           ),
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => CharacterBookPage()),
-            );
-          },
+          onPressed: () => context.push(
+            '${Routes.home}/${Routes.character}/${Routes.characterDetail}',
+          ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(50),
           ),

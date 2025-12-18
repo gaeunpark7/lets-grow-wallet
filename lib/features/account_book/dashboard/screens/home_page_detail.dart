@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:lets_grow_wallet/app/router/route_paths.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/screens/edit_expense_page.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/screens/edit_income_page.dart';
 import 'package:lets_grow_wallet/features/account_book/model/transaction_model.dart';
@@ -28,29 +30,21 @@ class _HomePageDetailState extends State<HomePageDetail> {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text("삭제 되었습니다.")));
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (ctx) => MainPage()),
-      );
+      context.go(Routes.home);
     }
   }
 
   //수정 페이지 이동
   Future<void> goToEditPage() async {
     if (widget.transaction.type == 'expense') {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>
-              EditExpensePage(transaction: widget.transaction),
-        ),
+      context.push(
+        '${Routes.home}/${Routes.editExpense}',
+        extra: {'transaction': widget.transaction},
       );
     } else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => EditIncomePage(transaction: widget.transaction),
-        ),
+      context.push(
+        '${Routes.home}/${Routes.editIncome}',
+        extra: {'transaction': widget.transaction},
       );
     }
   }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lets_grow_wallet/features/main/main_page.dart';
-import 'package:lets_grow_wallet/features/user/auth/screens/profile_setting_page.dart';
+import 'package:go_router/go_router.dart';
+import 'package:lets_grow_wallet/app/router/route_paths.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LoginPage extends StatefulWidget {
@@ -42,21 +42,12 @@ class _LoginPageState extends State<LoginPage> {
             'email': user.email,
           });
 
+          // 신규 사용자는 프로필 설정 페이지로
           if (mounted) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (ctx) => ProfileSettingPage()),
-            );
-          }
-        } else {
-          // 있으면 메인 페이지
-          if (mounted) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (ctx) => MainPage()),
-            );
+            context.go(Routes.profileSetting);
           }
         }
+        // 기존 사용자는 라우터의 redirect가 자동으로 홈으로 이동
       } catch (e) {
         print('로그인 오류: $e');
         if (mounted) {

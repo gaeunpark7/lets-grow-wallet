@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:lets_grow_wallet/app/router/route_paths.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/screens/add_expense_page.dart';
 import 'package:lets_grow_wallet/features/account_book/dashboard/screens/home_page.dart';
 import 'package:lets_grow_wallet/features/account_book/model/daily_quest_model.dart';
@@ -12,7 +14,8 @@ import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MainPage extends StatefulWidget {
-  const MainPage({super.key});
+  final Widget child;
+  const MainPage({super.key, required this.child});
 
   @override
   State<MainPage> createState() => _MainPageState();
@@ -20,8 +23,6 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
-
-  final List<Widget> pages = [HomePage(), StatsPage(), Calendar(), MyPage()];
 
   @override
   void initState() {
@@ -116,10 +117,26 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: pages[_selectedIndex],
+        body: widget.child,
         bottomNavigationBar: CustomBottomBar(
           selectedIndex: _selectedIndex,
-          onTabSelected: (index) => setState(() => _selectedIndex = index),
+          onTabSelected: (index) {
+            setState(() => _selectedIndex = index);
+            switch (index) {
+              case 0:
+                context.go(Routes.home);
+                break;
+              case 1:
+                context.go(Routes.statistics);
+                break;
+              case 2:
+                context.go(Routes.calendar);
+                break;
+              case 3:
+                context.go(Routes.mypage);
+                break;
+            }
+          },
         ),
         floatingActionButton: SizedBox(
           width: 72,
@@ -133,12 +150,8 @@ class _MainPageState extends State<MainPage> {
               side: BorderSide(color: MainColors.mainLight, width: 3),
             ),
 
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (ctx) => AddExpensePage()),
-              );
-            },
+            onPressed: () =>
+                context.push('${Routes.home}/${Routes.addExpense}'),
 
             child: const Icon(Icons.add, size: 70),
           ),

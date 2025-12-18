@@ -40,7 +40,7 @@ class _QuestListState extends State<QuestList> {
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
             subtitle,
@@ -73,3 +73,4 @@ class _QuestListState extends State<QuestList> {
     );
   }
 }
+
