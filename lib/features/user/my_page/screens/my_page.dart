@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:lets_grow_wallet/app/router/route_paths.dart';
 import 'package:lets_grow_wallet/features/user/widgets/my_page_userprofile.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -39,11 +41,7 @@ class _MyPageState extends State<MyPage> {
   Future<void> _logout() async {
     await Supabase.instance.client.auth.signOut();
     if (mounted) {
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (ctx) => LoginPage()),
-        (route) => false,
-      );
+      context.go(Routes.login);
     }
   }
 

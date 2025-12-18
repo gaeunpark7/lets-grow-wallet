@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lets_grow_wallet/features/main/main_page.dart';
-import 'package:lets_grow_wallet/features/user/auth/screens/login_page.dart';
+import 'package:go_router/go_router.dart';
+import 'package:lets_grow_wallet/app/router/route_paths.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ProfileSettingPage extends StatefulWidget {
@@ -30,10 +30,7 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text("유저 정보가 없습니다. 다시 로그인 해주세요.")));
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (ctx) => LoginPage()),
-        );
+        context.go(Routes.login);
       }
       return;
     }
@@ -45,10 +42,10 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
         'create_at': DateTime.now().toString(),
         'coin': 0,
       });
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (ctx) => MainPage()),
-      );
+
+      if (mounted) {
+        context.go(Routes.home);
+      }
     } catch (e) {
       print('닉네임 저장 오류: $e');
       if (mounted) {

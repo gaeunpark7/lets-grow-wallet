@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:lets_grow_wallet/app/router/route_paths.dart';
 import 'package:lets_grow_wallet/features/account_book/character/screens/character_page.dart';
 import 'package:lets_grow_wallet/features/account_book/quest/screens/quest_page.dart';
 import 'package:lets_grow_wallet/features/account_book/shop/screens/item_shop_page.dart';
@@ -34,12 +36,8 @@ class _FloatingMenuButtonState extends State<FloatingMenuButton> {
                 heroTag: "fab1",
                 mini: true,
                 backgroundColor: MainColors.mainLight,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (ctx) => CharacterPage()),
-                  );
-                },
+                onPressed: () =>
+                    context.push('${Routes.home}/${Routes.character}'),
                 child: const Icon(Icons.pets, color: Colors.white),
               ),
             ),
@@ -56,12 +54,7 @@ class _FloatingMenuButtonState extends State<FloatingMenuButton> {
                 heroTag: "fab2",
                 mini: true,
                 backgroundColor: MainColors.mainLight,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (ctx) => QuestPage()),
-                  );
-                },
+                onPressed: () => context.push('${Routes.home}/${Routes.quest}'),
                 child: const Icon(Icons.star, color: Colors.white),
               ),
             ),
@@ -78,12 +71,7 @@ class _FloatingMenuButtonState extends State<FloatingMenuButton> {
                 heroTag: "fab3",
                 mini: true,
                 backgroundColor: MainColors.mainLight,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (ctx) => const ItemShopPage()),
-                  );
-                },
+                onPressed: () => context.push('${Routes.home}/${Routes.shop}'),
                 child: const Icon(Icons.shopping_cart, color: Colors.white),
               ),
             ),

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:lets_grow_wallet/app/router/route_paths.dart';
 import 'package:intl/intl.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/screens/edit_expense_page.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/screens/edit_income_page.dart';
@@ -28,10 +30,7 @@ class _HomePageDetailState extends State<HomePageDetailv2> {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text("삭제 되었습니다.")));
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (ctx) => MainPage()),
-      );
+      context.go(Routes.home);
     }
   }
 

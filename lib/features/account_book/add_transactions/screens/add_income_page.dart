@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:lets_grow_wallet/app/router/route_paths.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/screens/add_expense_page.dart';
 import 'package:lets_grow_wallet/features/main/main_page.dart';
 import 'package:lets_grow_wallet/features/account_book/services/transaction_service.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/category_selector.dart';
 import 'package:lets_grow_wallet/features/main/widgets/date_selector.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/payment_amount_row.dart';
-import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/single_button.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/title_button.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -120,12 +121,8 @@ class _AddIncomePageState extends State<AddIncomePage> {
                   children: [
                     Expanded(
                       child: GestureDetector(
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (ctx) => const AddExpensePage(),
-                          ),
-                        ),
+                        onTap: () =>
+                            context.push('${Routes.home}/${Routes.addExpense}'),
                         child: TitleButton(
                           color: MainColors.main,
                           border: Border(),
@@ -277,7 +274,7 @@ class _AddIncomePageState extends State<AddIncomePage> {
                       if (selectedCategoryIdx == null) return;
                       final transaction = TransactionModel(
                         id: Uuid().v4(),
-                        userId: userId, // 실제 로그인 유저 uuid로 대체
+                        userId: userId,
                         title: titleController.text,
                         amount:
                             int.tryParse(
@@ -292,11 +289,9 @@ class _AddIncomePageState extends State<AddIncomePage> {
                         type: 'income',
                       );
                       await addTransaction(transaction);
-                      // 저장 후 처리(예: 화면 닫기, 메시지 등)
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (ctx) => MainPage()),
-                      );
+                      if (mounted) {
+                        context.pop();
+                      }
                     },
                     child: const Text("지출 추가"),
                   ),

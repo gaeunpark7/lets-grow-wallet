@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:lets_grow_wallet/features/main/main_page.dart';
 import 'package:lets_grow_wallet/features/account_book/services/transaction_service.dart';
@@ -289,10 +290,9 @@ class _EditIncomePageState extends State<EditIncomePage> {
                         context,
                       ).showSnackBar(const SnackBar(content: Text('수정되었습니다.')));
 
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (ctx) => MainPage()),
-                      );
+                      if (mounted) {
+                        context.pop();
+                      }
                     },
                     child: const Text("수입 수정"),
                   ),
