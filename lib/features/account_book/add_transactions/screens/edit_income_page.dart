@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:lets_grow_wallet/features/main/main_page.dart';
+import 'package:lets_grow_wallet/features/account_book/add_transactions/notifier/transaction_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/services/transaction_service.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/category_selector.dart';
 import 'package:lets_grow_wallet/features/main/widgets/date_selector.dart';
@@ -11,15 +12,15 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../model/transaction_model.dart';
 import '../../model/category_model.dart';
 
-class EditIncomePage extends StatefulWidget {
+class EditIncomePage extends ConsumerStatefulWidget {
   final TransactionModel transaction;
   const EditIncomePage({super.key, required this.transaction});
 
   @override
-  State<EditIncomePage> createState() => _EditIncomePageState();
+  ConsumerState<EditIncomePage> createState() => _EditIncomePageState();
 }
 
-class _EditIncomePageState extends State<EditIncomePage> {
+class _EditIncomePageState extends ConsumerState<EditIncomePage> {
   final titleController = TextEditingController();
   final amountController = TextEditingController();
   final memoController = TextEditingController();
@@ -286,6 +287,8 @@ class _EditIncomePageState extends State<EditIncomePage> {
                         type: 'income',
                       );
                       await updateTransaction(transaction);
+                      ref.invalidate(transactionProvider);
+
                       ScaffoldMessenger.of(
                         context,
                       ).showSnackBar(const SnackBar(content: Text('수정되었습니다.')));

@@ -46,8 +46,12 @@ class _LoginPageState extends State<LoginPage> {
           if (mounted) {
             context.go(Routes.profileSetting);
           }
+        } else {
+          // 기존 사용자는 홈으로 이동
+          if (mounted) {
+            context.go(Routes.home);
+          }
         }
-        // 기존 사용자는 라우터의 redirect가 자동으로 홈으로 이동
       } catch (e) {
         print('로그인 오류: $e');
         if (mounted) {

@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:lets_grow_wallet/app/router/auth_routes.dart';
 import 'package:lets_grow_wallet/app/router/calendar_routes.dart';
+import 'package:lets_grow_wallet/app/router/feature_routes.dart';
 import 'package:lets_grow_wallet/app/router/home_routes.dart';
 import 'package:lets_grow_wallet/app/router/mypage_routes.dart';
 import 'package:lets_grow_wallet/app/router/route_paths.dart';
@@ -13,15 +14,21 @@ final router = GoRouter(
   redirect: (context, state) {
     final isLoggedIn = Supabase.instance.client.auth.currentSession != null;
     final isLoginPage = state.matchedLocation == Routes.login;
+    final isLoginCallbackPage = state.matchedLocation == Routes.loginCallback;
     final isProfileSettingPage = state.matchedLocation == Routes.profileSetting;
 
-    // 유저 최초 로그인 > 로그인 페이지
-    if (!isLoggedIn && !isLoginPage && !isProfileSettingPage) {
+    // 로그인 안됨 + 인증 관련 페이지 x > 로그인 페이지
+    if (!isLoggedIn &&
+        !isLoginPage &&
+        !isLoginCallbackPage &&
+        !isProfileSettingPage) {
       return Routes.login;
     }
 
-    // 로그인 > 홈
-    if (isLoggedIn && isLoginPage && !isProfileSettingPage) {
+    // 로그인 + (로그인 페이지 또는 콜백 페이지) + 프로필 설정 페이지 x >  홈
+    if (isLoggedIn &&
+        (isLoginPage || isLoginCallbackPage) &&
+        !isProfileSettingPage) {
       return Routes.home;
     }
     return null;
@@ -38,5 +45,7 @@ final router = GoRouter(
         buildMypageRoutes(),
       ],
     ),
+
+    ...buildFeatureRoutes(),
   ],
 );

@@ -6,6 +6,7 @@ import 'package:lets_grow_wallet/features/user/auth/screens/profile_setting_page
 List<GoRoute> buildAuthRoutes() {
   return [
     GoRoute(path: Routes.login, builder: (_, __) => const LoginPage()),
+    GoRoute(path: Routes.loginCallback, builder: (_, __) => const LoginPage()),
     GoRoute(
       path: Routes.profileSetting,
       builder: (_, __) => ProfileSettingPage(),

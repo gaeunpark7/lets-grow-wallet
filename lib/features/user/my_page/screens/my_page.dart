@@ -39,9 +39,18 @@ class _MyPageState extends State<MyPage> {
   }
 
   Future<void> _logout() async {
-    await Supabase.instance.client.auth.signOut();
-    if (mounted) {
-      context.go(Routes.login);
+    try {
+      await Supabase.instance.client.auth.signOut();
+      if (mounted) {
+        context.go(Routes.login);
+      }
+    } catch (e) {
+      print('로그아웃 오류: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('로그아웃 실패: $e')));
+      }
     }
   }
 
