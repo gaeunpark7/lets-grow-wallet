@@ -1,30 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:lets_grow_wallet/app/router/route_paths.dart';
-import 'package:lets_grow_wallet/features/account_book/add_transactions/screens/add_income_page.dart';
-import 'package:lets_grow_wallet/features/main/main_page.dart';
+import 'package:lets_grow_wallet/features/account_book/add_transactions/notifier/transaction_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/services/transaction_service.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/category_selector.dart';
 import 'package:lets_grow_wallet/features/main/widgets/date_selector.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/payment_amount_row.dart';
-import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/single_button.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/title_button.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 import '../../model/transaction_model.dart';
 import '../../model/category_model.dart';
-// import 'package:lets_grow_wallet/utils/category_utils.dart';
 
-class AddExpensePage extends StatefulWidget {
+class AddExpensePage extends ConsumerStatefulWidget {
   const AddExpensePage({super.key});
 
   @override
-  State<AddExpensePage> createState() => _AddExpensePageState();
+  ConsumerState<AddExpensePage> createState() => _AddExpensePageState();
 }
 
-class _AddExpensePageState extends State<AddExpensePage> {
+class _AddExpensePageState extends ConsumerState<AddExpensePage> {
   final titleController = TextEditingController();
   final amountController = TextEditingController();
   final memoController = TextEditingController();
@@ -299,6 +297,8 @@ class _AddExpensePageState extends State<AddExpensePage> {
                         type: 'expense',
                       );
                       await addTransaction(transaction);
+                      ref.invalidate(transactionProvider);
+
                       // 저장 후 이전 화면(홈)으로 복귀
                       if (mounted) {
                         context.pop();

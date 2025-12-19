@@ -79,9 +79,8 @@ class _CharacterPageState extends State<CharacterPage> {
           ),
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () => context.push(
-            '${Routes.home}/${Routes.character}/${Routes.characterDetail}',
-          ),
+          onPressed: () =>
+              context.push('${Routes.character}/${Routes.characterDetail}'),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(50),
           ),

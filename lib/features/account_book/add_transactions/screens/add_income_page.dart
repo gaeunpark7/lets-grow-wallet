@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:lets_grow_wallet/app/router/route_paths.dart';
+import 'package:lets_grow_wallet/features/account_book/add_transactions/notifier/transaction_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/screens/add_expense_page.dart';
-import 'package:lets_grow_wallet/features/main/main_page.dart';
 import 'package:lets_grow_wallet/features/account_book/services/transaction_service.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/category_selector.dart';
 import 'package:lets_grow_wallet/features/main/widgets/date_selector.dart';
@@ -15,14 +16,14 @@ import 'package:uuid/uuid.dart';
 import '../../model/transaction_model.dart';
 import '../../model/category_model.dart';
 
-class AddIncomePage extends StatefulWidget {
+class AddIncomePage extends ConsumerStatefulWidget {
   const AddIncomePage({super.key});
 
   @override
-  State<AddIncomePage> createState() => _AddIncomePageState();
+  ConsumerState<AddIncomePage> createState() => _AddIncomePageState();
 }
 
-class _AddIncomePageState extends State<AddIncomePage> {
+class _AddIncomePageState extends ConsumerState<AddIncomePage> {
   final titleController = TextEditingController();
   final amountController = TextEditingController();
   final memoController = TextEditingController();
@@ -122,7 +123,7 @@ class _AddIncomePageState extends State<AddIncomePage> {
                     Expanded(
                       child: GestureDetector(
                         onTap: () =>
-                            context.push('${Routes.home}/${Routes.addExpense}'),
+                            context.push('$Routes.home}/${Routes.addExpense}'),
                         child: TitleButton(
                           color: MainColors.main,
                           border: Border(),
@@ -289,6 +290,7 @@ class _AddIncomePageState extends State<AddIncomePage> {
                         type: 'income',
                       );
                       await addTransaction(transaction);
+                      ref.invalidate(transactionProvider);
                       if (mounted) {
                         context.pop();
                       }

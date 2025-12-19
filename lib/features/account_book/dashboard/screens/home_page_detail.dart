@@ -1,24 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:lets_grow_wallet/app/router/route_paths.dart';
-import 'package:lets_grow_wallet/features/account_book/add_transactions/screens/edit_expense_page.dart';
-import 'package:lets_grow_wallet/features/account_book/add_transactions/screens/edit_income_page.dart';
+import 'package:lets_grow_wallet/features/account_book/add_transactions/notifier/transaction_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/model/transaction_model.dart';
-import 'package:lets_grow_wallet/features/main/main_page.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class HomePageDetail extends StatefulWidget {
+class HomePageDetail extends ConsumerStatefulWidget {
   final TransactionModel transaction;
 
   const HomePageDetail({super.key, required this.transaction});
 
   @override
-  State<HomePageDetail> createState() => _HomePageDetailState();
+  ConsumerState<HomePageDetail> createState() => _HomePageDetailState();
 }
 
-class _HomePageDetailState extends State<HomePageDetail> {
+class _HomePageDetailState extends ConsumerState<HomePageDetail> {
   Future<void> deleteTransaction() async {
     final supabase = Supabase.instance.client;
     await supabase
@@ -26,6 +25,7 @@ class _HomePageDetailState extends State<HomePageDetail> {
         .delete()
         .eq('id', widget.transaction.id);
 
+    ref.invalidate(transactionProvider);
     if (mounted) {
       ScaffoldMessenger.of(
         context,
@@ -39,12 +39,13 @@ class _HomePageDetailState extends State<HomePageDetail> {
     if (widget.transaction.type == 'expense') {
       context.push(
         '${Routes.home}/${Routes.editExpense}',
-        extra: {'transaction': widget.transaction},
+        extra: widget.transaction,
       );
+      Navigator.pop(context);
     } else {
       context.push(
         '${Routes.home}/${Routes.editIncome}',
-        extra: {'transaction': widget.transaction},
+        extra: widget.transaction,
       );
     }
   }
@@ -65,8 +66,8 @@ class _HomePageDetailState extends State<HomePageDetail> {
             ),
             TextButton(
               onPressed: () {
-                deleteTransaction();
                 Navigator.pop(context);
+                deleteTransaction();
               },
               child: Text("삭제", style: TextStyle(color: MainColors.mainDark)),
             ),

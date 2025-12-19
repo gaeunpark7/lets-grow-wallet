@@ -1,31 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:lets_grow_wallet/features/account_book/add_transactions/notifier/transaction_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/build_total.dart';
 import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/floating_menu_button.dart';
 import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/monthly_header.dart';
 import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/stat_future_builder.dart';
 import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/table_header.dart';
 import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/table_list.dart';
-import 'package:lets_grow_wallet/features/account_book/model/category_model.dart';
 import 'package:lets_grow_wallet/features/account_book/services/stat_service.dart';
-import 'package:lets_grow_wallet/features/account_book/services/transaction_service.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../model/transaction_model.dart';
 import '../../model/montyle_stat_model.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
   @override
-  State<HomePage> createState() => _homePageState();
+  ConsumerState<HomePage> createState() => _homePageState();
 }
 
-class _homePageState extends State<HomePage> {
-  List<TransactionModel> todayTransactions = [];
-  List<Category> categories = [];
+class _homePageState extends ConsumerState<HomePage> {
   final statService = StatService();
-  final transactionService = TransactionService();
   late final Future stat;
 
   late DateTime start;
@@ -38,28 +34,6 @@ class _homePageState extends State<HomePage> {
     start = DateTime(now.year, now.month, 1);
     end = DateTime(now.year, now.month + 1, 1);
     stat = statService.fetchMonthlyStat(start, end);
-    loadTodayTransactions();
-  }
-
-  //이번달의 데이터만 불러옴 + 내림차순
-  Future<void> loadTodayTransactions() async {
-    final supabase = Supabase.instance.client;
-    final now = DateTime.now();
-    final start = DateTime(now.year, now.month, 1);
-    final end = DateTime(now.year, now.month + 1, 1);
-
-    final response = await supabase
-        .from('transactions')
-        .select('*, categories(name)')
-        .gte('date', start.toIso8601String()) // 시작 날짜 조건
-        .lt('date', end.toIso8601String()) // 끝 날짜 조건
-        .order('date', ascending: false); // 내림차순 정렬
-
-    setState(() {
-      todayTransactions = (response as List)
-          .map((e) => TransactionModel.fromMap(e))
-          .toList();
-    });
   }
 
   @override
@@ -104,7 +78,17 @@ class _homePageState extends State<HomePage> {
               // 고정된 테이블 헤더
               TableHeader(),
               //테이블 리스트
-              Expanded(child: TableList(transactions: todayTransactions)),
+              Expanded(
+                child: ref
+                    .watch(transactionProvider)
+                    .when(
+                      data: (transactions) =>
+                          TableList(transactions: transactions),
+                      loading: () =>
+                          const Center(child: CircularProgressIndicator()),
+                      error: (err, stack) => Center(child: Text('오류: $err')),
+                    ),
+              ),
               //여백
               Container(
                 height: 5,

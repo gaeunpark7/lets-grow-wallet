@@ -11,15 +11,33 @@ class TransactionService {
     await supabase.from('transactions').insert(transaction.toMap());
   }
 
-  //  거래 내역 조회 (조인)
-  // Future<List<TransactionModel>> fetchTransactions() async {
-  //   final response = await supabase
-  //       .from('transactions')
-  //       .select('*, categories(name)')
-  //       .order('date', ascending: false);
-  //   print(response);
-  //   return (response as List).map((e) => TransactionModel.fromMap(e)).toList();
-  // }
+  // 날짜 범위로 거래 내역 조회 (카테고리 이름 포함)
+  Future<List<TransactionModel>> fetchTransactionsByDateRange(
+    DateTime start,
+    DateTime end,
+  ) async {
+    final response = await supabase
+        .from('transactions')
+        .select('*, categories(name)')
+        .gte('date', start.toIso8601String())
+        .lt('date', end.toIso8601String())
+        .order('date', ascending: false);
+
+    return (response as List).map((e) => TransactionModel.fromMap(e)).toList();
+  }
+
+  // 거래 내역 수정
+  Future<void> updateTransaction(TransactionModel transaction) async {
+    await supabase
+        .from('transactions')
+        .update(transaction.toMap())
+        .eq('id', transaction.id);
+  }
+
+  // 거래 내역 삭제
+  Future<void> deleteTransaction(String transactionId) async {
+    await supabase.from('transactions').delete().eq('id', transactionId);
+  }
 
   //카테고리 목록 조회
   Future<List<Category>> fetchCategories() async {
