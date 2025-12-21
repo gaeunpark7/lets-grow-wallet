@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lets_grow_wallet/features/account_book/calendar/widgets/calendart_detail.dart';
 import 'package:lets_grow_wallet/features/account_book/model/daily_stat_model.dart';
 import 'package:lets_grow_wallet/features/account_book/services/stat_service.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
@@ -28,25 +29,6 @@ class _CalendarState extends State<Calendar> {
       _statMap = statMap;
     });
   }
-
-  // Future<void> _loadStats() async {
-  //   final firstDay = DateTime(_focusedDay.year, _focusedDay.month, 1);
-  //   final lastDay = DateTime(_focusedDay.year, _focusedDay.month + 1, 0);
-
-  //   final Map<DateTime, DailyStat> temp = {};
-
-  //   for (int i = 0; i < lastDay.day; i++) {
-  //     final day = DateTime(firstDay.year, firstDay.month, i + 1);
-  //     final stat = await StatService().fetchDailyStat(day); // DailyStat? 리턴
-  //     if (stat != null) {
-  //       temp[stat.day] = stat;
-  //     }
-  //   }
-
-  //   setState(() {
-  //     _statMap = temp;
-  //   });
-  // }
 
   void _onPageChanged(DateTime focusedDay) {
     setState(() {
@@ -183,51 +165,61 @@ class _CalendarCell extends StatelessWidget {
   Widget build(BuildContext context) {
     final textColor = isOutside ? Colors.grey[300] : MainColors.mainDark;
 
-    return SizedBox(
-      height: 110,
-      width: 110,
-      child: Container(
-        decoration: BoxDecoration(
-          color: isSelected
-              ? const Color(0xFF9FA8DA)
-              : isToday
-              ? const Color(0xFFF5F5FA)
-              : Colors.white,
-          borderRadius: BorderRadius.zero,
-          border: Border.all(color: Color(0xFFE8EAF6)),
-        ),
-        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              '${day.day}',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: textColor,
+    return GestureDetector(
+      onTap: isOutside
+          ? null
+          : () {
+              showDialog(
+                context: context,
+                builder: (ctx) => CalendartDetail(selectedDate: day),
+              );
+            },
+      child: SizedBox(
+        height: 110,
+        width: 110,
+        child: Container(
+          decoration: BoxDecoration(
+            color: isSelected
+                ? const Color(0xFF9FA8DA)
+                : isToday
+                ? const Color(0xFFF5F5FA)
+                : Colors.white,
+            borderRadius: BorderRadius.zero,
+            border: Border.all(color: Color(0xFFE8EAF6)),
+          ),
+          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                '${day.day}',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: textColor,
+                ),
               ),
-            ),
-            if (stat != null) ...[
-              // 이모티콘 영역 (추후 추가)
-              Icon(Icons.mood_outlined, color: MainColors.mainLight),
-              SizedBox(height: 5),
-              if (stat!.totalExpense != 0)
-                Text(
-                  '- ${stat!.totalExpense}',
-                  style: const TextStyle(fontSize: 11, color: Colors.red),
-                ),
-              if (stat!.totalIncome != 0)
-                Text(
-                  '+${stat!.totalIncome}',
-                  style: const TextStyle(
-                    fontSize: 11,
-                    color: Color(0xFF7986CB),
+              if (stat != null) ...[
+                // 이모티콘 영역 (추후 추가)
+                Icon(Icons.mood_outlined, color: MainColors.mainLight),
+                SizedBox(height: 5),
+                if (stat!.totalExpense != 0)
+                  Text(
+                    '- ${stat!.totalExpense}',
+                    style: const TextStyle(fontSize: 11, color: Colors.red),
                   ),
-                ),
+                if (stat!.totalIncome != 0)
+                  Text(
+                    '+${stat!.totalIncome}',
+                    style: const TextStyle(
+                      fontSize: 11,
+                      color: Color(0xFF7986CB),
+                    ),
+                  ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );
