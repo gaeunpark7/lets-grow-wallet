@@ -103,14 +103,14 @@ class _EditIncomePageState extends ConsumerState<EditIncomePage> {
     }
   }
 
-  //수정
-  Future<void> updateTransaction(TransactionModel transaction) async {
+  Future<void> _updateTransaction(
+    TransactionModel transaction,
+    WidgetRef ref,
+  ) async {
     try {
-      final supabase = Supabase.instance.client;
-      await supabase
-          .from('transactions')
-          .update(transaction.toMap())
-          .eq('id', transaction.id);
+      await ref
+          .read(transactionProvider.notifier)
+          .updateTransaction(transaction);
     } catch (e) {
       rethrow;
     }
@@ -286,15 +286,22 @@ class _EditIncomePageState extends ConsumerState<EditIncomePage> {
                         createdAt: widget.transaction.createdAt,
                         type: 'income',
                       );
-                      await updateTransaction(transaction);
-                      ref.invalidate(transactionProvider);
+                      try {
+                        await _updateTransaction(transaction, ref);
 
-                      ScaffoldMessenger.of(
-                        context,
-                      ).showSnackBar(const SnackBar(content: Text('수정되었습니다.')));
+                        if (mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('수정되었습니다.')),
+                          );
 
-                      if (mounted) {
-                        context.pop();
+                          context.pop();
+                        }
+                      } catch (e) {
+                        if (mounted) {
+                          ScaffoldMessenger.of(
+                            context,
+                          ).showSnackBar(SnackBar(content: Text('수정 실패: $e')));
+                        }
                       }
                     },
                     child: const Text("수입 수정"),

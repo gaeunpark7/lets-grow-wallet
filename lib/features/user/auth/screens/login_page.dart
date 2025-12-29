@@ -13,61 +13,28 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   static const _googleColor = Color.fromARGB(255, 247, 252, 255);
   static const _kakaoColor = Color.fromARGB(255, 243, 223, 47);
+  String redrectUrl = 'com.example.letsgrowwallet://login-callback';
 
   @override
   void initState() {
     super.initState();
-    Supabase.instance.client.auth.onAuthStateChange.listen(_handleAuthChange);
+    _setupAuthListener();
   }
 
-  Future<void> _handleAuthChange(AuthState data) async {
-    final event = data.event;
-    final session = data.session;
-
-    if (event == AuthChangeEvent.signedIn && session != null) {
-      final user = session.user;
-
-      try {
-        //user 테이블에 존재하는지 확인
-        final existingUser = await Supabase.instance.client
-            .from('user')
-            .select()
-            .eq('id', user.id)
-            .maybeSingle();
-
-        if (existingUser == null) {
-          // 없으면 user 테이블에 등록
-          await Supabase.instance.client.from('user').insert({
-            'id': user.id,
-            'email': user.email,
-          });
-
-          // 신규 사용자는 프로필 설정 페이지로
-          if (mounted) {
-            context.go(Routes.profileSetting);
-          }
-        } else {
-          // 기존 사용자는 홈으로 이동
-          if (mounted) {
-            context.go(Routes.home);
-          }
-        }
-      } catch (e) {
-        print('로그인 오류: $e');
-        if (mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text("구글 로그인실패")));
-        }
+  void _setupAuthListener() {
+    Supabase.instance.client.auth.onAuthStateChange.listen((data) {
+      if (data.event == AuthChangeEvent.signedIn && mounted) {
+        context.go(Routes.loginCallback);
       }
-    }
+    });
   }
 
+  //구글 로그인
   Future<void> _signInWithGoogle() async {
     try {
       await Supabase.instance.client.auth.signInWithOAuth(
         OAuthProvider.google,
-        redirectTo: 'com.example.letsgrowwallet://login-callback',
+        redirectTo: redrectUrl,
       );
     } catch (e) {
       print('구글 로그인 시작 오류: $e');
@@ -75,6 +42,22 @@ class _LoginPageState extends State<LoginPage> {
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text("구글 로그인실패")));
+      }
+    }
+  }
+
+  //카카오 로그인
+  Future<void> _signInWithKakao() async {
+    try {
+      await Supabase.instance.client.auth.signInWithOAuth(
+        OAuthProvider.kakao,
+        redirectTo: redrectUrl,
+      );
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("카카오 로그인 실패: $e")));
       }
     }
   }
@@ -108,7 +91,7 @@ class _LoginPageState extends State<LoginPage> {
               LoginButton(
                 color: _kakaoColor,
                 text: "카카오톡 계정으로 로그인",
-                onPressed: () {},
+                onPressed: _signInWithKakao,
               ),
             ],
           ),

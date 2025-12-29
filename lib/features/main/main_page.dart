@@ -1,15 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lets_grow_wallet/app/router/route_paths.dart';
-import 'package:lets_grow_wallet/features/account_book/add_transactions/screens/add_expense_page.dart';
-import 'package:lets_grow_wallet/features/account_book/dashboard/screens/home_page.dart';
-import 'package:lets_grow_wallet/features/account_book/model/daily_quest_model.dart';
 import 'package:lets_grow_wallet/features/account_book/services/daily_quest_service.dart';
-import 'package:lets_grow_wallet/features/account_book/stats/screens/stats_page.dart';
 import 'package:lets_grow_wallet/features/main/widgets/custom_bottom_bar.dart';
-import 'package:lets_grow_wallet/features/user/auth/screens/login_page.dart';
-import 'package:lets_grow_wallet/features/account_book/calendar/screens/calendar.dart';
-import 'package:lets_grow_wallet/features/user/my_page/screens/my_page.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -28,6 +21,7 @@ class _MainPageState extends State<MainPage> {
   void initState() {
     super.initState();
     final user = Supabase.instance.client.auth.currentUser;
+
     if (user != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         try {

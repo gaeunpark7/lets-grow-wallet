@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lets_grow_wallet/features/account_book/calendar/widgets/calendart_detail.dart';
+import 'package:lets_grow_wallet/features/account_book/calendar/widgets/calendar_detail.dart';
 import 'package:lets_grow_wallet/features/account_book/model/daily_stat_model.dart';
 import 'package:lets_grow_wallet/features/account_book/services/stat_service.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';

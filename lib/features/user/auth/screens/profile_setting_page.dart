@@ -35,13 +35,10 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
       return;
     }
     try {
-      await supabase.from('user').upsert({
-        'id': user.id,
-        'email': user.email,
-        'nickname': _nicknameController.text,
-        'create_at': DateTime.now().toString(),
-        'coin': 0,
-      });
+      await supabase
+          .from('user')
+          .update({'nickname': _nicknameController.text})
+          .eq('id', user.id);
 
       if (mounted) {
         context.go(Routes.home);

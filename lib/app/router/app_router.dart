@@ -10,26 +10,23 @@ import 'package:lets_grow_wallet/features/main/main_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 final router = GoRouter(
-  initialLocation: Routes.home,
+  initialLocation: Routes.login,
   redirect: (context, state) {
-    final isLoggedIn = Supabase.instance.client.auth.currentSession != null;
-    final isLoginPage = state.matchedLocation == Routes.login;
-    final isLoginCallbackPage = state.matchedLocation == Routes.loginCallback;
-    final isProfileSettingPage = state.matchedLocation == Routes.profileSetting;
+    final session = Supabase.instance.client.auth.currentSession;
+    final isLoggedIn = session != null;
 
-    // 로그인 안됨 + 인증 관련 페이지 x > 로그인 페이지
-    if (!isLoggedIn &&
-        !isLoginPage &&
-        !isLoginCallbackPage &&
-        !isProfileSettingPage) {
+    final isLogin = state.matchedLocation == Routes.login;
+    final isLoginCallback = state.matchedLocation == Routes.loginCallback;
+    // final isProfileSettingPage = state.matchedLocation == Routes.profileSetting;
+
+    // 로그인 안됨 > 로그인 페이지
+    if (!isLoggedIn && !isLogin) {
       return Routes.login;
     }
 
-    // 로그인 + (로그인 페이지 또는 콜백 페이지) + 프로필 설정 페이지 x >  홈
-    if (isLoggedIn &&
-        (isLoginPage || isLoginCallbackPage) &&
-        !isProfileSettingPage) {
-      return Routes.home;
+    // 로그인 + 로그인 페이지 > 콜백페이지
+    if (isLoggedIn && isLogin) {
+      return Routes.loginCallback;
     }
     return null;
   },
