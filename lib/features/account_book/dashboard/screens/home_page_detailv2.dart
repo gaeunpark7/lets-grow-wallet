@@ -1,36 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lets_grow_wallet/app/router/route_paths.dart';
 import 'package:intl/intl.dart';
+import 'package:lets_grow_wallet/features/account_book/add_transactions/notifier/transaction_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/screens/edit_expense_page.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/screens/edit_income_page.dart';
 import 'package:lets_grow_wallet/features/main/main_page.dart';
 import 'package:lets_grow_wallet/features/account_book/model/transaction_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class HomePageDetailv2 extends StatefulWidget {
+class HomePageDetailv2 extends ConsumerStatefulWidget {
   final TransactionModel transaction;
 
   const HomePageDetailv2({super.key, required this.transaction});
 
   @override
-  State<HomePageDetailv2> createState() => _HomePageDetailState();
+  ConsumerState<HomePageDetailv2> createState() => _HomePageDetailState();
 }
 
-class _HomePageDetailState extends State<HomePageDetailv2> {
+class _HomePageDetailState extends ConsumerState<HomePageDetailv2> {
   //내역 삭제
   Future<void> deleteTransaction() async {
-    final supabase = Supabase.instance.client;
-    await supabase
-        .from('transactions')
-        .delete()
-        .eq('id', widget.transaction.id);
+    try {
+      await ref
+          .read(transactionProvider.notifier)
+          .deleteTransaction(widget.transaction.id);
 
-    if (mounted) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("삭제 되었습니다.")));
-      context.go(Routes.home);
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("삭제 되었습니다.")));
+        context.go(Routes.home);
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('삭제 실패: $e')));
+      }
     }
   }
 

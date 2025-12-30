@@ -19,18 +19,23 @@ class HomePageDetail extends ConsumerStatefulWidget {
 
 class _HomePageDetailState extends ConsumerState<HomePageDetail> {
   Future<void> deleteTransaction() async {
-    final supabase = Supabase.instance.client;
-    await supabase
-        .from('transactions')
-        .delete()
-        .eq('id', widget.transaction.id);
+    try {
+      await ref
+          .read(transactionProvider.notifier)
+          .deleteTransaction(widget.transaction.id);
 
-    ref.invalidate(transactionProvider);
-    if (mounted) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("삭제 되었습니다.")));
-      context.go(Routes.home);
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("삭제 되었습니다.")));
+        context.go(Routes.home);
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('삭제 실패: $e')));
+      }
     }
   }
 

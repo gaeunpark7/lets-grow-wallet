@@ -54,13 +54,12 @@ class _AddIncomePageState extends ConsumerState<AddIncomePage> {
     return NumberFormat('#,###').format(number);
   }
 
-  //supabase transaction model
-  Future<void> addTransaction(TransactionModel transaction) async {
+  Future<void> _addTransaction(
+    TransactionModel transaction,
+    WidgetRef ref,
+  ) async {
     try {
-      final supabase = Supabase.instance.client;
-      final response = await supabase
-          .from('transactions')
-          .insert(transaction.toMap());
+      await ref.read(transactionProvider.notifier).addTransaction(transaction);
     } catch (e) {
       rethrow;
     }
@@ -272,27 +271,34 @@ class _AddIncomePageState extends ConsumerState<AddIncomePage> {
                         );
                         return;
                       }
-                      if (selectedCategoryIdx == null) return;
-                      final transaction = TransactionModel(
-                        id: Uuid().v4(),
-                        userId: userId,
-                        title: titleController.text,
-                        amount:
-                            int.tryParse(
-                              amountController.text.replaceAll(',', ''),
-                            ) ??
-                            0, //콤마제거
-                        categoryId: categories[selectedCategoryIdx!].id,
-                        paymentMethod: selectedPayType,
-                        memo: memoController.text,
-                        date: selectedDate,
-                        createdAt: DateTime.now(),
-                        type: 'income',
-                      );
-                      await addTransaction(transaction);
-                      ref.invalidate(transactionProvider);
-                      if (mounted) {
-                        context.pop();
+
+                      try {
+                        final transaction = TransactionModel(
+                          id: Uuid().v4(),
+                          userId: userId,
+                          title: titleController.text,
+                          amount:
+                              int.tryParse(
+                                amountController.text.replaceAll(',', ''),
+                              ) ??
+                              0, //콤마제거
+                          categoryId: categories[selectedCategoryIdx!].id,
+                          paymentMethod: selectedPayType,
+                          memo: memoController.text,
+                          date: selectedDate,
+                          createdAt: DateTime.now(),
+                          type: 'income',
+                        );
+                        await _addTransaction(transaction, ref);
+                        if (mounted) {
+                          context.pop();
+                        }
+                      } catch (e) {
+                        if (mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('수입 추가 실패: $e')),
+                          );
+                        }
                       }
                     },
                     child: const Text("지출 추가"),
