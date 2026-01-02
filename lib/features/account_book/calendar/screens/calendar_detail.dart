@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:lets_grow_wallet/features/account_book/calendar/widgets/calendar_detail_emotion.dart';
 import 'package:lets_grow_wallet/features/account_book/model/daily_category_stat_model.dart';
 import 'package:lets_grow_wallet/features/account_book/services/daily_category_stat_service.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
@@ -67,14 +68,13 @@ class _CalendartDetailState extends State<CalendartDetail> {
                   ),
                 ),
                 Spacer(),
-                Icon(
-                  Icons.emoji_emotions_outlined,
-                  color: MainColors.mainLight,
-                  size: 30,
+                CalendarDetailEmotion(
+                  selectedDate: widget.selectedDate ?? DateTime.now(),
                 ),
               ],
             ),
             Divider(color: MainColors.mainLight, thickness: 2),
+
             SizedBox(height: 12),
 
             // 데이터 표시

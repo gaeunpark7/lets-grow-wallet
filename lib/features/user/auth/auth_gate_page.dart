@@ -54,6 +54,9 @@ class _AuthGatePageState extends State<AuthGatePage> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    return const Scaffold(
+      backgroundColor: Colors.white,
+      body: Center(child: CircularProgressIndicator()),
+    );
   }
 }
