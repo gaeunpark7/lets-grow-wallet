@@ -1,5 +1,3 @@
-import 'package:uuid/uuid.dart';
-
 class TransactionModel {
   final String id;
   final String userId;
