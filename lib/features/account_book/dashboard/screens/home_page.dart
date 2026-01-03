@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:lets_grow_wallet/features/account_book/add_transactions/notifier/transaction_notifier.dart';
+import 'package:lets_grow_wallet/features/account_book/riverpod/transaction_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/build_total.dart';
 import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/floating_menu_button.dart';
 import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/monthly_header.dart';
@@ -80,7 +80,7 @@ class _homePageState extends ConsumerState<HomePage> {
               //테이블 리스트
               Expanded(
                 child: ref
-                    .watch(transactionProvider)
+                    .watch(transactionNotifierProvider)
                     .when(
                       data: (transactions) =>
                           TableList(transactions: transactions),

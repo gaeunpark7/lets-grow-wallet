@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lets_grow_wallet/features/account_book/riverpod/calendar_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/services/user_emotion_service.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 
-class CalendarDetailEmotion extends StatefulWidget {
+class CalendarDetailEmotion extends ConsumerStatefulWidget {
   final DateTime selectedDate;
 
   const CalendarDetailEmotion({super.key, required this.selectedDate});
 
   @override
-  State<CalendarDetailEmotion> createState() => _CalendarDetailEmotionState();
+  ConsumerState<CalendarDetailEmotion> createState() =>
+      _CalendarDetailEmotionState();
 }
 
-class _CalendarDetailEmotionState extends State<CalendarDetailEmotion> {
+class _CalendarDetailEmotionState extends ConsumerState<CalendarDetailEmotion> {
   final _emotionService = UserEmotionService();
-  int _selectedValue = 0;
+  String _selectedEmotion = 'basic';
   bool _isLoading = true;
-
-  final Map<int, String> _emotionMap = {0: 'happy', 1: 'basic', 2: 'sad'};
+  bool _hasEmotion = false; // 감정 등록 여부 확인
+  final List<String> _emotions = ['happy', 'good', 'basic', 'angry', 'sad'];
 
   @override
   void initState() {
@@ -32,38 +35,38 @@ class _CalendarDetailEmotionState extends State<CalendarDetailEmotion> {
 
       if (emotion != null && mounted) {
         setState(() {
-          _selectedValue = _emotionMap.entries
-              .firstWhere(
-                (entry) => entry.value == emotion,
-                orElse: () => MapEntry(0, 'sentiment_satisfied'),
-              )
-              .key;
+          _selectedEmotion = emotion;
+          _hasEmotion = true;
           _isLoading = false;
         });
       } else {
         setState(() {
+          _hasEmotion = false;
           _isLoading = false;
         });
       }
     } catch (e) {
       if (mounted) {
         setState(() {
+          _hasEmotion = false;
           _isLoading = false;
         });
       }
     }
   }
 
-  Future<void> _saveEmotion(int value) async {
+  Future<void> _saveEmotion(String emotion) async {
     try {
       await _emotionService.saveEmotion(
-        iconName: _emotionMap[value]!,
+        iconName: emotion,
         date: widget.selectedDate,
       );
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text('오늘의 감정을 등록했어요')));
+        ).showSnackBar(const SnackBar(content: Text('오늘의 감정을 등록했어요')));
+        // 캘린더 데이터 새로고침
+        ref.read(calendarStatNotifierProvider.notifier).refreshDailyStats();
       }
     } catch (e) {
       if (mounted) {
@@ -89,41 +92,39 @@ class _CalendarDetailEmotionState extends State<CalendarDetailEmotion> {
 
     return DropdownButton<int>(
       dropdownColor: Colors.white,
+      borderRadius: BorderRadius.circular(50),
       isDense: true,
-      value: _selectedValue,
+      value: _emotions.indexOf(_selectedEmotion),
       underline: SizedBox(),
-      icon: SizedBox(), // 화살표 숨김
-      selectedItemBuilder: (context) => [
-        _buildIcon(Icons.sentiment_satisfied_outlined),
-        _buildIcon(Icons.sentiment_neutral_outlined),
-        _buildIcon(Icons.sentiment_dissatisfied_outlined),
-      ],
-      items: [
-        DropdownMenuItem(
-          value: 0,
-          child: _buildIcon(Icons.sentiment_satisfied_outlined),
-        ),
-        DropdownMenuItem(
-          value: 1,
-          child: _buildIcon(Icons.sentiment_neutral_outlined),
-        ),
-        DropdownMenuItem(
-          value: 2,
-          child: _buildIcon(Icons.sentiment_dissatisfied_outlined),
-        ),
-      ],
-      onChanged: (value) {
-        if (value != null) {
-          setState(() {
-            _selectedValue = value;
-          });
-          _saveEmotion(value);
-        }
-      },
+      icon: SizedBox(),
+      selectedItemBuilder: (context) =>
+          _emotions.map((emotion) => _buildIconImage(emotion)).toList(),
+      items: _emotions
+          .asMap()
+          .entries
+          .map(
+            (entry) => DropdownMenuItem(
+              value: entry.key,
+              child: _buildIconImage(entry.value),
+            ),
+          )
+          .toList(),
+      onChanged: _hasEmotion
+          ? null
+          : (value) {
+              if (value != null) {
+                setState(() {
+                  _selectedEmotion = _emotions[value];
+                });
+                _saveEmotion(_emotions[value]);
+              }
+            },
     );
   }
 }
 
-Widget _buildIcon(IconData iconData) {
-  return Center(child: Icon(iconData, size: 30, color: MainColors.point));
+Widget _buildIconImage(String iconName) {
+  return Center(
+    child: Image.asset('assets/emotions/$iconName.png', width: 30, height: 30),
+  );
 }

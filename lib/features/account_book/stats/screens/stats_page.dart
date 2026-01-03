@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lets_grow_wallet/features/account_book/provider/stat_provider.dart';
+import 'package:lets_grow_wallet/features/account_book/riverpod/stats_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/stats/screens/stats_expense_view.dart';
 import 'package:lets_grow_wallet/features/account_book/stats/screens/stats_income_view.dart';
 import 'package:lets_grow_wallet/features/account_book/stats/widgets/montly_header.dart';
@@ -70,7 +70,7 @@ class _StatsPageState extends State<StatsPage>
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         minimumSize: Size(MediaQuery.of(context).size.width * 0.4, 45),
         elevation: 0,
-        shadowColor: Colors.transparent, // 그림자 제거
+        shadowColor: Colors.transparent,
       ),
       onPressed: () {
         setState(() => _tabController.index = index);

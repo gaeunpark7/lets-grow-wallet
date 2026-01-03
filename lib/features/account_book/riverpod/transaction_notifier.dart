@@ -1,5 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lets_grow_wallet/features/account_book/model/transaction_model.dart';
+import 'package:lets_grow_wallet/features/account_book/riverpod/calendar_notifier.dart';
+import 'package:lets_grow_wallet/features/account_book/riverpod/stats_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/services/transaction_service.dart';
 
 class TransactionNotifier extends AsyncNotifier<List<TransactionModel>> {
@@ -7,7 +9,6 @@ class TransactionNotifier extends AsyncNotifier<List<TransactionModel>> {
 
   @override
   Future<List<TransactionModel>> build() async {
-    // 초기 데이터 로드
     return _fetchMonthlyTransactions();
   }
 
@@ -19,36 +20,41 @@ class TransactionNotifier extends AsyncNotifier<List<TransactionModel>> {
     return _service.fetchTransactionsByDateRange(start, end);
   }
 
-  // 거래 추가 후 목록 새로고침
+  // CRUD 처리 (공통 로직)
+  Future<void> _refreshAfterCrud() async {
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() => _fetchMonthlyTransactions());
+
+    // 캘린더와 통계 새로고침
+    ref.read(calendarStatNotifierProvider.notifier).refreshDailyStats();
+    ref.read(monthlyCategoryStatsNotifierProvider.notifier).refresh();
+  }
+
+  // 거래 추가
   Future<void> addTransaction(TransactionModel transaction) async {
     await _service.addTransaction(transaction);
-    // 데이터 다시 로드
-    state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() => _fetchMonthlyTransactions());
+    await _refreshAfterCrud();
   }
 
-  // 거래 수정 후 목록 새로고침
+  // 거래 수정
   Future<void> updateTransaction(TransactionModel transaction) async {
     await _service.updateTransaction(transaction);
-    state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() => _fetchMonthlyTransactions());
+    await _refreshAfterCrud();
   }
 
-  // 거래 삭제 후 목록 새로고침
+  // 거래 삭제
   Future<void> deleteTransaction(String transactionId) async {
     await _service.deleteTransaction(transactionId);
-    state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() => _fetchMonthlyTransactions());
+    await _refreshAfterCrud();
   }
 
   // 수동 새로고침
   Future<void> refresh() async {
-    state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() => _fetchMonthlyTransactions());
+    await _refreshAfterCrud();
   }
 }
 
-final transactionProvider =
-    AsyncNotifierProvider<TransactionNotifier, List<TransactionModel>>(
-      () => TransactionNotifier(),
-    );
+final transactionNotifierProvider =
+    AsyncNotifierProvider<TransactionNotifier, List<TransactionModel>>(() {
+      return TransactionNotifier();
+    });

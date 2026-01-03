@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:lets_grow_wallet/app/router/route_paths.dart';
-import 'package:lets_grow_wallet/features/account_book/add_transactions/notifier/transaction_notifier.dart';
+import 'package:lets_grow_wallet/features/account_book/riverpod/transaction_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/model/transaction_model.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -21,7 +21,7 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
   Future<void> deleteTransaction() async {
     try {
       await ref
-          .read(transactionProvider.notifier)
+          .read(transactionNotifierProvider.notifier)
           .deleteTransaction(widget.transaction.id);
 
       if (mounted) {
