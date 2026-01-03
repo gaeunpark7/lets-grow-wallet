@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lets_grow_wallet/features/account_book/dashboard/screens/home_page_detail.dart';
+import 'package:lets_grow_wallet/features/account_book/dashboard/screens/home_page_detailv2.dart';
 import 'package:lets_grow_wallet/features/account_book/model/category_model.dart';
 import 'package:lets_grow_wallet/features/account_book/model/transaction_model.dart';
 import 'package:lets_grow_wallet/features/account_book/services/transaction_service.dart';
@@ -10,6 +11,7 @@ import 'package:lets_grow_wallet/utils/colors.dart';
 class TableList extends StatelessWidget {
   final transactionService = TransactionService();
   final List<TransactionModel> transactions;
+  // final List<Category> categories;
 
   TableList({super.key, required this.transactions});
 

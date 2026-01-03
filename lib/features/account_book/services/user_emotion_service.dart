@@ -53,35 +53,4 @@ class UserEmotionService {
 
     return response?['icon_name'] as String?;
   }
-
-  Future<Map<DateTime, String>> getEmotionsByMonth(DateTime month) async {
-    final userId = supabase.auth.currentUser?.id;
-    if (userId == null) return {};
-
-    final startDate = DateTime(month.year, month.month, 1);
-    final endDate = DateTime(month.year, month.month + 1, 0);
-    final startDateString = startDate.toIso8601String().substring(0, 10);
-    final endDateString = endDate.toIso8601String().substring(0, 10);
-
-    final response = await supabase
-        .from('emotions')
-        .select('date, icon_name')
-        .eq('user_id', userId)
-        .gte('date', startDateString)
-        .lte('date', endDateString);
-
-    final Map<DateTime, String> emotionMap = {};
-    for (var item in response) {
-      final dateString = item['date'] as String;
-      final parts = dateString.split('-');
-      final date = DateTime(
-        int.parse(parts[0]),
-        int.parse(parts[1]),
-        int.parse(parts[2]),
-      );
-      emotionMap[date] = item['icon_name'] as String;
-    }
-
-    return emotionMap;
-  }
 }

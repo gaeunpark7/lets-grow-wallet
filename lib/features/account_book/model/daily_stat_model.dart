@@ -5,6 +5,7 @@ class DailyStat {
   final int totalExpense;
   final int cashExpense;
   final int cardExpense;
+  final String emotionIcon;
 
   DailyStat({
     required this.userId,
@@ -13,6 +14,7 @@ class DailyStat {
     required this.totalExpense,
     required this.cashExpense,
     required this.cardExpense,
+    required this.emotionIcon,
   });
 
   factory DailyStat.fromMap(Map<String, dynamic> map) {
@@ -23,6 +25,7 @@ class DailyStat {
       totalExpense: map['total_expense'] ?? 0,
       cashExpense: map['cash_expense'] ?? 0,
       cardExpense: map['card_expense'] ?? 0,
+      emotionIcon: map['emotion_icon'] ?? '',
     );
   }
 }
