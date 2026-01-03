@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lets_grow_wallet/features/account_book/provider/stat_provider.dart';
+import 'package:lets_grow_wallet/features/account_book/riverpod/stats_notifier.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 
 class MonthHeader extends ConsumerWidget {
