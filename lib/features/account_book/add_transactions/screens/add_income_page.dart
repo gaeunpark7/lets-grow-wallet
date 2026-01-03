@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:lets_grow_wallet/app/router/route_paths.dart';
-import 'package:lets_grow_wallet/features/account_book/riverpod/transaction_notifier.dart';
+import 'package:lets_grow_wallet/features/account_book/add_transactions/notifier/transaction_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/screens/add_expense_page.dart';
 import 'package:lets_grow_wallet/features/account_book/services/transaction_service.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/category_selector.dart';
@@ -59,9 +59,7 @@ class _AddIncomePageState extends ConsumerState<AddIncomePage> {
     WidgetRef ref,
   ) async {
     try {
-      await ref
-          .read(transactionNotifierProvider.notifier)
-          .addTransaction(transaction);
+      await ref.read(transactionProvider.notifier).addTransaction(transaction);
     } catch (e) {
       rethrow;
     }
@@ -124,7 +122,7 @@ class _AddIncomePageState extends ConsumerState<AddIncomePage> {
                     Expanded(
                       child: GestureDetector(
                         onTap: () =>
-                            context.push('${Routes.home}/${Routes.addExpense}'),
+                            context.push('$Routes.home}/${Routes.addExpense}'),
                         child: TitleButton(
                           color: MainColors.main,
                           border: Border(),
@@ -137,6 +135,7 @@ class _AddIncomePageState extends ConsumerState<AddIncomePage> {
                     Expanded(
                       child: TitleButton(
                         color: MainColors.mainLight,
+                        // border: Border.all(color: Colors.black, width: 1),
                         text: "수입",
                       ),
                     ),
@@ -292,7 +291,7 @@ class _AddIncomePageState extends ConsumerState<AddIncomePage> {
                         );
                         await _addTransaction(transaction, ref);
                         if (mounted) {
-                          context.push(Routes.home);
+                          context.pop();
                         }
                       } catch (e) {
                         if (mounted) {

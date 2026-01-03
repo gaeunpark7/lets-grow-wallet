@@ -6,7 +6,6 @@ import 'package:lets_grow_wallet/utils/colors.dart';
 class CalendarCell extends StatelessWidget {
   final DateTime day;
   final DailyStat? stat;
-  final String? emotion;
   final bool isToday;
   final bool isSelected;
   final bool isOutside;
@@ -15,11 +14,23 @@ class CalendarCell extends StatelessWidget {
     super.key,
     required this.day,
     this.stat,
-    this.emotion,
     this.isToday = false,
     this.isSelected = false,
     this.isOutside = false,
   });
+
+  IconData _getEmotionIcon(String? emotionIcon) {
+    switch (emotionIcon) {
+      case 'happy':
+        return Icons.sentiment_satisfied_outlined;
+      case 'basic':
+        return Icons.sentiment_neutral_outlined;
+      case 'sad':
+        return Icons.sentiment_dissatisfied_outlined;
+      default:
+        return Icons.sentiment_satisfied_outlined;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,21 +71,18 @@ class CalendarCell extends StatelessWidget {
                   color: textColor,
                 ),
               ),
-
-              SizedBox(height: 5),
-              if (emotion != null)
-                Image.asset(
-                  'assets/emotions/$emotion.png',
-                  width: 25,
-                  height: 25,
-                  errorBuilder: (context, error, stackTrace) {
-                    return SizedBox.shrink();
-                  },
-                ),
               if (stat != null) ...[
+                Icon(
+                  _getEmotionIcon(
+                    stat!.emotionIcon.isEmpty ? null : stat!.emotionIcon,
+                  ),
+                  color: MainColors.mainLight,
+                  size: 20,
+                ),
+                SizedBox(height: 5),
                 if (stat!.totalExpense != 0)
                   Text(
-                    '-${stat!.totalExpense}',
+                    '- ${stat!.totalExpense}',
                     style: const TextStyle(fontSize: 11, color: Colors.red),
                   ),
                 if (stat!.totalIncome != 0)
