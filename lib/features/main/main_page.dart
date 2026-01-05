@@ -68,8 +68,9 @@ class _MainPageState extends State<MainPage> {
         'user_id': userId,
         'character_id': defaultCharacterId,
         'experience': 0,
-        // 'created_at': DateTime.now().toIso8601String(),
+        'stage': 'egg',
         'is_active': true,
+        //character_images테이블의 is_default가 true인 이미지로 설정
       });
       // 캐릭터 다이얼로그
       if (mounted) {

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:lets_grow_wallet/features/account_book/model/character_model.dart';
-import 'package:lets_grow_wallet/features/account_book/shop/model/shop_item.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 
 class ShopItemGridview extends StatelessWidget {

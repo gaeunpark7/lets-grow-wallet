@@ -27,10 +27,10 @@ class CharacterService {
       print(response);
       return dataList.map((data) => CharacterModel.fromMap(data)).toList();
     } on PostgrestException catch (e) {
-      print("🔴 Postgres Error: ${e.message}");
+      print(" Postgres Error: ${e.message}");
       throw Exception("Postgres error: ${e.message}");
     } catch (e) {
-      print("🔴 Unknown Error: $e");
+      print(" Unknown Error: $e");
       throw Exception("Unknown error: $e");
     }
   }
