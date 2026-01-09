@@ -1,9 +1,9 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lets_grow_wallet/app/router/route_paths.dart';
 import 'package:lets_grow_wallet/features/account_book/character/widgets/character_action_bottom_bar.dart';
+import 'package:lets_grow_wallet/features/account_book/character/widgets/character_page_character.dart';
 import 'package:lets_grow_wallet/features/account_book/character/widgets/character_page_level.dart';
 import 'package:lets_grow_wallet/features/account_book/character/widgets/not_character.dart';
 import 'package:lets_grow_wallet/features/account_book/model/user_character_model.dart';
@@ -105,6 +105,14 @@ class _CharacterPageState extends State<CharacterPage> {
 
   // 상호작용에 따른 감정 변화
   void onInteraction(InteractionType type) {
+    final characterId = _activeCharacter?.characterId;
+    if (characterId != null) {
+      _userCharacterService.recordInteractionOncePerDay(
+        characterId: characterId,
+        interactionType: type,
+      );
+    }
+
     final emotion =
         _activeCharacter?.emotionForInteraction(type) ??
         resolveEmotion(interaction: type);
@@ -126,7 +134,7 @@ class _CharacterPageState extends State<CharacterPage> {
   @override
   Widget build(BuildContext context) {
     final levelProgress = _levelProgress();
-    final size = MediaQuery.of(context).size;
+    // final size = MediaQuery.of(context).size;
     final imageUrl =
         _activeCharacter?.imageUrlForEmotion(_currentEmotion) ?? '';
 
@@ -153,45 +161,7 @@ class _CharacterPageState extends State<CharacterPage> {
                         maxExp: levelProgress.maxExp.toDouble(),
                       ),
                       const SizedBox(height: 50),
-                      Container(
-                        height: size.width * 1,
-                        width: size.width * 1,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(120),
-                          border: Border.all(color: Colors.black, width: 0.8),
-                        ),
-                        child: Center(
-                          child: Image.network(
-                            imageUrl,
-                            width: size.width * 0.6,
-                            fit: BoxFit.cover,
-                            gaplessPlayback: true,
-                            loadingBuilder: (context, child, loadingProgress) {
-                              if (loadingProgress == null) return child;
-                              return Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  child,
-                                  const SizedBox(
-                                    width: 24,
-                                    height: 24,
-                                    child: CircularProgressIndicator(
-                                      color: MainColors.mainLight,
-                                    ),
-                                  ),
-                                ],
-                              );
-                            },
-                            errorBuilder: (context, error, stackTrace) {
-                              return Icon(
-                                Icons.pets,
-                                size: 100,
-                                color: Colors.grey[400],
-                              );
-                            },
-                          ),
-                        ),
-                      ),
+                      CharacterPageCharacter(imageUrl: imageUrl),
                     ],
                   ),
                 ),
