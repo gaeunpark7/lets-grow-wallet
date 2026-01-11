@@ -10,7 +10,8 @@ import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/table_h
 import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/table_list.dart';
 import 'package:lets_grow_wallet/features/account_book/services/stat_service.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
-import '../../model/transaction_model.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'dart:async';
 import '../../model/montyle_stat_model.dart';
 
 class HomePage extends ConsumerStatefulWidget {
@@ -22,10 +23,13 @@ class HomePage extends ConsumerStatefulWidget {
 
 class _homePageState extends ConsumerState<HomePage> {
   final statService = StatService();
-  late final Future stat;
+  late Future<MonthlyStat?> _statFuture;
 
   late DateTime start;
   late DateTime end;
+
+  StreamSubscription<AuthState>? _authSub;
+  String? _lastUserId;
 
   @override
   void initState() {
@@ -33,7 +37,29 @@ class _homePageState extends ConsumerState<HomePage> {
     final now = DateTime.now();
     start = DateTime(now.year, now.month, 1);
     end = DateTime(now.year, now.month + 1, 1);
-    stat = statService.fetchMonthlyStat(start, end);
+
+    _lastUserId = Supabase.instance.client.auth.currentUser?.id;
+    _statFuture = statService.fetchMonthlyStat(start, end);
+
+    // 로그아웃/다른 계정 로그인 시 캐시된 provider/future를 갱신
+    _authSub = Supabase.instance.client.auth.onAuthStateChange.listen((event) {
+      final nextUserId = event.session?.user.id;
+      if (nextUserId == _lastUserId) return;
+      _lastUserId = nextUserId;
+
+      ref.invalidate(transactionNotifierProvider);
+      if (mounted) {
+        setState(() {
+          _statFuture = statService.fetchMonthlyStat(start, end);
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _authSub?.cancel();
+    super.dispose();
   }
 
   @override
@@ -41,8 +67,6 @@ class _homePageState extends ConsumerState<HomePage> {
     final now = DateTime.now();
     final year = now.year;
     final month = now.month;
-
-    final screenWidth = MediaQuery.of(context).size.width; // 반응형 너비
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -114,7 +138,7 @@ class _homePageState extends ConsumerState<HomePage> {
                   Expanded(
                     flex: 2,
                     child: StatFutureBuilder(
-                      future: statService.fetchMonthlyStat(start, end),
+                      future: _statFuture,
                       valueBuilder: (stat) =>
                           NumberFormat('#,###').format(stat.cardBalance),
                       textColor: MainColors.mainDark,
@@ -134,7 +158,7 @@ class _homePageState extends ConsumerState<HomePage> {
                   Expanded(
                     flex: 2,
                     child: StatFutureBuilder(
-                      future: statService.fetchMonthlyStat(start, end),
+                      future: _statFuture,
                       valueBuilder: (stat) =>
                           NumberFormat('#,###').format(stat.cashBalance),
                       textColor: MainColors.mainDark,
@@ -145,14 +169,8 @@ class _homePageState extends ConsumerState<HomePage> {
               ),
               // 결과
               FutureBuilder<MonthlyStat?>(
-                future: statService.fetchMonthlyStat(start, end),
+                future: _statFuture,
                 builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return const Padding(
-                      padding: EdgeInsets.all(16.0),
-                      child: CircularProgressIndicator(),
-                    );
-                  }
                   if (snapshot.hasError) {
                     // 에러 상태
                     return const Padding(
@@ -160,8 +178,18 @@ class _homePageState extends ConsumerState<HomePage> {
                       child: Text("데이터를 불러오는 중 오류가 발생했습니다."),
                     );
                   }
-                  final stat = snapshot.data!;
-                  final totalSum = stat.totalIncome - stat.totalExpense;
+
+                  if (snapshot.connectionState == ConnectionState.waiting ||
+                      snapshot.connectionState == ConnectionState.active) {
+                    return const Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+
+                  final stat = snapshot.data;
+                  final totalIncome = stat?.totalIncome ?? 0;
+                  final totalExpense = stat?.totalExpense ?? 0;
 
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -178,8 +206,7 @@ class _homePageState extends ConsumerState<HomePage> {
                       Expanded(
                         flex: 2,
                         child: BuildTotal(
-                          text:
-                              "+${NumberFormat('#,###').format(stat.totalIncome) ?? "0"}",
+                          text: "+${NumberFormat('#,###').format(totalIncome)}",
                           textColor: MainColors.income,
                           rightBorder: 1,
                         ),
@@ -196,7 +223,7 @@ class _homePageState extends ConsumerState<HomePage> {
                         flex: 2,
                         child: BuildTotal(
                           text:
-                              "-${NumberFormat('#,###').format(stat.totalExpense) ?? "0"}",
+                              "-${NumberFormat('#,###').format(totalExpense)}",
                           textColor: MainColors.expense,
                         ),
                       ),
@@ -221,7 +248,7 @@ class _homePageState extends ConsumerState<HomePage> {
                   Expanded(
                     flex: 5,
                     child: StatFutureBuilder(
-                      future: statService.fetchMonthlyStat(start, end),
+                      future: _statFuture,
                       valueBuilder: (stat) {
                         final totalSum = stat.totalIncome - stat.totalExpense;
                         return NumberFormat('#,###').format(totalSum);

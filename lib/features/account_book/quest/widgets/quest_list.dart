@@ -1,22 +1,75 @@
 import 'package:flutter/material.dart';
 import 'package:lets_grow_wallet/features/account_book/model/daily_quest_model.dart';
+import 'package:lets_grow_wallet/features/account_book/services/daily_quest_service.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 
 class QuestList extends StatefulWidget {
-  const QuestList({super.key, required this.index, required this.quest});
+  const QuestList({
+    super.key,
+    required this.index,
+    required this.quest,
+    this.onRewardClaimed,
+  });
   final DailyQuest quest;
   final int index;
+  final VoidCallback? onRewardClaimed;
 
   @override
   State<QuestList> createState() => _QuestListState();
 }
 
 class _QuestListState extends State<QuestList> {
+  final _dailyQuestService = DailyQuestService();
+  bool _claimingReward = false;
+
+  Future<void> _claimReward() async {
+    if (_claimingReward) return;
+    setState(() {
+      _claimingReward = true;
+    });
+
+    try {
+      await _dailyQuestService.giveReward(questId: widget.quest.id);
+
+      if (!mounted) return;
+      await showDialog<void>(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('보상 획득'),
+            content: const Text('15xp, 15coin 획득!'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('확인'),
+              ),
+            ],
+          );
+        },
+      );
+
+      widget.onRewardClaimed?.call();
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('보상 수령 실패: $e')));
+    } finally {
+      if (!mounted) return;
+      setState(() {
+        _claimingReward = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final bool completed = widget.quest.isCompleted;
-    final double progress = completed ? 1.0 : 0.0;
-
+    final double progress = completed ? 1.0 : 0.0; //진행률: 1(완료), 0(미완료)
+    //퀘스트 완료, 보상 미지급, 유효한 id일 때 보상 수령
+    final bool canClaimReward =
+        completed && !widget.quest.rewardGiven && widget.quest.id.isNotEmpty;
     String subtitle;
     switch (widget.quest.questType) {
       case 'register_transaction':
@@ -60,12 +113,40 @@ class _QuestListState extends State<QuestList> {
           ),
           const SizedBox(height: 8),
           Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: canClaimReward
+                ? MainAxisAlignment.spaceBetween
+                : MainAxisAlignment.end,
             children: [
               Text(
                 "달성률 ${(progress * 100).toStringAsFixed(0)}%",
                 style: TextStyle(fontSize: 14, color: MainColors.mainLight),
               ),
+              if (canClaimReward) ...[
+                const SizedBox(width: 12),
+                ElevatedButton(
+                  onPressed: _claimingReward ? null : _claimReward,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: MainColors.mainLight,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
+                    minimumSize: const Size(0, 32),
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                  child: _claimingReward
+                      ? const SizedBox(
+                          width: 14,
+                          height: 14,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : const Text('보상 받기'),
+                ),
+              ],
             ],
           ),
         ],
@@ -73,4 +154,3 @@ class _QuestListState extends State<QuestList> {
     );
   }
 }
-

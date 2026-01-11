@@ -11,11 +11,12 @@ class StatService {
     final end = DateTime(date.year, date.month + 1);
 
     final user = supabase.auth.currentUser;
+    if (user == null) return null;
 
     final result = await supabase
         .from('monthly_stats')
         .select()
-        .eq('user_id', user!.id)
+        .eq('user_id', user.id)
         .gte('month', start.toIso8601String())
         .lt('month', end.toIso8601String());
 
@@ -28,7 +29,8 @@ class StatService {
   Future<Map<DateTime, DailyStat>> fetchDailyStatsForMonth(
     DateTime month,
   ) async {
-    final user = supabase.auth.currentUser!;
+    final user = supabase.auth.currentUser;
+    if (user == null) return {};
     final start = DateTime(month.year, month.month, 1);
     final end = DateTime(month.year, month.month + 1, 1);
 
@@ -64,7 +66,8 @@ class StatService {
   Future<List<MonthlyCategoryStat>> fetchMonthlyCategoryStats(
     DateTime month,
   ) async {
-    final user = supabase.auth.currentUser!;
+    final user = supabase.auth.currentUser;
+    if (user == null) return [];
     final start = DateTime(month.year, month.month, 1);
     final end = DateTime(month.year, month.month + 1, 1);
 

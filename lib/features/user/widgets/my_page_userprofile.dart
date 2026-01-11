@@ -89,46 +89,32 @@ class _MyPageUserProfileState extends State<MyPageUserProfilePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Lv 8",
-                          style: TextStyle(
+                          widget.userProfile!.nickname,
+                          style: const TextStyle(
+                            fontSize: 22,
+                            // fontWeight: FontWeight.bold,
                             color: MainColors.mainDark,
-                            fontSize: 16,
                           ),
                         ),
-                        Row(
-                          children: [
-                            Text(
-                              widget.userProfile!.nickname,
+                        SizedBox(height: 8),
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(8),
+                          color: Colors.white,
+                          child: Center(
+                            child: Text(
+                              widget.userProfile!.email,
                               style: const TextStyle(
-                                fontSize: 22,
-                                // fontWeight: FontWeight.bold,
+                                fontSize: 16,
                                 color: MainColors.mainDark,
                               ),
                             ),
-                            SizedBox(width: 5),
-                          ],
+                          ),
                         ),
-                        const SizedBox(height: 8),
                       ],
                     ),
                   ),
                 ],
-              ),
-              const SizedBox(height: 8),
-              //이메일
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(8),
-                color: Colors.white,
-                child: Center(
-                  child: Text(
-                    widget.userProfile!.email,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: MainColors.mainDark,
-                    ),
-                  ),
-                ),
               ),
             ],
           ),
@@ -148,10 +134,13 @@ class _MyPageUserProfileState extends State<MyPageUserProfilePage> {
           children: [
             const Text(
               "닉네임 변경",
-              style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 23,
+                fontWeight: FontWeight.bold,
+                color: MainColors.mainDark,
+              ),
             ),
             const SizedBox(height: 16),
-            // Text("새로운 닉네임을 입력하세요", style: TextStyle(fontSize: 15)),
             TextFormField(
               controller: nicknameController,
               decoration: const InputDecoration(
@@ -159,10 +148,13 @@ class _MyPageUserProfileState extends State<MyPageUserProfilePage> {
                   borderSide: BorderSide(color: Colors.grey, width: 0.1),
                 ),
                 hintText: "새로운 닉네임을 입력하세요.",
+                hintStyle: TextStyle(color: MainColors.mainDark),
+
                 filled: true,
                 fillColor: Color.fromARGB(255, 251, 251, 251),
+
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.black),
+                  borderSide: BorderSide(color: MainColors.mainDark),
                 ),
               ),
               maxLength: 7,
@@ -181,21 +173,27 @@ class _MyPageUserProfileState extends State<MyPageUserProfilePage> {
               },
             ),
             // const SizedBox(height: 16),
-            Text("(닉네임은 7자 이하 입력 가능)"),
-            Text("변경 후 7일 후에 재변경 가능합니다."),
+            Text(
+              "(닉네임은 7자 이하 입력 가능)",
+              style: TextStyle(color: MainColors.mainDark),
+            ),
+            Text(
+              "변경 후 7일 후에 재변경 가능합니다.",
+              style: TextStyle(color: MainColors.mainDark),
+            ),
             const SizedBox(height: 16),
 
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 _buildButton(
-                  backColor: const Color.fromARGB(255, 219, 219, 219),
-                  textColor: Colors.black,
+                  backColor: MainColors.main,
+                  textColor: MainColors.mainDark,
                   ontap: Navigator.of(context).pop,
                   text: "취소",
                 ),
                 _buildButton(
-                  backColor: Colors.black,
+                  backColor: MainColors.mainLight,
                   textColor: Colors.white,
                   ontap: () {
                     if (formKey.currentState!.validate()) {
@@ -237,7 +235,7 @@ class _buildButton extends StatelessWidget {
         backgroundColor: backColor,
         foregroundColor: textColor,
         fixedSize: Size(MediaQuery.of(context).size.width * 0.3, 20),
-        // elevation: 0,
+        elevation: 0,
       ),
       onPressed: ontap,
       child: Text(text),

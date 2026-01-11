@@ -3,24 +3,36 @@ import 'package:lets_grow_wallet/utils/colors.dart';
 
 class QuestStar extends StatelessWidget {
   static const double iconSize = 65;
-  const QuestStar({super.key});
+  final int claimedCount;
+
+  const QuestStar({super.key, required this.claimedCount});
+
+  Widget _filledStar() {
+    return const Icon(Icons.star, color: MainColors.mainLight, size: iconSize);
+  }
+
+  Widget _hollowStar() {
+    return const Stack(
+      alignment: Alignment.center,
+      children: [
+        Icon(Icons.star, color: MainColors.mainLight, size: iconSize),
+        Icon(Icons.star, color: Colors.white, size: iconSize * 0.85),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    final filled = claimedCount.clamp(0, 3);
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(Icons.star, color: MainColors.mainLight, size: iconSize),
+        filled >= 1 ? _filledStar() : _hollowStar(),
         SizedBox(width: iconSize * 0.1),
-        Icon(Icons.star, color: MainColors.mainLight, size: iconSize),
+        filled >= 2 ? _filledStar() : _hollowStar(),
         SizedBox(width: iconSize * 0.1),
-        Stack(
-          alignment: Alignment.center,
-          children: [
-            Icon(Icons.star, color: MainColors.mainLight, size: iconSize),
-            Icon(Icons.star, color: Colors.white, size: iconSize * 0.85),
-          ],
-        ),
+        filled >= 3 ? _filledStar() : _hollowStar(),
       ],
     );
   }

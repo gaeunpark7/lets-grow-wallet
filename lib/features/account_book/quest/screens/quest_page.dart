@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lets_grow_wallet/features/account_book/model/daily_quest_model.dart';
 import 'package:lets_grow_wallet/features/account_book/model/goal_model.dart';
+import 'package:lets_grow_wallet/features/account_book/quest/widgets/monthly_goals.dart';
 import 'package:lets_grow_wallet/features/account_book/quest/widgets/quest_list.dart';
 import 'package:lets_grow_wallet/features/account_book/quest/widgets/quest_star.dart';
 import 'package:lets_grow_wallet/features/account_book/quest/widgets/quest_title.dart';
@@ -88,7 +89,7 @@ class _QuestPageState extends State<QuestPage> {
       final padded = order.map((t) {
         return map[t] ??
             DailyQuest(
-              id: 0,
+              id: '',
               questType: t,
               isCompleted: false,
               rewardGiven: false,
@@ -114,7 +115,11 @@ class _QuestPageState extends State<QuestPage> {
       itemCount: _todayQuests.length,
       separatorBuilder: (_, __) => const SizedBox(height: 12),
       itemBuilder: (context, index) {
-        return QuestList(quest: _todayQuests[index], index: index);
+        return QuestList(
+          quest: _todayQuests[index],
+          index: index,
+          onRewardClaimed: _loadQuests,
+        );
       },
     );
   }
@@ -123,41 +128,29 @@ class _QuestPageState extends State<QuestPage> {
     if (_loadingMonthly)
       return const Center(child: CircularProgressIndicator());
     if (_monthlyGoals.isEmpty) {
-      return Text(
-        "월별 목표가 없습니다.",
-        style: TextStyle(fontSize: 16, color: MainColors.mainDark),
-      );
-    }
-    return Column(
-      children: _monthlyGoals.map((g) {
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 12),
-          child: Container(
-            constraints: BoxConstraints(minHeight: 80),
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
             width: double.infinity,
+            padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               border: Border.all(color: MainColors.mainLight),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    _formatGoalTitle(g),
-                    style: TextStyle(fontSize: 18, color: MainColors.mainDark),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    g.title,
-                    style: TextStyle(fontSize: 14, color: MainColors.mainLight),
-                  ),
-                ],
+            child: Center(
+              child: Text(
+                "월별 목표가 없습니다. \n목표를 설정해보세요!",
+                style: TextStyle(fontSize: 16, color: MainColors.mainDark),
               ),
             ),
           ),
-        );
+        ],
+      );
+    }
+    return Column(
+      children: _monthlyGoals.map((g) {
+        return MonthlyGoals(goalTitle: _formatGoalTitle(g), subtitle: g.title);
       }).toList(),
     );
   }
@@ -174,7 +167,6 @@ class _QuestPageState extends State<QuestPage> {
         body: LayoutBuilder(
           builder: (context, constraints) {
             final maxWidth = constraints.maxWidth;
-            final iconSize = (maxWidth * 0.12).clamp(40.0, 80.0);
 
             return SingleChildScrollView(
               child: Padding(
@@ -201,14 +193,17 @@ class _QuestPageState extends State<QuestPage> {
                       children: [
                         QuestTitle(title: "일일 미션"),
                         const SizedBox(height: 6),
-                        QuestStar(),
+                        QuestStar(
+                          claimedCount: _todayQuests
+                              .where((q) => q.isCompleted && q.rewardGiven)
+                              .length,
+                        ),
                         const SizedBox(height: 12),
                         _buildDailyQuests(),
                         const SizedBox(height: 12),
                         QuestTitle(title: "월별 미션"),
                         const SizedBox(height: 12),
                         _buildMonthlyGoals(maxWidth),
-                        const SizedBox(height: 12),
                       ],
                     ),
                   ),

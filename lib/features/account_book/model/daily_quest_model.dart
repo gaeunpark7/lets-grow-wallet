@@ -1,5 +1,5 @@
 class DailyQuest {
-  final int id;
+  final String id;
   final String questType;
   final bool isCompleted;
   final bool rewardGiven;
@@ -15,8 +15,8 @@ class DailyQuest {
 
   factory DailyQuest.fromMap(Map<String, dynamic> map) {
     return DailyQuest(
-      id: map['id'],
-      questType: map['quest_type'],
+      id: map['id']?.toString() ?? '',
+      questType: map['quest_type']?.toString() ?? '',
       isCompleted: map['is_completed'] ?? false,
       rewardGiven: map['reward_given'] ?? false,
       createdAt: DateTime.parse(map['created_at']),

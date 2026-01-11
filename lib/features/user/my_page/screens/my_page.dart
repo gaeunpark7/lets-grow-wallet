@@ -4,8 +4,6 @@ import 'package:lets_grow_wallet/app/router/route_paths.dart';
 import 'package:lets_grow_wallet/features/user/widgets/my_page_userprofile.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:lets_grow_wallet/features/user/auth/screens/login_page.dart';
-import 'package:lets_grow_wallet/features/user/auth/screens/profile_setting_page.dart';
 import 'package:lets_grow_wallet/features/user/services/user_profile_service.dart';
 import 'package:lets_grow_wallet/features/user/model/user_profile_model.dart';
 

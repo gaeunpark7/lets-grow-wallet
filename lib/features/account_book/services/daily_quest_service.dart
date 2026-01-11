@@ -46,16 +46,13 @@ class DailyQuestService {
       final result = <DailyQuest>[];
       for (var m in list) {
         try {
-          // created_at이 null일 수 있으므로 안전하게 파싱
           final createdAtRaw = m['created_at'];
           final createdAt = createdAtRaw != null
               ? DateTime.parse(createdAtRaw.toString())
               : DateTime.now();
           result.add(
             DailyQuest(
-              id: m['id'] is int
-                  ? m['id'] as int
-                  : int.tryParse('${m['id']}') ?? 0,
+              id: m['id']?.toString() ?? '',
               questType: m['quest_type']?.toString() ?? '',
               isCompleted: m['is_completed'] == true,
               rewardGiven: m['reward_given'] == true,
@@ -64,7 +61,6 @@ class DailyQuestService {
           );
         } catch (e, st) {
           print('DailyQuestService: failed to parse item $m -> $e\n$st');
-          // parsing 실패 항목은 건너뜀
         }
       }
       print('DailyQuestService.getTodayQuests parsed count: ${result.length}');
@@ -112,5 +108,22 @@ class DailyQuestService {
           'created_at',
           "${DateTime.now().toIso8601String().substring(0, 10)} 00:00:00",
         );
+  }
+
+  //퀘스트 보상 지급
+  Future<void> giveReward({required String questId}) async {
+    final userId = supabase.auth.currentUser?.id;
+    if (userId == null) {
+      throw Exception('로그인이 필요합니다.');
+    }
+    if (questId.isEmpty) {
+      throw Exception('유효하지 않은 퀘스트 ID입니다.');
+    }
+
+    await supabase
+        .from('daily_quests')
+        .update({'reward_given': true})
+        .eq('id', questId)
+        .eq('user_id', userId);
   }
 }

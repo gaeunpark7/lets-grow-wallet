@@ -7,11 +7,9 @@ class UserCharacterService {
   final supabase = Supabase.instance.client;
   static const _uuid = Uuid();
 
-  // 세션 내 중복 기록 방지(오늘 1회): characterId -> yyyy-mm-dd
   static final Map<String, String> _recordedDayByCharacterId = {};
 
   static String _iso8601WithTimezoneOffset(DateTime dt) {
-    // 예: 2026-01-09T00:00:00.000+09:00
     final base = dt.toIso8601String();
     final offset = dt.timeZoneOffset;
     final sign = offset.isNegative ? '-' : '+';
