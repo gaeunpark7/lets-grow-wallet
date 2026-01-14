@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:lets_grow_wallet/features/account_book/model/character_model.dart';
 import 'package:lets_grow_wallet/features/account_book/services/character_service.dart';
-import 'package:lets_grow_wallet/features/account_book/shop/screens/theme_shop_page.dart';
 import 'package:lets_grow_wallet/features/account_book/shop/widgets/shop_appbar.dart';
 import 'package:lets_grow_wallet/features/account_book/shop/widgets/shop_item_buy_button.dart';
 import 'package:lets_grow_wallet/features/account_book/shop/widgets/shop_item_detail.dart';
 import 'package:lets_grow_wallet/features/account_book/shop/widgets/shop_item_gridview.dart';
-import 'package:lets_grow_wallet/features/account_book/shop/widgets/shop_title_button.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 
 class ItemShopPage extends StatefulWidget {
@@ -21,6 +19,7 @@ class _ItemShopPageState extends State<ItemShopPage> {
   CharacterModel? selectedItem; // 선택된 아이템
 
   final _characterService = CharacterService();
+  int _coinReloadKey = 0;
 
   @override
   void initState() {
@@ -29,11 +28,20 @@ class _ItemShopPageState extends State<ItemShopPage> {
   }
 
   Future<void> fetchItems() async {
-    final result = await _characterService.fetchCharacters();
+    final result = await _characterService.fetchCharactersWithPurchase();
     setState(() {
       characterItems = result;
-      if (result.isNotEmpty) {
+
+      final selectedId = selectedItem?.id;
+      if (selectedId != null) {
+        selectedItem = result.cast<CharacterModel?>().firstWhere(
+          (e) => e?.id == selectedId,
+          orElse: () => result.isNotEmpty ? result[0] : null,
+        );
+      } else if (result.isNotEmpty) {
         selectedItem = result[0]; // 초기값 첫번째 아이템
+      } else {
+        selectedItem = null;
       }
     });
   }
@@ -46,7 +54,7 @@ class _ItemShopPageState extends State<ItemShopPage> {
         appBar: AppBar(
           backgroundColor: Colors.white,
           elevation: 0,
-          title: ShopAppbar(),
+          title: ShopAppbar(key: ValueKey(_coinReloadKey)),
           iconTheme: IconThemeData(color: MainColors.mainDark),
         ),
         body: Padding(
@@ -55,24 +63,25 @@ class _ItemShopPageState extends State<ItemShopPage> {
             mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
+              // 상점/테마 버튼
               // SizedBox(height: 4),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ShopTitleButton(text: "상점", backColor: MainColors.mainLight),
-                  SizedBox(width: 10),
-                  ShopTitleButton(
-                    text: "테마",
-                    textColor: MainColors.mainDark,
-                    backColor: MainColors.main,
-                    onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (ctx) => ThemeShopPage()),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 12),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.center,
+              //   children: [
+              //     ShopTitleButton(text: "상점", backColor: MainColors.mainLight),
+              //     SizedBox(width: 10),
+              //     ShopTitleButton(
+              //       text: "테마",
+              //       textColor: MainColors.mainDark,
+              //       backColor: MainColors.main,
+              //       onPressed: () => Navigator.push(
+              //         context,
+              //         MaterialPageRoute(builder: (ctx) => ThemeShopPage()),
+              //       ),
+              //     ),
+              //   ],
+              // ),
+              // SizedBox(height: 12),
               //아이템 그리드뷰
               ShopItemGridview(
                 items: characterItems,
@@ -90,7 +99,32 @@ class _ItemShopPageState extends State<ItemShopPage> {
                   : ShopItemDetail(item: selectedItem!),
 
               SizedBox(height: 12),
-              ShopItemBuyButton(),
+              ShopItemBuyButton(
+                isPurchased: selectedItem?.isPurchased ?? false,
+                onPressed: () async {
+                  final item = selectedItem;
+                  if (item == null) return;
+
+                  try {
+                    await _characterService.purchaseCharacter(item);
+                    await fetchItems();
+                    if (!mounted) return;
+                    setState(() {
+                      _coinReloadKey++;
+                    });
+                  } on InsufficientCoinException {
+                    if (!mounted) return;
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(const SnackBar(content: Text('코인이 부족합니다.')));
+                  } catch (e) {
+                    if (!mounted) return;
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text('구매에 실패했습니다: $e')));
+                  }
+                },
+              ),
               SizedBox(height: 12),
             ],
           ),

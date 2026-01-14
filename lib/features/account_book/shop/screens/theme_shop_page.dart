@@ -70,7 +70,7 @@ class _ThemeShopPageState extends State<ThemeShopPage> {
               ),
               SizedBox(height: 12),
               //구매 버튼
-              ShopItemBuyButton(),
+              // ShopItemBuyButton(),
               SizedBox(height: 12),
             ],
           ),

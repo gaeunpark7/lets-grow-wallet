@@ -24,7 +24,32 @@ class ShopItemDetail extends StatelessWidget {
                 decoration: BoxDecoration(
                   border: Border.all(color: MainColors.mainLight),
                 ),
-                child: Center(child: Image.network(item.image)),
+                child: item.image.isNotEmpty
+                    ? ClipRRect(
+                        child: ColorFiltered(
+                          colorFilter: item.isPurchased
+                              ? ColorFilter.mode(
+                                  const Color.fromARGB(
+                                    255,
+                                    105,
+                                    105,
+                                    105,
+                                  ).withOpacity(0.25),
+                                  BlendMode.darken,
+                                )
+                              : const ColorFilter.mode(
+                                  Colors.transparent,
+                                  BlendMode.srcOver,
+                                ),
+                          child: Image.network(item.image, fit: BoxFit.contain),
+                        ),
+                      )
+                    : Center(
+                        child: Text(
+                          "이미지 없음",
+                          style: TextStyle(color: MainColors.mainLight),
+                        ),
+                      ),
               ),
               SizedBox(width: 10),
               Column(

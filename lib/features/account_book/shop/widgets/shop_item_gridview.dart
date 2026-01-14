@@ -49,25 +49,42 @@ class ShopItemGridview extends StatelessWidget {
                       ),
                       child: item.image.isNotEmpty
                           ? ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
-                              child: Image.network(
-                                item.image,
-                                fit: BoxFit.contain,
-                                loadingBuilder: (ctx, child, progress) {
-                                  if (progress == null) return child;
-                                  return const Center(
-                                    child: CircularProgressIndicator(),
-                                  );
-                                },
-                                errorBuilder: (ctx, err, st) {
-                                  print(
-                                    'Image.network error for ${item.name}: $err\n$st',
-                                  );
+                              child: ColorFiltered(
+                                colorFilter: item.isPurchased
+                                    //구매 된 경우
+                                    ? ColorFilter.mode(
+                                        const Color.fromARGB(
+                                          255,
+                                          105,
+                                          105,
+                                          105,
+                                        ).withOpacity(0.25),
+                                        BlendMode.darken,
+                                      )
+                                    //구매되지 않은 경우: 원본
+                                    : const ColorFilter.mode(
+                                        Colors.transparent,
+                                        BlendMode.srcOver,
+                                      ),
+                                child: Image.network(
+                                  item.image,
+                                  fit: BoxFit.contain,
+                                  loadingBuilder: (ctx, child, progress) {
+                                    if (progress == null) return child;
+                                    return const Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  },
+                                  errorBuilder: (ctx, err, st) {
+                                    print(
+                                      'Image.network error for ${item.name}: $err\n$st',
+                                    );
 
-                                  return const Center(
-                                    child: Icon(Icons.broken_image),
-                                  );
-                                },
+                                    return const Center(
+                                      child: Icon(Icons.broken_image),
+                                    );
+                                  },
+                                ),
                               ),
                             )
                           : Center(
