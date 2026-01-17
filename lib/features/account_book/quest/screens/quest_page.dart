@@ -164,19 +164,18 @@ class _QuestPageState extends State<QuestPage> {
           backgroundColor: Colors.white,
           title: const ShopAppbar(),
         ),
-        body: LayoutBuilder(
-          builder: (context, constraints) {
-            final maxWidth = constraints.maxWidth;
-
-            return SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.only(
-                  top: 0,
-                  left: 12,
-                  right: 12,
-                  bottom: 12,
-                ),
-                child: Container(
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.only(
+              top: 0,
+              left: 12,
+              right: 12,
+              bottom: 12,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 20,
                     vertical: 18,
@@ -184,33 +183,28 @@ class _QuestPageState extends State<QuestPage> {
                   decoration: BoxDecoration(
                     border: Border.all(color: MainColors.mainLight),
                   ),
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      minHeight: constraints.maxHeight - 36,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        QuestTitle(title: "일일 미션"),
-                        const SizedBox(height: 6),
-                        QuestStar(
-                          claimedCount: _todayQuests
-                              .where((q) => q.isCompleted && q.rewardGiven)
-                              .length,
-                        ),
-                        const SizedBox(height: 12),
-                        _buildDailyQuests(),
-                        const SizedBox(height: 12),
-                        QuestTitle(title: "월별 미션"),
-                        const SizedBox(height: 12),
-                        _buildMonthlyGoals(maxWidth),
-                      ],
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      QuestTitle(title: "일일 미션"),
+                      const SizedBox(height: 6),
+                      QuestStar(
+                        claimedCount: _todayQuests
+                            .where((q) => q.isCompleted && q.rewardGiven)
+                            .length,
+                      ),
+                      const SizedBox(height: 12),
+                      _buildDailyQuests(),
+                      // const SizedBox(height: 12),
+                      // QuestTitle(title: "월별 미션"),
+                      // const SizedBox(height: 12),
+                      // _buildMonthlyGoals(MediaQuery.of(context).size.width),
+                    ],
                   ),
                 ),
-              ),
-            );
-          },
+              ],
+            ),
+          ),
         ),
       ),
     );

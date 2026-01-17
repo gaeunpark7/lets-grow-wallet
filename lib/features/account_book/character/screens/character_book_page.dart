@@ -1,59 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lets_grow_wallet/features/account_book/character/widgets/character_book_list.dart';
 import 'package:lets_grow_wallet/features/account_book/character/widgets/character_book_list_detail.dart';
+import 'package:lets_grow_wallet/features/account_book/notifier/character_book_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/quest/widgets/quest_title.dart';
 import 'package:lets_grow_wallet/features/account_book/shop/widgets/shop_appbar.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 
-import '../model/character_book_item_model.dart';
-import '../services/character_book_service.dart';
-
-class CharacterBookPage extends StatefulWidget {
+class CharacterBookPage extends ConsumerWidget {
   const CharacterBookPage({super.key});
 
   @override
-  State<CharacterBookPage> createState() => _CharacterBookPageState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final asyncState = ref.watch(characterBookNotifierProvider);
 
-class _CharacterBookPageState extends State<CharacterBookPage> {
-  final _service = CharacterBookService();
-
-  bool _isLoading = true;
-  List<CharacterBookItem> _items = const [];
-  CharacterBookItem? _selected;
-
-  @override
-  void initState() {
-    super.initState();
-    _load();
-  }
-
-  Future<void> _load() async {
-    setState(() => _isLoading = true);
-    final items = await _service.fetchCharacterBookItems();
-    setState(() {
-      _items = items;
-
-      final selectedId = _selected?.characterId;
-      if (selectedId != null) {
-        _selected = items.cast<CharacterBookItem?>().firstWhere(
-          (e) => e?.characterId == selectedId,
-          orElse: () => items.isNotEmpty ? items.first : null,
-        );
-      } else {
-        _selected = items.isNotEmpty ? items.first : null;
-      }
-
-      _isLoading = false;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
-        appBar: AppBar(title: ShopAppbar(), backgroundColor: Colors.white),
+        appBar: AppBar(
+          scrolledUnderElevation: 0,
+          title: ShopAppbar(),
+          backgroundColor: Colors.white,
+        ),
         body: Padding(
           padding: const EdgeInsets.only(left: 24, right: 24, bottom: 24),
           child: Column(
@@ -67,73 +35,118 @@ class _CharacterBookPageState extends State<CharacterBookPage> {
                   decoration: BoxDecoration(
                     border: Border.all(color: MainColors.mainLight),
                   ),
-                  child: _isLoading
-                      ? Center(
-                          child: CircularProgressIndicator(
-                            color: MainColors.mainLight,
+                  child: asyncState.when(
+                    loading: () => Center(
+                      child: CircularProgressIndicator(
+                        color: MainColors.mainLight,
+                      ),
+                    ),
+                    error: (e, _) => Center(
+                      child: Text(
+                        '도감을 불러올 수 없습니다: $e',
+                        style: TextStyle(color: MainColors.mainDark),
+                      ),
+                    ),
+                    data: (state) {
+                      final items = state.items;
+                      final selected = state.selectedItem;
+
+                      return Column(
+                        children: [
+                          Expanded(
+                            child: CharacterBookList(
+                              items: items,
+                              selectedCharacterId: selected?.characterId,
+                              onCharacterSelected: ref
+                                  .read(characterBookNotifierProvider.notifier)
+                                  .selectItem,
+                            ),
                           ),
-                        )
-                      : Column(
-                          children: [
-                            Expanded(
-                              child: CharacterBookList(
-                                items: _items,
-                                selectedCharacterId: _selected?.characterId,
-                                onCharacterSelected: (item) {
-                                  setState(() {
-                                    _selected = item;
-                                  });
-                                },
-                              ),
-                            ),
-                            Builder(
-                              builder: (context) {
-                                final total = _items.length;
-                                final owned = _items
-                                    .where((e) => e.isOwned)
-                                    .length;
-                                final percent = total == 0
-                                    ? 0
-                                    : ((owned / total) * 100).round();
-                                return Text(
-                                  "달성률 $percent%",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: MainColors.mainDark,
-                                  ),
-                                );
-                              },
-                            ),
-                          ],
-                        ),
+                          Builder(
+                            builder: (context) {
+                              final total = items.length;
+                              final owned = items
+                                  .where((e) => e.isOwned)
+                                  .length;
+                              final percent = total == 0
+                                  ? 0
+                                  : ((owned / total) * 100).round();
+                              return Text(
+                                "달성률 $percent%",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: MainColors.mainDark,
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  ),
                 ),
               ),
               SizedBox(height: 12),
-              if (!_isLoading && _selected != null)
-                CharacterBookListDetail(item: _selected!),
-              SizedBox(height: 12),
-              //선택 버튼
-              GestureDetector(
-                onTap: () {},
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    color: MainColors.mainLight,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
+              asyncState.when(
+                loading: () => const SizedBox.shrink(),
+                error: (_, __) => const SizedBox.shrink(),
+                data: (state) {
+                  final selected = state.selectedItem;
+                  if (selected == null) return const SizedBox.shrink();
 
-                  child: Center(
-                    child: Text(
-                      "선택",
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
+                  final canActivate =
+                      selected.isOwned && !selected.isActive && !state.isSaving;
+                  final isActive = selected.isActive;
+
+                  final label = state.isSaving
+                      ? '선택 중...'
+                      : (isActive ? '선택중' : '선택');
+
+                  final bgColor = canActivate
+                      ? MainColors.mainLight
+                      : MainColors.mainLight.withOpacity(0.5);
+
+                  return Column(
+                    children: [
+                      CharacterBookListDetail(item: selected),
+                      SizedBox(height: 12),
+                      GestureDetector(
+                        onTap: canActivate
+                            ? () => ref
+                                  .read(characterBookNotifierProvider.notifier)
+                                  .activateSelected()
+                            : null,
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: 50,
+                          decoration: BoxDecoration(
+                            color: bgColor,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Center(
+                            child: state.isSaving
+                                ? SizedBox(
+                                    width: 18,
+                                    height: 18,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                : Text(
+                                    label,
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                ),
+                    ],
+                  );
+                },
               ),
             ],
           ),

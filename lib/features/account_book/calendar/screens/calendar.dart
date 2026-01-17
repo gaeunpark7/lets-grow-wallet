@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lets_grow_wallet/features/account_book/calendar/widgets/calendar_cell.dart';
 import 'package:lets_grow_wallet/features/account_book/model/daily_stat_model.dart';
-import 'package:lets_grow_wallet/features/account_book/riverpod/calendar_notifier.dart';
+import 'package:lets_grow_wallet/features/account_book/notifier/calendar_notifier.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:table_calendar/table_calendar.dart';
 

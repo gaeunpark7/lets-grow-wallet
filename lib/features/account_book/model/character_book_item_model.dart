@@ -5,6 +5,7 @@ class CharacterBookItem {
   final int price;
 
   final bool isOwned;
+  final bool isActive;
   final DateTime? acquiredAt;
   final int experience;
 
@@ -18,6 +19,7 @@ class CharacterBookItem {
     required this.description,
     required this.price,
     required this.isOwned,
+    required this.isActive,
     required this.acquiredAt,
     required this.experience,
     required this.eggImageUrl,

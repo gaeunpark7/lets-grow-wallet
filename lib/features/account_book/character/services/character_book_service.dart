@@ -1,6 +1,6 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../model/character_book_item_model.dart';
+import '../../model/character_book_item_model.dart';
 
 class CharacterBookService {
   final SupabaseClient _supabase;
@@ -56,7 +56,7 @@ class CharacterBookService {
     if (userId != null) {
       final ownedRows = await _supabase
           .from('user_characters')
-          .select('character_id, experience, created_at')
+          .select('character_id, experience, created_at, is_active')
           .eq('user_id', userId)
           .order('created_at', ascending: false);
 
@@ -79,6 +79,7 @@ class CharacterBookService {
 
           final ownedRow = ownedByCharacterId[characterId];
           final isOwned = ownedRow != null;
+          final isActive = isOwned ? (ownedRow['is_active'] == true) : false;
           final experience = isOwned ? _parseInt(ownedRow['experience']) : 0;
           final acquiredAt = isOwned
               ? _parseDateTime(ownedRow['created_at'])
@@ -90,6 +91,7 @@ class CharacterBookService {
             description: c['description']?.toString() ?? '',
             price: _parseInt(c['price']),
             isOwned: isOwned,
+            isActive: isActive,
             acquiredAt: acquiredAt,
             experience: experience,
             eggImageUrl: eggUrl,

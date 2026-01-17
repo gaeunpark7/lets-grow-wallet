@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:lets_grow_wallet/features/account_book/riverpod/transaction_notifier.dart';
+import 'package:lets_grow_wallet/features/account_book/notifier/transaction_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/build_total.dart';
 import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/floating_menu_button.dart';
 import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/monthly_header.dart';

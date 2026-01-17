@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lets_grow_wallet/features/account_book/model/monthly_category_stat_model.dart';
-import 'package:lets_grow_wallet/features/account_book/riverpod/transaction_notifier.dart';
+import 'package:lets_grow_wallet/features/account_book/notifier/transaction_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/services/stat_service.dart';
 
 final statServiceProvider = Provider((ref) => StatService());

@@ -87,6 +87,32 @@ class UserCharacterService {
     }
   }
 
+  // 도감에서 선택한 캐릭터를 활성화 (기존 활성 캐릭터는 비활성화)
+  Future<void> setActiveCharacterByCharacterId(String characterId) async {
+    final userId = supabase.auth.currentUser?.id;
+    if (userId == null) return;
+
+    // 1) 기존 활성 캐릭터 비활성화
+    await supabase
+        .from('user_characters')
+        .update({'is_active': false})
+        .eq('user_id', userId)
+        .eq('is_active', true);
+
+    // 2) 선택한 캐릭터 활성화
+    final updated = await supabase
+        .from('user_characters')
+        .update({'is_active': true})
+        .eq('user_id', userId)
+        .eq('character_id', characterId)
+        .select('id')
+        .maybeSingle();
+
+    if (updated == null) {
+      throw Exception('캐릭터 활성화에 실패했습니다. (구매한 캐릭터가 아닐 수 있어요)');
+    }
+  }
+
   // 캐릭터 상호작용 기록 저장(하루 1회, 로컬 날짜 기준)
   Future<void> recordInteractionOncePerDay({
     required String characterId,

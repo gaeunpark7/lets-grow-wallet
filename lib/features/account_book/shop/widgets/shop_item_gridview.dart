@@ -25,6 +25,7 @@ class ShopItemGridview extends StatelessWidget {
         ),
         child: Padding(
           padding: const EdgeInsets.all(12),
+          //그리드 뷰
           child: GridView.builder(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3,
@@ -35,64 +36,59 @@ class ShopItemGridview extends StatelessWidget {
             itemCount: items.length,
             itemBuilder: (context, index) {
               final item = items[index];
+              final opacity = item.isPurchased ? 1.0 : 0.30;
 
               return GestureDetector(
                 onTap: () => onItemSelected(item),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    //아이템 컨테이너(테두리)
                     Container(
                       height: mediaQuery.size.height * 0.16,
                       width: mediaQuery.size.width * 0.25,
                       decoration: BoxDecoration(
                         border: Border.all(color: MainColors.mainLight),
                       ),
-                      child: item.image.isNotEmpty
-                          ? ClipRRect(
-                              child: ColorFiltered(
-                                colorFilter: item.isPurchased
-                                    //구매 된 경우
-                                    ? ColorFilter.mode(
-                                        const Color.fromARGB(
-                                          255,
-                                          105,
-                                          105,
-                                          105,
-                                        ).withOpacity(0.25),
-                                        BlendMode.darken,
-                                      )
-                                    //구매되지 않은 경우: 원본
-                                    : const ColorFilter.mode(
-                                        Colors.transparent,
-                                        BlendMode.srcOver,
-                                      ),
-                                child: Image.network(
-                                  item.image,
-                                  fit: BoxFit.contain,
-                                  loadingBuilder: (ctx, child, progress) {
-                                    if (progress == null) return child;
-                                    return const Center(
-                                      child: CircularProgressIndicator(),
-                                    );
-                                  },
-                                  errorBuilder: (ctx, err, st) {
-                                    print(
-                                      'Image.network error for ${item.name}: $err\n$st',
-                                    );
+                      //아이템 이미지
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Opacity(
+                          opacity: opacity,
+                          child: item.image.isNotEmpty
+                              ? Center(
+                                  child: Image.network(
+                                    item.image,
+                                    fit: BoxFit.contain,
+                                    loadingBuilder: (ctx, child, progress) {
+                                      if (progress == null) return child;
+                                      return Center(
+                                        child: CircularProgressIndicator(
+                                          color: MainColors.mainLight,
+                                        ),
+                                      );
+                                    },
+                                    errorBuilder: (ctx, err, st) {
+                                      print(
+                                        'Image.network error for ${item.name}: $err\n$st',
+                                      );
 
-                                    return const Center(
-                                      child: Icon(Icons.broken_image),
-                                    );
-                                  },
+                                      return const Center(
+                                        child: Icon(Icons.broken_image),
+                                      );
+                                    },
+                                  ),
+                                )
+                              : Center(
+                                  child: Text(
+                                    "이미지 없음",
+                                    style: TextStyle(
+                                      color: MainColors.mainLight,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            )
-                          : Center(
-                              child: Text(
-                                "이미지 없음",
-                                style: TextStyle(color: MainColors.mainLight),
-                              ),
-                            ),
+                        ),
+                      ),
                     ),
                     SizedBox(height: 8),
                     Text(

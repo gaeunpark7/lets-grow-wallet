@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 
-import '../model/character_book_item_model.dart';
+import '../../model/character_book_item_model.dart';
 
 class CharacterBookList extends StatefulWidget {
   final List<CharacterBookItem> items;

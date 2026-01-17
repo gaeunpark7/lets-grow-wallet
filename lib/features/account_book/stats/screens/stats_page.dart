@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lets_grow_wallet/features/account_book/riverpod/stats_notifier.dart';
+import 'package:lets_grow_wallet/features/account_book/notifier/stats_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/stats/screens/stats_expense_view.dart';
 import 'package:lets_grow_wallet/features/account_book/stats/screens/stats_income_view.dart';
 import 'package:lets_grow_wallet/features/account_book/stats/widgets/montly_header.dart';

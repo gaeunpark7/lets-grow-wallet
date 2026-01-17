@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lets_grow_wallet/features/account_book/model/transaction_model.dart';
-import 'package:lets_grow_wallet/features/account_book/riverpod/calendar_notifier.dart';
-import 'package:lets_grow_wallet/features/account_book/riverpod/stats_notifier.dart';
+import 'package:lets_grow_wallet/features/account_book/notifier/calendar_notifier.dart';
+import 'package:lets_grow_wallet/features/account_book/notifier/stats_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/services/transaction_service.dart';
 
 class TransactionNotifier extends AsyncNotifier<List<TransactionModel>> {

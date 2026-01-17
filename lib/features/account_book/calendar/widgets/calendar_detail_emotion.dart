@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lets_grow_wallet/features/account_book/riverpod/calendar_notifier.dart';
+import 'package:lets_grow_wallet/features/account_book/notifier/calendar_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/services/user_emotion_service.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 

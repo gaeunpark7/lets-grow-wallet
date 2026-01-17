@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:lets_grow_wallet/features/account_book/riverpod/transaction_notifier.dart';
+import 'package:lets_grow_wallet/features/account_book/notifier/transaction_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/services/transaction_service.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/category_selector.dart';
 import 'package:lets_grow_wallet/features/main/widgets/date_selector.dart';

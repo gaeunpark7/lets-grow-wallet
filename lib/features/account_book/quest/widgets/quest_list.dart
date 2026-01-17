@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lets_grow_wallet/features/account_book/model/daily_quest_model.dart';
-import 'package:lets_grow_wallet/features/account_book/services/daily_quest_service.dart';
+import 'package:lets_grow_wallet/features/account_book/notifier/quest_reward_controller.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 
-class QuestList extends StatefulWidget {
+class QuestList extends ConsumerStatefulWidget {
   const QuestList({
     super.key,
     required this.index,
@@ -15,11 +16,10 @@ class QuestList extends StatefulWidget {
   final VoidCallback? onRewardClaimed;
 
   @override
-  State<QuestList> createState() => _QuestListState();
+  ConsumerState<QuestList> createState() => _QuestListState();
 }
 
-class _QuestListState extends State<QuestList> {
-  final _dailyQuestService = DailyQuestService();
+class _QuestListState extends ConsumerState<QuestList> {
   bool _claimingReward = false;
 
   Future<void> _claimReward() async {
@@ -29,7 +29,9 @@ class _QuestListState extends State<QuestList> {
     });
 
     try {
-      await _dailyQuestService.giveReward(questId: widget.quest.id);
+      await ref
+          .read(questRewardControllerProvider)
+          .claimDailyQuestReward(questId: widget.quest.id);
 
       if (!mounted) return;
       await showDialog<void>(
