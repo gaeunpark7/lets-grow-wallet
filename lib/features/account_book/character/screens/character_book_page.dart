@@ -41,12 +41,7 @@ class CharacterBookPage extends ConsumerWidget {
                         color: MainColors.mainLight,
                       ),
                     ),
-                    error: (e, _) => Center(
-                      child: Text(
-                        '도감을 불러올 수 없습니다: $e',
-                        style: TextStyle(color: MainColors.mainDark),
-                      ),
-                    ),
+                    error: (e, _) => Center(child: Text('도감을 불러올 수 없습니다: $e')),
                     data: (state) {
                       final items = state.items;
                       final selected = state.selectedItem;

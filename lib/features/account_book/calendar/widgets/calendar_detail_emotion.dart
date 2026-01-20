@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lets_grow_wallet/features/account_book/notifier/calendar_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/services/user_emotion_service.dart';
+import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 
 class CalendarDetailEmotion extends ConsumerStatefulWidget {
@@ -62,17 +63,13 @@ class _CalendarDetailEmotionState extends ConsumerState<CalendarDetailEmotion> {
         date: widget.selectedDate,
       );
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('오늘의 감정을 등록했어요')));
+        showAppSnackBar('오늘의 감정을 등록했어요');
         // 캘린더 데이터 새로고침
         ref.read(calendarStatNotifierProvider.notifier).refreshDailyStats();
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.toString().replaceAll('Exception: ', ''))),
-        );
+        showAppSnackBar(e.toString().replaceAll('Exception: ', ''));
       }
     }
   }

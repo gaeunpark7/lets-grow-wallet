@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lets_grow_wallet/features/account_book/model/transaction_model.dart';
 import 'package:lets_grow_wallet/features/account_book/notifier/calendar_notifier.dart';
+import 'package:lets_grow_wallet/features/account_book/notifier/month_selection_notifier.dart'
+    as dashboard_month;
 import 'package:lets_grow_wallet/features/account_book/notifier/stats_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/services/transaction_service.dart';
 
@@ -14,9 +16,9 @@ class TransactionNotifier extends AsyncNotifier<List<TransactionModel>> {
 
   // 이번 달 거래 내역 불러오기
   Future<List<TransactionModel>> _fetchMonthlyTransactions() async {
-    final now = DateTime.now();
-    final start = DateTime(now.year, now.month, 1);
-    final end = DateTime(now.year, now.month + 1, 1);
+    final selectedMonth = ref.watch(dashboard_month.selectedMonthProvider);
+    final start = DateTime(selectedMonth.year, selectedMonth.month, 1);
+    final end = DateTime(selectedMonth.year, selectedMonth.month + 1, 1);
     return _service.fetchTransactionsByDateRange(start, end);
   }
 

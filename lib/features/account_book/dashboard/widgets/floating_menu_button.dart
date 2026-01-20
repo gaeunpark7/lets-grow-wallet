@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lets_grow_wallet/app/router/route_paths.dart';
-import 'package:lets_grow_wallet/features/account_book/character/screens/character_page.dart';
-import 'package:lets_grow_wallet/features/account_book/quest/screens/quest_page.dart';
-import 'package:lets_grow_wallet/features/account_book/shop/screens/item_shop_page.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 
 class FloatingMenuButton extends StatefulWidget {

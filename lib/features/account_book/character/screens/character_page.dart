@@ -13,6 +13,7 @@ import 'package:lets_grow_wallet/features/account_book/services/user_character_s
 import 'package:lets_grow_wallet/utils/character_interation_enum.dart';
 import 'package:lets_grow_wallet/utils/character_level_progress.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
+import 'package:lets_grow_wallet/utils/friendly_error_message.dart';
 
 class CharacterPage extends ConsumerStatefulWidget {
   const CharacterPage({super.key});
@@ -58,14 +59,6 @@ class _CharacterPageState extends ConsumerState<CharacterPage> {
             }
           },
         );
-  }
-
-  CharacterLevelProgress _levelProgress() {
-    final character = ref.read(activeCharacterNotifierProvider).valueOrNull;
-    return characterLevelProgress(
-      stage: character?.stage ?? Stage.egg,
-      experience: character?.experience ?? 0,
-    );
   }
 
   Future<void> _precacheActiveCharacterImages(
@@ -145,7 +138,35 @@ class _CharacterPageState extends ConsumerState<CharacterPage> {
       error: (e, _) => SafeArea(
         child: Scaffold(
           backgroundColor: Colors.white,
-          body: Center(child: Text('캐릭터 정보를 불러올 수 없습니다: $e')),
+          body: Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    FriendlyErrorMessage.of(e),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: MainColors.mainDark,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  FilledButton(
+                    onPressed: () => ref
+                        .read(activeCharacterNotifierProvider.notifier)
+                        .refresh(),
+                    style: FilledButton.styleFrom(
+                      backgroundColor: MainColors.mainLight,
+                      foregroundColor: Colors.white,
+                    ),
+                    child: const Text('다시 시도'),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
       ),
       data: (activeCharacter) {

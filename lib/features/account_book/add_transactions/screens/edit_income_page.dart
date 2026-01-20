@@ -8,6 +8,8 @@ import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/
 import 'package:lets_grow_wallet/features/main/widgets/date_selector.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/payment_amount_row.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
+import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
+import 'package:lets_grow_wallet/app/router/route_paths.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../model/transaction_model.dart';
 import '../../model/category_model.dart';
@@ -25,6 +27,8 @@ class _EditIncomePageState extends ConsumerState<EditIncomePage> {
   final amountController = TextEditingController();
   final memoController = TextEditingController();
 
+  late GoRouter _router;
+
   DateTime selectedDate = DateTime.now();
   int? selectedCategoryIdx;
   int selectedPayType = 0; // 0: 카드, 1: 현금
@@ -41,6 +45,12 @@ class _EditIncomePageState extends ConsumerState<EditIncomePage> {
     selectedDate = tx.date;
     selectedPayType = tx.paymentMethod;
     loadCategories(tx.categoryId);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _router = GoRouter.of(context);
   }
 
   @override
@@ -62,6 +72,7 @@ class _EditIncomePageState extends ConsumerState<EditIncomePage> {
   Future<void> loadCategories(String? currentCategoryId) async {
     final service = TransactionServiceIncome();
     final fetched = await service.fetchCategories();
+    if (!mounted) return;
     int? idx;
     if (currentCategoryId != null) {
       idx = fetched.indexWhere((c) => c.id == currentCategoryId);
@@ -96,6 +107,7 @@ class _EditIncomePageState extends ConsumerState<EditIncomePage> {
         );
       },
     );
+    if (!mounted) return;
     if (picked != null && picked != selectedDate) {
       setState(() {
         selectedDate = picked;
@@ -107,13 +119,9 @@ class _EditIncomePageState extends ConsumerState<EditIncomePage> {
     TransactionModel transaction,
     WidgetRef ref,
   ) async {
-    try {
-      await ref
-          .read(transactionNotifierProvider.notifier)
-          .updateTransaction(transaction);
-    } catch (e) {
-      rethrow;
-    }
+    await ref
+        .read(transactionNotifierProvider.notifier)
+        .updateTransaction(transaction);
   }
 
   @override
@@ -251,29 +259,27 @@ class _EditIncomePageState extends ConsumerState<EditIncomePage> {
                           Supabase.instance.client.auth.currentUser?.id;
                       if (userId == null) {
                         // 로그인 안 된 경우 처리
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('로그인이 필요합니다.')),
-                        );
+                        showAppSnackBar('로그인이 필요합니다.');
                         return;
                       }
                       if (selectedCategoryIdx == null) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('카테고리를 선택해주세요.')),
-                        );
+                        showAppSnackBar('카테고리를 선택해주세요.');
                         return;
                       }
 
                       if (amountController.text.trim().isEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('금액을 입력해주세요.')),
-                        );
+                        showAppSnackBar('금액을 입력해주세요.');
                         return;
                       }
                       if (selectedCategoryIdx == null) return;
+
+                      final titleText = titleController.text.trim().isEmpty
+                          ? categories[selectedCategoryIdx!].label
+                          : titleController.text.trim();
                       final transaction = TransactionModel(
                         id: widget.transaction.id,
                         userId: userId, // 실제 로그인 유저 uuid로 대체
-                        title: titleController.text,
+                        title: titleText,
                         amount:
                             int.tryParse(
                               amountController.text.replaceAll(',', ''),
@@ -289,19 +295,14 @@ class _EditIncomePageState extends ConsumerState<EditIncomePage> {
                       try {
                         await _updateTransaction(transaction, ref);
 
-                        if (mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('수정되었습니다.')),
-                          );
-
-                          context.pop();
+                        showAppSnackBar('수정되었습니다.');
+                        if (_router.canPop()) {
+                          _router.pop();
+                        } else {
+                          _router.go(Routes.home);
                         }
                       } catch (e) {
-                        if (mounted) {
-                          ScaffoldMessenger.of(
-                            context,
-                          ).showSnackBar(SnackBar(content: Text('수정 실패: $e')));
-                        }
+                        showAppSnackBar('수정 실패: $e');
                       }
                     },
                     child: const Text("수입 수정"),

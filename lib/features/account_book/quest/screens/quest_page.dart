@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lets_grow_wallet/features/account_book/model/daily_quest_model.dart';
 import 'package:lets_grow_wallet/features/account_book/model/goal_model.dart';
 import 'package:lets_grow_wallet/features/account_book/quest/widgets/monthly_goals.dart';
 import 'package:lets_grow_wallet/features/account_book/quest/widgets/quest_list.dart';
 import 'package:lets_grow_wallet/features/account_book/quest/widgets/quest_star.dart';
 import 'package:lets_grow_wallet/features/account_book/quest/widgets/quest_title.dart';
+import 'package:lets_grow_wallet/features/account_book/services/admob_service.dart';
 import 'package:lets_grow_wallet/features/account_book/services/daily_quest_service.dart';
 import 'package:lets_grow_wallet/features/account_book/services/goal_service.dart';
 import 'package:lets_grow_wallet/features/account_book/shop/widgets/shop_appbar.dart';
@@ -22,7 +24,7 @@ class _QuestPageState extends State<QuestPage> {
   final GoalService _goalService = GoalService(Supabase.instance.client);
   List<GoalModel> _monthlyGoals = [];
   bool _loadingMonthly = true;
-
+  BannerAd? _bannerAd;
   final DailyQuestService _questService = DailyQuestService();
   List<DailyQuest> _todayQuests = [];
   bool _loading = true;
@@ -38,7 +40,17 @@ class _QuestPageState extends State<QuestPage> {
       }
       await _loadQuests();
       await _loadMonthlyGoals();
+      _createBannerAd();
     });
+  }
+
+  void _createBannerAd() {
+    _bannerAd = BannerAd(
+      adUnitId: AdmobService.BannerAdUnitId!,
+      request: const AdRequest(),
+      size: AdSize.fullBanner,
+      listener: AdmobService.bannerAdListener,
+    )..load();
   }
 
   //월별 목표 로드
@@ -79,7 +91,6 @@ class _QuestPageState extends State<QuestPage> {
     setState(() => _loading = true);
     try {
       final list = await _questService.getTodayQuests();
-      // 항상 3개 표시
       final order = [
         'register_transaction',
         'character_interaction',
@@ -195,6 +206,7 @@ class _QuestPageState extends State<QuestPage> {
                       ),
                       const SizedBox(height: 12),
                       _buildDailyQuests(),
+
                       // const SizedBox(height: 12),
                       // QuestTitle(title: "월별 미션"),
                       // const SizedBox(height: 12),
@@ -205,6 +217,13 @@ class _QuestPageState extends State<QuestPage> {
               ],
             ),
           ),
+        ),
+        bottomNavigationBar: SizedBox(
+          height: 70,
+          width: _bannerAd?.size.width.toDouble() ?? 0,
+          child: _bannerAd != null
+              ? AdWidget(ad: _bannerAd!)
+              : const SizedBox.shrink(),
         ),
       ),
     );

@@ -3,14 +3,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:lets_grow_wallet/app/router/route_paths.dart';
+import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/calendar_design.dart';
 import 'package:lets_grow_wallet/features/account_book/notifier/transaction_notifier.dart';
-import 'package:lets_grow_wallet/features/account_book/add_transactions/screens/add_expense_page.dart';
 import 'package:lets_grow_wallet/features/account_book/services/transaction_service.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/category_selector.dart';
 import 'package:lets_grow_wallet/features/main/widgets/date_selector.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/payment_amount_row.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/title_button.dart';
+import 'package:lets_grow_wallet/features/account_book/notifier/interstitial_ad_controller.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
+import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 import '../../model/transaction_model.dart';
@@ -75,19 +77,7 @@ class _AddIncomePageState extends ConsumerState<AddIncomePage> {
       lastDate: DateTime(2100),
       locale: const Locale('ko'),
       builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(
-              primary: MainColors.mainLight,
-              onPrimary: Colors.white,
-              onSurface: Colors.black87,
-            ),
-            textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(foregroundColor: MainColors.mainDark),
-            ),
-          ),
-          child: child!,
-        );
+        return CalendarDesign(child: child!);
       },
     );
     if (picked != null && picked != selectedDate) {
@@ -158,12 +148,15 @@ class _AddIncomePageState extends ConsumerState<AddIncomePage> {
                     Expanded(
                       child: TextField(
                         controller: titleController,
-                        decoration: const InputDecoration(
+                        style: TextStyle(color: MainColors.mainDark),
+                        decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.zero,
                           ),
                           hintText: "제목을 입력하세요",
-                          hintStyle: TextStyle(color: MainColors.mainDark),
+                          hintStyle: TextStyle(
+                            color: MainColors.mainDark.withOpacity(0.6),
+                          ),
                           isDense: true,
                           contentPadding: EdgeInsets.symmetric(
                             vertical: 10,
@@ -213,11 +206,15 @@ class _AddIncomePageState extends ConsumerState<AddIncomePage> {
                 const SizedBox(height: 24),
                 TextField(
                   controller: memoController,
+                  style: TextStyle(color: MainColors.mainDark),
                   maxLength: 50,
                   maxLines: 4,
                   minLines: 3,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     hintText: '메모 입력',
+                    hintStyle: TextStyle(
+                      color: MainColors.mainDark.withOpacity(0.6),
+                    ),
                     border: OutlineInputBorder(borderRadius: BorderRadius.zero),
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
@@ -254,30 +251,27 @@ class _AddIncomePageState extends ConsumerState<AddIncomePage> {
                           Supabase.instance.client.auth.currentUser?.id;
                       if (userId == null) {
                         // 로그인 안 된 경우 처리
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('로그인이 필요합니다.')),
-                        );
+                        showAppSnackBar('로그인이 필요합니다.');
                         return;
                       }
                       if (selectedCategoryIdx == null) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('카테고리를 선택해주세요.')),
-                        );
+                        showAppSnackBar('카테고리를 선택해주세요.');
                         return;
                       }
 
                       if (amountController.text.trim().isEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('금액을 입력해주세요.')),
-                        );
+                        showAppSnackBar('금액을 입력해주세요.');
                         return;
                       }
 
                       try {
+                        final titleText = titleController.text.trim().isEmpty
+                            ? categories[selectedCategoryIdx!].label
+                            : titleController.text.trim();
                         final transaction = TransactionModel(
                           id: Uuid().v4(),
                           userId: userId,
-                          title: titleController.text,
+                          title: titleText,
                           amount:
                               int.tryParse(
                                 amountController.text.replaceAll(',', ''),
@@ -291,14 +285,18 @@ class _AddIncomePageState extends ConsumerState<AddIncomePage> {
                           type: 'income',
                         );
                         await _addTransaction(transaction, ref);
+
+                        // 3번마다 전면 광고
+                        await ref
+                            .read(interstitialAdControllerProvider.notifier)
+                            .onTransactionAdded();
+
                         if (mounted) {
                           context.push(Routes.home);
                         }
                       } catch (e) {
                         if (mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('수입 추가 실패: $e')),
-                          );
+                          showAppSnackBar('수입 추가 실패: $e');
                         }
                       }
                     },

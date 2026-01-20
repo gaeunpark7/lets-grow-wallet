@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
 import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/goals_dialog.dart';
 import 'package:lets_grow_wallet/features/account_book/services/goal_service.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MonthlyHeader extends StatefulWidget {
-  const MonthlyHeader({super.key});
+  const MonthlyHeader({super.key, required this.month});
+
+  final DateTime month;
 
   @override
   State<MonthlyHeader> createState() => _MonthlyHeaderState();
@@ -26,15 +29,22 @@ class _MonthlyHeaderState extends State<MonthlyHeader> {
     _loadGoalTitle(); // 목표 제목 로드
   }
 
+  @override
+  void didUpdateWidget(covariant MonthlyHeader oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.month.year != widget.month.year ||
+        oldWidget.month.month != widget.month.month) {
+      _loadGoalTitle();
+    }
+  }
+
   Future<void> _loadGoalTitle() async {
-    final now = DateTime.now();
-    final month = "${now.year}-${now.month.toString().padLeft(2, '0')}";
+    final month =
+        "${widget.month.year}-${widget.month.month.toString().padLeft(2, '0')}";
     final userId = Supabase.instance.client.auth.currentUser?.id;
 
     if (userId == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('사용자 인증이 필요합니다.')));
+      showAppSnackBar('사용자 인증이 필요합니다.');
       return;
     }
 
@@ -47,9 +57,7 @@ class _MonthlyHeaderState extends State<MonthlyHeader> {
       });
     } catch (e) {
       print('오류 발생: $e');
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('목표를 불러오는 중 오류가 발생했습니다: $e')));
+      showAppSnackBar('목표를 불러오는 중 오류가 발생했습니다: $e');
     }
   }
 
@@ -64,6 +72,8 @@ class _MonthlyHeaderState extends State<MonthlyHeader> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width; // 반응형 너비
+    final monthString =
+        "${widget.month.year}-${widget.month.month.toString().padLeft(2, '0')}";
     return SizedBox(
       height: 120,
       child: Row(
@@ -71,8 +81,7 @@ class _MonthlyHeaderState extends State<MonthlyHeader> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Spacer(),
-          Spacer(),
-          Spacer(),
+
           Text(
             goalTitle ?? "이번달의 목표는?",
             style: TextStyle(
@@ -81,7 +90,7 @@ class _MonthlyHeaderState extends State<MonthlyHeader> {
               fontWeight: FontWeight.w900,
             ),
           ),
-          Spacer(),
+          SizedBox(width: 10),
           GestureDetector(
             onTap: () {
               showDialog(
@@ -91,6 +100,7 @@ class _MonthlyHeaderState extends State<MonthlyHeader> {
                   expenseController: expenseController,
                   incomeController: incomeController,
                   selectedButton: selectedButton,
+                  month: monthString,
                   onButtonSelected: (int index) {
                     setState(() {
                       selectedButton = index;

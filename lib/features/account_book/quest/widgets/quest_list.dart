@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
 import 'package:lets_grow_wallet/features/account_book/model/daily_quest_model.dart';
 import 'package:lets_grow_wallet/features/account_book/notifier/quest_reward_controller.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
@@ -54,9 +55,7 @@ class _QuestListState extends ConsumerState<QuestList> {
       widget.onRewardClaimed?.call();
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('보상 수령 실패: $e')));
+      showAppSnackBar('보상 수령 실패: $e');
     } finally {
       if (!mounted) return;
       setState(() {

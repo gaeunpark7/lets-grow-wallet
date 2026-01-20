@@ -3,10 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:lets_grow_wallet/app/router/route_paths.dart';
+import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
 import 'package:lets_grow_wallet/features/account_book/notifier/transaction_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/model/transaction_model.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class HomePageDetail extends ConsumerStatefulWidget {
   final TransactionModel transaction;
@@ -18,6 +18,14 @@ class HomePageDetail extends ConsumerStatefulWidget {
 }
 
 class _HomePageDetailState extends ConsumerState<HomePageDetail> {
+  late GoRouter _router;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _router = GoRouter.of(context);
+  }
+
   Future<void> deleteTransaction() async {
     try {
       await ref
@@ -25,34 +33,24 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
           .deleteTransaction(widget.transaction.id);
 
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text("삭제 되었습니다.")));
+        showAppSnackBar('삭제 되었습니다.');
         context.go(Routes.home);
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('삭제 실패: $e')));
+        showAppSnackBar('삭제 실패: $e');
       }
     }
   }
 
   //수정 페이지 이동
   Future<void> goToEditPage() async {
-    if (widget.transaction.type == 'expense') {
-      context.push(
-        '${Routes.home}/${Routes.editExpense}',
-        extra: widget.transaction,
-      );
-      Navigator.pop(context);
-    } else {
-      context.push(
-        '${Routes.home}/${Routes.editIncome}',
-        extra: widget.transaction,
-      );
-    }
+    final location = widget.transaction.type == 'expense'
+        ? '${Routes.home}/${Routes.editExpense}'
+        : '${Routes.home}/${Routes.editIncome}';
+
+    Navigator.of(context).pop();
+    _router.push(location, extra: widget.transaction);
   }
 
   //삭제 다이얼로그

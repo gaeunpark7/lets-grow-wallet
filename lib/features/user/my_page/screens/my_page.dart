@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lets_grow_wallet/app/router/route_paths.dart';
+import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
+import 'package:lets_grow_wallet/features/account_book/services/admob_service.dart';
 import 'package:lets_grow_wallet/features/user/widgets/my_page_userprofile.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -18,11 +21,22 @@ class _MyPageState extends State<MyPage> {
   UserProfileModel? userProfile;
   bool isLoading = true;
   final _userProfileService = UserProfileService();
+  BannerAd? _bannerAd;
 
   @override
   void initState() {
     super.initState();
+    _createBannerAd();
     loadUserProfile();
+  }
+
+  void _createBannerAd() {
+    _bannerAd = BannerAd(
+      adUnitId: AdmobService.BannerAdUnitId!,
+      request: const AdRequest(),
+      size: AdSize.fullBanner,
+      listener: AdmobService.bannerAdListener,
+    )..load();
   }
 
   Future<void> loadUserProfile() async {
@@ -45,9 +59,7 @@ class _MyPageState extends State<MyPage> {
     } catch (e) {
       print('로그아웃 오류: $e');
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('로그아웃 실패: $e')));
+        showAppSnackBar('로그아웃 실패: $e');
       }
     }
   }
@@ -68,21 +80,17 @@ class _MyPageState extends State<MyPage> {
             ? const Center(child: CircularProgressIndicator())
             : userProfile == null
             ? const Center(child: Text("유저 정보를 불러올 수 없습니다."))
-            : Column(
+            : ListView(
+                padding: EdgeInsets.zero,
                 children: [
-                  Padding(
-                    padding: EdgeInsetsGeometry.symmetric(horizontal: 20),
-                  ),
                   const SizedBox(height: 32),
                   MyPageUserProfilePage(userProfile: userProfile),
                   const SizedBox(height: 32),
-                  Divider(color: MainColors.mainDark, thickness: 0.5),
+                  const Divider(color: MainColors.mainDark, thickness: 0.5),
                   _buildListTile(
                     icon: Icons.workspace_premium_outlined,
                     text: "프리미엄",
                   ),
-                  const Divider(color: MainColors.mainDark, thickness: 0.5),
-                  _buildListTile(icon: Icons.notifications, text: "공지사항"),
                   const Divider(color: MainColors.mainDark, thickness: 0.5),
                   _buildListTile(icon: Icons.feedback_outlined, text: "오류문의"),
                   const Divider(color: MainColors.mainDark, thickness: 0.5),
@@ -107,6 +115,14 @@ class _MyPageState extends State<MyPage> {
                   const Divider(color: MainColors.mainDark, thickness: 0.5),
                 ],
               ),
+        bottomNavigationBar: Container(
+          width: double.infinity,
+          height: 60,
+          alignment: Alignment.center,
+          child: _bannerAd != null
+              ? AdWidget(ad: _bannerAd!)
+              : const SizedBox.shrink(),
+        ),
       ),
     );
   }
@@ -117,12 +133,7 @@ class _buildListTile extends StatelessWidget {
   final String text;
   final void Function()? onTap;
 
-  const _buildListTile({
-    super.key,
-    required this.icon,
-    required this.text,
-    this.onTap,
-  });
+  const _buildListTile({required this.icon, required this.text, this.onTap});
 
   @override
   Widget build(BuildContext context) {

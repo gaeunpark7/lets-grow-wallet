@@ -1,0 +1,156 @@
+import 'package:flutter/material.dart';
+import 'package:lets_grow_wallet/utils/colors.dart';
+
+Future<DateTime?> showMonthPickerDialog({
+  required BuildContext context,
+  required DateTime initialMonth,
+  int firstYear = 2025,
+}) {
+  final now = DateTime.now();
+  final currentYear = now.year;
+
+  return showDialog<DateTime>(
+    context: context,
+    builder: (context) {
+      int tempYear = initialMonth.year;
+      int tempMonth = initialMonth.month;
+
+      return StatefulBuilder(
+        builder: (context, setLocalState) {
+          final canPrevYear = tempYear > firstYear;
+          final canNextYear = tempYear < currentYear;
+
+          return AlertDialog(
+            backgroundColor: Colors.white,
+            content: SizedBox(
+              width: 320,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        onPressed: canPrevYear
+                            ? () => setLocalState(() => tempYear--)
+                            : null,
+                        icon: const Icon(Icons.chevron_left),
+                        color: MainColors.mainDark,
+                        disabledColor: MainColors.point,
+                      ),
+                      Text(
+                        '$tempYear년',
+                        style: TextStyle(
+                          color: MainColors.mainDark,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: canNextYear
+                            ? () => setLocalState(() => tempYear++)
+                            : null,
+                        icon: const Icon(Icons.chevron_right),
+                        color: MainColors.mainDark,
+                        disabledColor: MainColors.point,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  GridView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          mainAxisSpacing: 8,
+                          crossAxisSpacing: 8,
+                          childAspectRatio: 2.2,
+                        ),
+                    itemCount: 12,
+                    itemBuilder: (context, index) {
+                      final m = index + 1;
+                      final isSelected = m == tempMonth;
+                      final isDisabled =
+                          tempYear == currentYear && m > now.month;
+
+                      return InkWell(
+                        onTap: isDisabled
+                            ? null
+                            : () => setLocalState(() => tempMonth = m),
+                        borderRadius: BorderRadius.circular(10),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? MainColors.mainLight
+                                : Colors.transparent,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: isSelected
+                                  ? MainColors.mainDark
+                                  : MainColors.point,
+                              width: 1,
+                            ),
+                          ),
+                          alignment: Alignment.center,
+                          child: Text(
+                            '$m월',
+                            style: TextStyle(
+                              color: isDisabled
+                                  ? MainColors.point
+                                  : MainColors.mainDark,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+            // actionsPadding: const EdgeInsets.fromLTRB(24, 0, 24, 16),
+            actions: [
+              Row(
+                children: [
+                  Expanded(
+                    child: SizedBox(
+                      height: 40,
+                      child: TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        style: TextButton.styleFrom(
+                          backgroundColor: MainColors.main,
+                          foregroundColor: MainColors.mainDark,
+                        ),
+                        child: const Text('취소'),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: SizedBox(
+                      height: 40,
+                      child: FilledButton(
+                        onPressed: () => Navigator.pop(
+                          context,
+                          DateTime(tempYear, tempMonth, 1),
+                        ),
+                        style: FilledButton.styleFrom(
+                          backgroundColor: MainColors.mainLight,
+                        ),
+                        child: const Text(
+                          '선택',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          );
+        },
+      );
+    },
+  );
+}

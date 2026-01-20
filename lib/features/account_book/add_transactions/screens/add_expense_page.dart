@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:lets_grow_wallet/app/router/route_paths.dart';
+import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/calendar_design.dart';
 import 'package:lets_grow_wallet/features/account_book/notifier/transaction_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/services/transaction_service.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/category_selector.dart';
@@ -10,6 +11,7 @@ import 'package:lets_grow_wallet/features/main/widgets/date_selector.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/payment_amount_row.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/title_button.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
+import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 import '../../model/transaction_model.dart';
@@ -76,28 +78,25 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
   }
 
   Future<void> _selectDate(BuildContext context) async {
+    final now = DateTime.now();
+    final first = DateTime(2026, 1, 1);
+    final last = DateTime(now.year, now.month, now.day); //오늘까지만 선택 가능
+
+    final initial = selectedDate.isBefore(first)
+        ? first
+        : (selectedDate.isAfter(last) ? last : selectedDate);
+
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: selectedDate,
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
+      initialDate: initial,
+      firstDate: first,
+      lastDate: last,
       locale: const Locale('ko'),
       builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(
-              primary: MainColors.mainLight,
-              onPrimary: MainColors.main,
-              onSurface: Colors.black87,
-            ),
-            textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(foregroundColor: MainColors.mainDark),
-            ),
-          ),
-          child: child!,
-        );
+        return CalendarDesign(child: child!);
       },
     );
+
     if (picked != null && picked != selectedDate) {
       setState(() {
         selectedDate = picked;
@@ -159,7 +158,8 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
                     Expanded(
                       child: TextField(
                         controller: titleController,
-                        decoration: const InputDecoration(
+                        style: TextStyle(color: MainColors.mainDark),
+                        decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.zero,
                           ),
@@ -178,7 +178,9 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
                             ),
                           ),
                           hintText: "제목을 입력하세요",
-                          hintStyle: TextStyle(color: MainColors.mainDark),
+                          hintStyle: TextStyle(
+                            color: MainColors.mainDark.withOpacity(0.6),
+                          ),
                           isDense: true,
                           contentPadding: EdgeInsets.symmetric(
                             vertical: 10,
@@ -218,12 +220,15 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
                 const SizedBox(height: 24),
                 TextField(
                   controller: memoController,
+                  style: TextStyle(color: MainColors.mainDark),
                   maxLines: 4,
                   minLines: 3,
                   maxLength: 50,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     hintText: '메모 입력',
-                    hintStyle: TextStyle(color: MainColors.mainDark),
+                    hintStyle: TextStyle(
+                      color: MainColors.mainDark.withOpacity(0.6),
+                    ),
                     border: OutlineInputBorder(borderRadius: BorderRadius.zero),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.zero,
@@ -262,30 +267,27 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
                           Supabase.instance.client.auth.currentUser?.id;
                       if (userId == null) {
                         // 로그인 안 된 경우 처리
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('로그인이 필요합니다.')),
-                        );
+                        showAppSnackBar('로그인이 필요합니다.');
                         return;
                       }
                       if (selectedCategoryIdx == null) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('카테고리를 선택해주세요.')),
-                        );
+                        showAppSnackBar('카테고리를 선택해주세요.');
                         return;
                       }
 
                       if (amountController.text.trim().isEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('금액을 입력해주세요.')),
-                        );
+                        showAppSnackBar('금액을 입력해주세요.');
                         return;
                       }
 
                       try {
+                        final titleText = titleController.text.trim().isEmpty
+                            ? categories[selectedCategoryIdx!].label
+                            : titleController.text.trim();
                         final transaction = TransactionModel(
                           id: Uuid().v4(),
                           userId: userId,
-                          title: titleController.text,
+                          title: titleText,
                           amount:
                               int.tryParse(
                                 amountController.text.replaceAll(',', ''),
@@ -306,9 +308,7 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
                         }
                       } catch (e) {
                         if (mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('지출 추가 실패: $e')),
-                          );
+                          showAppSnackBar('지출 추가 실패: $e');
                         }
                       }
                     },

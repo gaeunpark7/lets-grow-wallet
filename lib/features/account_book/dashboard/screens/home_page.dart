@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:lets_grow_wallet/features/account_book/notifier/month_selection_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/notifier/transaction_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/build_total.dart';
 import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/floating_menu_button.dart';
@@ -8,6 +9,7 @@ import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/monthly
 import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/stat_future_builder.dart';
 import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/table_header.dart';
 import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/table_list.dart';
+import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/month_picker_dialog.dart';
 import 'package:lets_grow_wallet/features/account_book/services/stat_service.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -34,9 +36,9 @@ class _homePageState extends ConsumerState<HomePage> {
   @override
   void initState() {
     super.initState();
-    final now = DateTime.now();
-    start = DateTime(now.year, now.month, 1);
-    end = DateTime(now.year, now.month + 1, 1);
+    final selectedMonth = ref.read(selectedMonthProvider);
+    start = DateTime(selectedMonth.year, selectedMonth.month, 1);
+    end = DateTime(selectedMonth.year, selectedMonth.month + 1, 1);
 
     _lastUserId = Supabase.instance.client.auth.currentUser?.id;
     _statFuture = statService.fetchMonthlyStat(start, end);
@@ -56,6 +58,33 @@ class _homePageState extends ConsumerState<HomePage> {
     });
   }
 
+  void _setSelectedMonth({required int year, required int month}) {
+    final selected = DateTime(year, month, 1);
+    ref.read(selectedMonthProvider.notifier).state = selected;
+
+    // 선택 월이 바뀌면 거래 목록도 즉시 재조회
+    ref.invalidate(transactionNotifierProvider);
+
+    setState(() {
+      start = DateTime(selected.year, selected.month, 1);
+      end = DateTime(selected.year, selected.month + 1, 1);
+      _statFuture = statService.fetchMonthlyStat(start, end);
+    });
+  }
+
+  //달 선택
+  Future<void> _pickMonth() async {
+    final selectedMonth = ref.read(selectedMonthProvider);
+    final picked = await showMonthPickerDialog(
+      context: context,
+      initialMonth: selectedMonth,
+      firstYear: 2025,
+    );
+
+    if (picked == null) return;
+    _setSelectedMonth(year: picked.year, month: picked.month);
+  }
+
   @override
   void dispose() {
     _authSub?.cancel();
@@ -64,9 +93,10 @@ class _homePageState extends ConsumerState<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final now = DateTime.now();
-    final year = now.year;
-    final month = now.month;
+    final selectedMonth = ref.watch(selectedMonthProvider);
+    final year = selectedMonth.year;
+    final month = selectedMonth.month;
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -84,17 +114,26 @@ class _homePageState extends ConsumerState<HomePage> {
           child: Column(
             children: [
               SizedBox(height: 10),
-              MonthlyHeader(),
-              //년도, 일
+              MonthlyHeader(month: selectedMonth),
+              //년도, 월
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Text(
-                    "$year년  $month월",
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: MainColors.mainDark,
-                      fontWeight: FontWeight.bold,
+                  InkWell(
+                    onTap: _pickMonth,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 6,
+                        horizontal: 4,
+                      ),
+                      child: Text(
+                        "$year년  $month월",
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: MainColors.mainDark,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -106,8 +145,10 @@ class _homePageState extends ConsumerState<HomePage> {
                 child: ref
                     .watch(transactionNotifierProvider)
                     .when(
-                      data: (transactions) =>
-                          TableList(transactions: transactions),
+                      data: (transactions) => TableList(
+                        key: ValueKey('table-$year-$month'),
+                        transactions: transactions,
+                      ),
                       loading: () =>
                           const Center(child: CircularProgressIndicator()),
                       error: (err, stack) => Center(child: Text('오류: $err')),

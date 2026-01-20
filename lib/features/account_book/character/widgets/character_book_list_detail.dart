@@ -13,38 +13,40 @@ class CharacterBookListDetail extends StatelessWidget {
     required String imageUrl,
     required bool isUnlocked,
   }) {
-    return Container(
-      width: 70,
-      height: 70,
-      color: MainColors.main,
-      child: Center(
-        child: isUnlocked
-            ? (imageUrl
-                      .isNotEmpty // 잠금 해제된 경우
-                  ? Image.network(
-                      imageUrl,
-                      fit: BoxFit.contain,
-                      errorBuilder: (ctx, err, st) => Text(
-                        //이미지 로드 실패
+    return ClipOval(
+      child: Container(
+        width: 70,
+        height: 70,
+        color: MainColors.main,
+        child: Center(
+          child: isUnlocked
+              ? (imageUrl
+                        .isNotEmpty // 잠금 해제된 경우
+                    ? Image.network(
+                        imageUrl,
+                        fit: BoxFit.cover,
+                        errorBuilder: (ctx, err, st) => Text(
+                          //이미지 로드 실패
+                          '?',
+                          style: TextStyle(
+                            color: MainColors.mainLight,
+                            fontSize: 22,
+                          ),
+                        ),
+                      )
+                    : Text(
+                        //잠금 상태
                         '?',
                         style: TextStyle(
                           color: MainColors.mainLight,
                           fontSize: 22,
                         ),
-                      ),
-                    )
-                  : Text(
-                      //잠금 상태
-                      '?',
-                      style: TextStyle(
-                        color: MainColors.mainLight,
-                        fontSize: 22,
-                      ),
-                    ))
-            : Text(
-                '?',
-                style: TextStyle(color: MainColors.mainDark, fontSize: 22),
-              ),
+                      ))
+              : Text(
+                  '?',
+                  style: TextStyle(color: MainColors.mainDark, fontSize: 22),
+                ),
+        ),
       ),
     );
   }

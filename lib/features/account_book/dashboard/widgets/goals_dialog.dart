@@ -1,3 +1,4 @@
+import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lets_grow_wallet/features/account_book/services/goal_service.dart';
@@ -11,6 +12,7 @@ class GoalDialog extends StatefulWidget {
   final TextEditingController incomeController;
   final int selectedButton;
   final ValueChanged<int> onButtonSelected;
+  final String? month;
 
   const GoalDialog({
     super.key,
@@ -18,6 +20,7 @@ class GoalDialog extends StatefulWidget {
     required this.expenseController,
     required this.incomeController,
     required this.selectedButton,
+    this.month,
     required this.onButtonSelected,
   });
 
@@ -28,19 +31,86 @@ class GoalDialog extends StatefulWidget {
 class _GoalDialogState extends State<GoalDialog> {
   int selectedButton = 0;
   late GoalService _goalService;
+  bool _loadingExisting = true;
+  bool _goalAlreadySet = false;
 
   @override
   void initState() {
     super.initState();
     selectedButton = widget.selectedButton; // 초기값 설정
     _goalService = GoalService(Supabase.instance.client);
+    _loadExistingGoalIfAny();
+  }
+
+  Future<void> _loadExistingGoalIfAny() async {
+    final supabase = Supabase.instance.client;
+    final userId = supabase.auth.currentUser?.id;
+    if (userId == null) {
+      setState(() {
+        _loadingExisting = false;
+        _goalAlreadySet = false;
+      });
+      return;
+    }
+
+    final month =
+        widget.month ??
+        "${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '0')}";
+
+    try {
+      final goals = await _goalService.getGoalsForUserMonth(userId, month);
+
+      final expense = goals
+          .where((g) => g.goalType.toLowerCase() == 'expense')
+          .toList();
+      final income = goals
+          .where((g) => g.goalType.toLowerCase() == 'income')
+          .toList();
+
+      final hasExisting = expense.isNotEmpty || income.isNotEmpty;
+      if (hasExisting) {
+        // title은 첫 목표의 title을 사용
+        final title = (expense.isNotEmpty ? expense.first : income.first).title;
+        widget.goalController.text = title;
+
+        if (expense.isNotEmpty) {
+          final amount = expense.first.targetAmount ?? 0;
+          widget.expenseController.text = NumberFormat('#,###').format(amount);
+        }
+
+        if (income.isNotEmpty) {
+          final amount = income.first.targetAmount ?? 0;
+          widget.incomeController.text = NumberFormat('#,###').format(amount);
+        }
+
+        // 목표가 하나만 있으면 해당 타입이 선택되도록
+        if (expense.isNotEmpty && income.isEmpty) {
+          selectedButton = 1;
+          widget.onButtonSelected(1);
+        } else if (income.isNotEmpty && expense.isEmpty) {
+          selectedButton = 0;
+          widget.onButtonSelected(0);
+        }
+      }
+
+      setState(() {
+        _goalAlreadySet = hasExisting;
+        _loadingExisting = false;
+      });
+    } catch (e) {
+      // 로딩 실패 시에도 입력은 가능하게
+      setState(() {
+        _goalAlreadySet = false;
+        _loadingExisting = false;
+      });
+    }
   }
 
   Future<void> _saveGoal() async {
     final supabase = Supabase.instance.client;
-    // 현재 날짜를 기준으로 이번 달을 계산
-    final now = DateTime.now();
-    final month = "${now.year}-${now.month.toString().padLeft(2, '0')}";
+    final month =
+        widget.month ??
+        "${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '0')}";
     final userId = supabase.auth.currentUser?.id;
 
     try {
@@ -57,9 +127,7 @@ class _GoalDialogState extends State<GoalDialog> {
       );
 
       if (expenseGoals || incomeGoals) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('이번 달 목표는 이미 설정되어 있습니다.')));
+        showAppSnackBar('이번 달 목표는 이미 설정되어 있습니다.');
         return;
       }
 
@@ -91,15 +159,11 @@ class _GoalDialogState extends State<GoalDialog> {
         });
       }
 
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('목표가 성공적으로 저장되었습니다!')));
+      showAppSnackBar('목표가 성공적으로 저장되었습니다!');
 
       Navigator.of(context).pop(); // 다이얼로그 닫기
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('저장 중 오류가 발생했습니다: $e')));
+      showAppSnackBar('저장 중 오류가 발생했습니다: $e');
     }
   }
 
@@ -113,8 +177,16 @@ class _GoalDialogState extends State<GoalDialog> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            if (_loadingExisting) ...[
+              const SizedBox(height: 8),
+              Center(
+                child: CircularProgressIndicator(color: MainColors.mainLight),
+              ),
+              const SizedBox(height: 12),
+            ],
             TextField(
               controller: widget.goalController,
+              enabled: !_goalAlreadySet,
               decoration: InputDecoration(
                 enabledBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: MainColors.mainLight, width: 2),
@@ -142,6 +214,7 @@ class _GoalDialogState extends State<GoalDialog> {
               text: "지출",
               hintText: "목표 금액을 입력하세요.",
               isSelected: selectedButton == 1,
+              enabled: !_goalAlreadySet,
               onPressed: () {
                 setState(() {
                   selectedButton = 1;
@@ -155,6 +228,7 @@ class _GoalDialogState extends State<GoalDialog> {
               text: "수입",
               hintText: "목표 금액을 입력하세요.",
               isSelected: selectedButton == 0,
+              enabled: !_goalAlreadySet,
               onPressed: () {
                 setState(() {
                   selectedButton = 0;
@@ -167,15 +241,20 @@ class _GoalDialogState extends State<GoalDialog> {
               style: FilledButton.styleFrom(
                 backgroundColor: MainColors.mainLight,
                 foregroundColor: Colors.white,
+                disabledBackgroundColor: MainColors.mainLight,
+                disabledForegroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(5),
                 ),
                 fixedSize: Size(MediaQuery.of(context).size.width * 1, 50),
               ),
-              onPressed: _saveGoal, // Supabase로 데이터 저장
-              child: const Text(
-                "목표 설정",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              onPressed: _goalAlreadySet ? null : _saveGoal, // Supabase로 데이터 저장
+              child: Text(
+                _goalAlreadySet ? "목표 설정 완료" : "목표 설정",
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ],
@@ -187,11 +266,11 @@ class _GoalDialogState extends State<GoalDialog> {
 
 class _buildGoalsAmount extends StatelessWidget {
   const _buildGoalsAmount({
-    super.key,
     required this.textController,
     required this.text,
     required this.hintText,
     this.isSelected = false,
+    this.enabled = true,
     required this.onPressed,
   });
 
@@ -199,6 +278,7 @@ class _buildGoalsAmount extends StatelessWidget {
   final String text;
   final String hintText;
   final bool isSelected;
+  final bool enabled;
   final VoidCallback onPressed;
 
   @override
@@ -211,12 +291,14 @@ class _buildGoalsAmount extends StatelessWidget {
                 ? MainColors.mainLight
                 : MainColors.main,
             foregroundColor: isSelected ? Colors.white : MainColors.mainDark,
+            disabledBackgroundColor: MainColors.main,
+            disabledForegroundColor: MainColors.mainDark,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(5),
             ),
             fixedSize: Size(MediaQuery.of(context).size.width * 0.19, 45),
           ),
-          onPressed: onPressed,
+          onPressed: enabled ? onPressed : null,
           child: Text(
             text,
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -227,7 +309,7 @@ class _buildGoalsAmount extends StatelessWidget {
           child: SizedBox(
             child: TextField(
               controller: textController,
-              enabled: isSelected,
+              enabled: enabled && isSelected,
               keyboardType: TextInputType.number,
               inputFormatters: [
                 FilteringTextInputFormatter.digitsOnly, // 숫자만 입력 가능
@@ -266,7 +348,7 @@ class ThousandsSeparatorInputFormatter extends TextInputFormatter {
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
-    final text = newValue.text.replaceAll(',', ''); // 기존 ',' 제거
+    final text = newValue.text.replaceAll(',', ''); // 기존 , 제거
 
     // 빈 문자열 처리
     if (text.isEmpty) {
@@ -281,7 +363,7 @@ class ThousandsSeparatorInputFormatter extends TextInputFormatter {
       return oldValue; // 숫자가 아니면 기존 값 유지
     }
 
-    final formattedText = NumberFormat('#,###').format(number); // 천 단위 구분 추가
+    final formattedText = NumberFormat('#,###').format(number); // 천 단위 구분
     return TextEditingValue(
       text: formattedText,
       selection: TextSelection.collapsed(offset: formattedText.length),

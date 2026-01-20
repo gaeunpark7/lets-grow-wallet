@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lets_grow_wallet/features/account_book/notifier/stats_notifier.dart';
+import 'package:lets_grow_wallet/features/account_book/services/admob_service.dart';
 import 'package:lets_grow_wallet/features/account_book/stats/screens/stats_expense_view.dart';
 import 'package:lets_grow_wallet/features/account_book/stats/screens/stats_income_view.dart';
 import 'package:lets_grow_wallet/features/account_book/stats/widgets/montly_header.dart';
@@ -15,22 +17,35 @@ class StatsPage extends StatefulWidget {
 class _StatsPageState extends State<StatsPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  BannerAd? _bannerAd;
 
   @override
   void initState() {
     super.initState();
+    _createBannerAd();
     _tabController = TabController(length: 2, vsync: this);
   }
 
   @override
   void dispose() {
     _tabController.dispose();
+    _bannerAd?.dispose();
     super.dispose();
+  }
+
+  void _createBannerAd() {
+    _bannerAd = BannerAd(
+      adUnitId: AdmobService.BannerAdUnitId!,
+      request: const AdRequest(),
+      size: AdSize.fullBanner,
+      listener: AdmobService.bannerAdListener,
+    )..load();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
@@ -50,10 +65,36 @@ class _StatsPageState extends State<StatsPage>
           ),
         ),
       ),
-      body: TabBarView(
-        controller: _tabController,
-        physics: const NeverScrollableScrollPhysics(),
-        children: [StatsIncomeView(), StatsExpenseView()],
+      body: Column(
+        children: [
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              physics: const NeverScrollableScrollPhysics(),
+              children: [StatsIncomeView(), StatsExpenseView()],
+            ),
+          ),
+          //광고 배너
+          SafeArea(
+            top: false,
+            child: Container(
+              width: double.infinity,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                border: Border(
+                  top: BorderSide(color: MainColors.point, width: 1),
+                ),
+              ),
+              child: SizedBox(
+                height: 56,
+                width: _bannerAd?.size.width.toDouble() ?? 0,
+                child: _bannerAd != null
+                    ? AdWidget(ad: _bannerAd!)
+                    : const SizedBox.shrink(),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

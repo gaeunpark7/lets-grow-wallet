@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lets_grow_wallet/app/router/route_paths.dart';
+import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ProfileSettingPage extends StatefulWidget {
@@ -27,9 +28,7 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
     final user = supabase.auth.currentUser;
     if (user == null) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text("유저 정보가 없습니다. 다시 로그인 해주세요.")));
+        showAppSnackBar('유저 정보가 없습니다. 다시 로그인 해주세요.');
         context.go(Routes.login);
       }
       return;
@@ -46,9 +45,7 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
     } catch (e) {
       print('닉네임 저장 오류: $e');
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text("닉네임 저장 실패")));
+        showAppSnackBar('닉네임 저장 실패');
       }
     }
   }
@@ -132,9 +129,7 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
         ),
         onPressed: () {
           if (_formKey.currentState!.validate()) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("${_nicknameController.text}님 만나서 반가워요!")),
-            );
+            showAppSnackBar('${_nicknameController.text}님 만나서 반가워요!');
             _saveUserProfile();
           }
         },

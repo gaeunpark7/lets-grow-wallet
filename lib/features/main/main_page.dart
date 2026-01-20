@@ -110,6 +110,8 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
+
     return SafeArea(
       child: Scaffold(
         body: widget.child,
@@ -133,24 +135,24 @@ class _MainPageState extends State<MainPage> {
             }
           },
         ),
-        floatingActionButton: SizedBox(
-          width: 72,
-          height: 72,
-          child: FloatingActionButton(
-            backgroundColor: Colors.white,
-            foregroundColor: MainColors.mainLight,
-            elevation: 0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(50),
-              side: BorderSide(color: MainColors.mainLight, width: 3),
-            ),
-
-            onPressed: () =>
-                context.push('${Routes.home}/${Routes.addExpense}'),
-
-            child: const Icon(Icons.add, size: 70),
-          ),
-        ),
+        floatingActionButton: isKeyboardOpen
+            ? null
+            : SizedBox(
+                width: 72,
+                height: 72,
+                child: FloatingActionButton(
+                  backgroundColor: Colors.white,
+                  foregroundColor: MainColors.mainLight,
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50),
+                    side: BorderSide(color: MainColors.mainLight, width: 3),
+                  ),
+                  onPressed: () =>
+                      context.push('${Routes.home}/${Routes.addExpense}'),
+                  child: const Icon(Icons.add, size: 70),
+                ),
+              ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       ),
     );

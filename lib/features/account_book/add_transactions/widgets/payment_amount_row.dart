@@ -37,13 +37,16 @@ class PaymentAmountRow extends StatelessWidget {
           child: SizedBox(
             height: 38,
             child: TextFormField(
+              style: TextStyle(color: MainColors.mainDark),
               controller: amountController,
               keyboardType: TextInputType.number,
               maxLength: 12,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 border: OutlineInputBorder(borderRadius: BorderRadius.zero),
                 hintText: "금액",
-                hintStyle: TextStyle(color: MainColors.mainDark),
+                hintStyle: TextStyle(
+                  color: MainColors.mainDark.withOpacity(0.6),
+                ),
                 isDense: true,
                 counterText: "",
                 contentPadding: EdgeInsets.symmetric(

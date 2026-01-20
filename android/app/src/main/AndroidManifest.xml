@@ -38,10 +38,13 @@
 
         </activity>
 
-        <!-- 플러터 플러그인 등록을 위한 고정 코드 -->
+        <!-- 플러터 플러그인 등록 -->
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-9106516185321528~1778509070" />
     </application>
 
     <!-- 텍스트 처리 플러그인용 -->
