@@ -54,9 +54,11 @@ class PaymentAmountRow extends StatelessWidget {
                   horizontal: 12,
                 ),
                 enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.zero,
                   borderSide: BorderSide(color: MainColors.mainDark, width: 1),
                 ),
                 focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.zero,
                   borderSide: BorderSide(color: MainColors.mainDark, width: 2),
                 ),
               ),

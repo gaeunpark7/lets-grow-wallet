@@ -37,11 +37,6 @@ class CharacterBookState {
   }
 }
 
-final characterBookNotifierProvider =
-    AsyncNotifierProvider<CharacterBookNotifier, CharacterBookState>(() {
-      return CharacterBookNotifier();
-    });
-
 class CharacterBookNotifier extends AsyncNotifier<CharacterBookState> {
   final _service = CharacterBookService();
   final _userCharacterService = UserCharacterService();
@@ -98,3 +93,8 @@ class CharacterBookNotifier extends AsyncNotifier<CharacterBookState> {
     }
   }
 }
+
+final characterBookNotifierProvider =
+    AsyncNotifierProvider<CharacterBookNotifier, CharacterBookState>(() {
+      return CharacterBookNotifier();
+    });

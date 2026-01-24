@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:lets_grow_wallet/app/router/route_paths.dart';
+import 'package:lets_grow_wallet/features/account_book/add_transactions/screens/add_expense_page.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/calendar_design.dart';
 import 'package:lets_grow_wallet/features/account_book/notifier/transaction_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/services/transaction_service.dart';
@@ -69,24 +70,6 @@ class _AddIncomePageState extends ConsumerState<AddIncomePage> {
     }
   }
 
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: selectedDate,
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
-      locale: const Locale('ko'),
-      builder: (context, child) {
-        return CalendarDesign(child: child!);
-      },
-    );
-    if (picked != null && picked != selectedDate) {
-      setState(() {
-        selectedDate = picked;
-      });
-    }
-  }
-
   //기본 카테고리 불러오기
   Future<void> loadCategories() async {
     final service = TransactionServiceIncome();
@@ -94,6 +77,33 @@ class _AddIncomePageState extends ConsumerState<AddIncomePage> {
     setState(() {
       categories = fetched;
     });
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final now = DateTime.now();
+    final first = DateTime(2026, 1, 1);
+    final last = DateTime(now.year, now.month, now.day); //오늘까지만 선택 가능
+
+    final initial = selectedDate.isBefore(first)
+        ? first
+        : (selectedDate.isAfter(last) ? last : selectedDate);
+
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: initial,
+      firstDate: first,
+      lastDate: last,
+      locale: const Locale('ko'),
+      builder: (context, child) {
+        return CalendarDesign(child: child!);
+      },
+    );
+
+    if (picked != null && picked != selectedDate) {
+      setState(() {
+        selectedDate = picked;
+      });
+    }
   }
 
   @override
@@ -135,6 +145,8 @@ class _AddIncomePageState extends ConsumerState<AddIncomePage> {
                 const SizedBox(height: 18),
                 // 날짜 선택
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+
                   children: [
                     SizedBox(
                       width: 150,
@@ -153,6 +165,20 @@ class _AddIncomePageState extends ConsumerState<AddIncomePage> {
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.zero,
                           ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.zero,
+                            borderSide: BorderSide(
+                              color: MainColors.mainDark,
+                              width: 0.5,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.zero,
+                            borderSide: BorderSide(
+                              color: MainColors.mainDark,
+                              width: 2,
+                            ),
+                          ),
                           hintText: "제목을 입력하세요",
                           hintStyle: TextStyle(
                             color: MainColors.mainDark.withOpacity(0.6),
@@ -162,24 +188,14 @@ class _AddIncomePageState extends ConsumerState<AddIncomePage> {
                             vertical: 10,
                             horizontal: 12,
                           ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: MainColors.mainDark,
-                              width: 0.5,
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: MainColors.mainDark,
-                              width: 2,
-                            ),
-                          ),
+                          // counterText: '', // 카운터 제거로 높이 변경 방지, 어떻게 할지.
                         ),
+                        maxLength: 8,
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 18),
+                const SizedBox(height: 10),
                 // 카테고리 선택
                 CategorySelector(
                   categories: categories,
@@ -190,7 +206,7 @@ class _AddIncomePageState extends ConsumerState<AddIncomePage> {
                     });
                   },
                 ),
-                const SizedBox(height: 18),
+                const SizedBox(height: 10),
                 // 결제수단 + 금액 입력
                 PaymentAmountRow(
                   selectedPayType: selectedPayType,
@@ -203,10 +219,11 @@ class _AddIncomePageState extends ConsumerState<AddIncomePage> {
                   formatAmount: formatAmount,
                 ),
 
-                const SizedBox(height: 24),
+                const SizedBox(height: 18),
                 TextField(
                   controller: memoController,
                   style: TextStyle(color: MainColors.mainDark),
+                  inputFormatters: [MaxLinesTextInputFormatter(maxLines: 4)],
                   maxLength: 50,
                   maxLines: 4,
                   minLines: 3,
@@ -230,7 +247,7 @@ class _AddIncomePageState extends ConsumerState<AddIncomePage> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 18),
+                const SizedBox(height: 10),
                 SizedBox(
                   width: double.infinity,
                   height: 48,
@@ -239,8 +256,9 @@ class _AddIncomePageState extends ConsumerState<AddIncomePage> {
                       backgroundColor: MainColors.mainLight,
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(5),
                       ),
+                      elevation: 0,
                       textStyle: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -300,7 +318,7 @@ class _AddIncomePageState extends ConsumerState<AddIncomePage> {
                         }
                       }
                     },
-                    child: const Text("지출 추가"),
+                    child: const Text("수입 추가"),
                   ),
                 ),
                 const SizedBox(height: 24),

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:lets_grow_wallet/features/account_book/add_transactions/screens/add_expense_page.dart';
+import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/calendar_design.dart';
 import 'package:lets_grow_wallet/features/account_book/notifier/transaction_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/services/transaction_service.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/category_selector.dart';
@@ -85,29 +87,25 @@ class _EditIncomePageState extends ConsumerState<EditIncomePage> {
   }
 
   Future<void> _selectDate(BuildContext context) async {
+    final now = DateTime.now();
+    final first = DateTime(2026, 1, 1);
+    final last = DateTime(now.year, now.month, now.day); //오늘까지만 선택 가능
+
+    final initial = selectedDate.isBefore(first)
+        ? first
+        : (selectedDate.isAfter(last) ? last : selectedDate);
+
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: selectedDate,
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
+      initialDate: initial,
+      firstDate: first,
+      lastDate: last,
       locale: const Locale('ko'),
       builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(
-              primary: MainColors.mainLight,
-              onPrimary: Colors.white,
-              onSurface: Colors.black87,
-            ),
-            textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(foregroundColor: MainColors.mainDark),
-            ),
-          ),
-          child: child!,
-        );
+        return CalendarDesign(child: child!);
       },
     );
-    if (!mounted) return;
+    // if (!mounted) return;
     if (picked != null && picked != selectedDate) {
       setState(() {
         selectedDate = picked;
@@ -130,6 +128,7 @@ class _EditIncomePageState extends ConsumerState<EditIncomePage> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: MainColors.mainLight,
+          iconTheme: IconThemeData(color: Colors.white),
           title: const Text(
             '수입 수정',
             style: TextStyle(
@@ -165,21 +164,30 @@ class _EditIncomePageState extends ConsumerState<EditIncomePage> {
                     Expanded(
                       child: TextField(
                         controller: titleController,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
+                        style: const TextStyle(color: MainColors.mainDark),
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.zero,
+                          ),
+
                           hintText: "제목을 입력하세요",
+                          hintStyle: TextStyle(
+                            color: MainColors.mainDark.withOpacity(0.6),
+                          ),
                           isDense: true,
                           contentPadding: EdgeInsets.symmetric(
                             vertical: 10,
                             horizontal: 12,
                           ),
                           enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.zero,
                             borderSide: BorderSide(
                               color: MainColors.mainDark,
                               width: 0.5,
                             ),
                           ),
                           focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.zero,
                             borderSide: BorderSide(
                               color: MainColors.mainDark,
                               width: 2,
@@ -218,19 +226,26 @@ class _EditIncomePageState extends ConsumerState<EditIncomePage> {
                 const SizedBox(height: 24),
                 TextField(
                   controller: memoController,
+                  style: const TextStyle(color: MainColors.mainDark),
+                  inputFormatters: [MaxLinesTextInputFormatter(maxLines: 4)],
                   maxLength: 50,
                   maxLines: 4,
                   minLines: 3,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     hintText: '메모 입력',
+                    hintStyle: TextStyle(
+                      color: MainColors.mainDark.withOpacity(0.6),
+                    ),
                     border: OutlineInputBorder(borderRadius: BorderRadius.zero),
                     enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.zero,
                       borderSide: BorderSide(
                         color: MainColors.mainDark,
                         width: 1,
                       ),
                     ),
                     focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.zero,
                       borderSide: BorderSide(
                         color: MainColors.mainDark,
                         width: 2,
@@ -247,8 +262,9 @@ class _EditIncomePageState extends ConsumerState<EditIncomePage> {
                       backgroundColor: MainColors.mainLight,
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(5),
                       ),
+                      elevation: 0,
                       textStyle: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -302,7 +318,8 @@ class _EditIncomePageState extends ConsumerState<EditIncomePage> {
                           _router.go(Routes.home);
                         }
                       } catch (e) {
-                        showAppSnackBar('수정 실패: $e');
+                        showAppSnackBar('수정 실패에 실패하였습니다. 다시 시도해주세요.');
+                        print("수정 실패:$e");
                       }
                     },
                     child: const Text("수입 수정"),

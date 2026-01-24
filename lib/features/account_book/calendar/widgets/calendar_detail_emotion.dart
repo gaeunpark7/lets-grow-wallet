@@ -41,6 +41,7 @@ class _CalendarDetailEmotionState extends ConsumerState<CalendarDetailEmotion> {
           _isLoading = false;
         });
       } else {
+        if (!mounted) return;
         setState(() {
           _hasEmotion = false;
           _isLoading = false;
@@ -63,8 +64,20 @@ class _CalendarDetailEmotionState extends ConsumerState<CalendarDetailEmotion> {
         date: widget.selectedDate,
       );
       if (mounted) {
+        setState(() {
+          _hasEmotion = true;
+        });
         showAppSnackBar('오늘의 감정을 등록했어요');
-        // 캘린더 데이터 새로고침
+
+        final month = DateTime(
+          widget.selectedDate.year,
+          widget.selectedDate.month,
+          1,
+        );
+        // 감정 데이터(월 단위) 즉시 갱신
+        ref.invalidate(emotionsByMonthProvider(month));
+
+        // 캘린더 소비/수입 통계도 함께 새로고침(기존 동작 유지)
         ref.read(calendarStatNotifierProvider.notifier).refreshDailyStats();
       }
     } catch (e) {

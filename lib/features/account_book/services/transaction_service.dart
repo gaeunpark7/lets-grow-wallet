@@ -6,6 +6,16 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class TransactionService {
   final supabase = Supabase.instance.client;
 
+  int _compareByDayDescTimeAsc(TransactionModel a, TransactionModel b) {
+    final aDay = DateTime(a.date.year, a.date.month, a.date.day);
+    final bDay = DateTime(b.date.year, b.date.month, b.date.day);
+
+    final dayCompare = bDay.compareTo(aDay); // 날짜는 내림차순
+    if (dayCompare != 0) return dayCompare;
+
+    return a.date.compareTo(b.date); // 같은 날짜는 시간 오름차순
+  }
+
   //내역 추가 - 소비
   Future<void> addTransaction(TransactionModel transaction) async {
     await supabase.from('transactions').insert(transaction.toMap());
@@ -23,7 +33,11 @@ class TransactionService {
         .lt('date', end.toIso8601String())
         .order('date', ascending: false);
 
-    return (response as List).map((e) => TransactionModel.fromMap(e)).toList();
+    final transactions = (response as List)
+        .map((e) => TransactionModel.fromMap(e))
+        .toList();
+    transactions.sort(_compareByDayDescTimeAsc);
+    return transactions;
   }
 
   // 거래 내역 수정

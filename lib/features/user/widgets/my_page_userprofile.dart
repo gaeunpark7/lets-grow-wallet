@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
+import 'package:lets_grow_wallet/features/account_book/notifier/user_notifier.dart';
 import 'package:lets_grow_wallet/features/user/model/user_profile_model.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:lets_grow_wallet/features/user/services/user_profile_service.dart';
 
-class MyPageUserProfilePage extends StatefulWidget {
+class MyPageUserProfilePage extends ConsumerStatefulWidget {
   const MyPageUserProfilePage({super.key, required this.userProfile});
 
-  final UserProfileModel? userProfile;
+  final UserProfileModel userProfile;
 
   @override
-  State<MyPageUserProfilePage> createState() => _MyPageUserProfileState();
+  ConsumerState<MyPageUserProfilePage> createState() =>
+      _MyPageUserProfileState();
 }
 
-class _MyPageUserProfileState extends State<MyPageUserProfilePage> {
+class _MyPageUserProfileState extends ConsumerState<MyPageUserProfilePage> {
   final nicknameController = TextEditingController();
   final formKey = GlobalKey<FormState>();
-  final _userProfileService = UserProfileService();
 
   @override
   void dispose() {
@@ -26,14 +26,10 @@ class _MyPageUserProfileState extends State<MyPageUserProfilePage> {
   }
 
   Future<void> _saveNickname(BuildContext dialogContext) async {
-    final supabase = Supabase.instance.client;
-    final user = supabase.auth.currentUser;
-    if (user == null) return;
     try {
-      await _userProfileService.updateNickname(
-        user.id,
-        nicknameController.text,
-      );
+      await ref
+          .read(userProfileNotifierProvider.notifier)
+          .updateNickname(nicknameController.text);
       if (!mounted) return;
       Navigator.of(dialogContext).pop();
       showAppSnackBar('닉네임이 변경되었습니다.');
@@ -55,6 +51,7 @@ class _MyPageUserProfileState extends State<MyPageUserProfilePage> {
             alignment: Alignment.topRight,
             child: GestureDetector(
               onTap: () async {
+                nicknameController.text = widget.userProfile.nickname;
                 await showDialog(
                   context: context,
                   builder: (ctx) => _buildDialog(ctx),
@@ -84,7 +81,7 @@ class _MyPageUserProfileState extends State<MyPageUserProfilePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          widget.userProfile!.nickname,
+                          widget.userProfile.nickname,
                           style: const TextStyle(
                             fontSize: 22,
                             // fontWeight: FontWeight.bold,
@@ -98,7 +95,7 @@ class _MyPageUserProfileState extends State<MyPageUserProfilePage> {
                           color: Colors.white,
                           child: Center(
                             child: Text(
-                              widget.userProfile!.email,
+                              widget.userProfile.email,
                               style: const TextStyle(
                                 fontSize: 16,
                                 color: MainColors.mainDark,
@@ -119,91 +116,84 @@ class _MyPageUserProfileState extends State<MyPageUserProfilePage> {
   }
 
   Widget _buildDialog(BuildContext dialogContext) {
-    final bottomInset = MediaQuery.of(dialogContext).viewInsets.bottom;
-
-    return AnimatedPadding(
-      duration: const Duration(milliseconds: 150),
-      curve: Curves.easeOut,
-      padding: EdgeInsets.only(bottom: bottomInset),
-      child: Dialog(
-        backgroundColor: Colors.white,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text(
-                  "닉네임 변경",
-                  style: TextStyle(
-                    fontSize: 23,
-                    fontWeight: FontWeight.bold,
-                    color: MainColors.mainDark,
+    return Dialog(
+      backgroundColor: Colors.white,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                "닉네임 변경",
+                style: TextStyle(
+                  fontSize: 23,
+                  fontWeight: FontWeight.bold,
+                  color: MainColors.mainDark,
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: nicknameController,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey, width: 0.1),
+                  ),
+                  hintText: "새로운 닉네임을 입력하세요.",
+                  hintStyle: TextStyle(color: MainColors.mainDark),
+                  filled: true,
+                  fillColor: Color.fromARGB(255, 251, 251, 251),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: MainColors.mainDark),
                   ),
                 ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: nicknameController,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey, width: 0.1),
-                    ),
-                    hintText: "새로운 닉네임을 입력하세요.",
-                    hintStyle: TextStyle(color: MainColors.mainDark),
-                    filled: true,
-                    fillColor: Color.fromARGB(255, 251, 251, 251),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: MainColors.mainDark),
-                    ),
-                  ),
-                  maxLength: 7,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "닉네임을 입력하세요";
-                    } else if (value.length < 2) {
-                      return "닉네임은 2자 이상이어야 합니다.";
-                    } else if (value.length > 7) {
-                      return "닉네임은 7자 이하이어야 합니다.";
-                    } else if (!RegExp(r'^[a-zA-Z0-9가-힣]+$').hasMatch(value)) {
-                      return "닉네임은 한글, 영어, 숫자만 사용할 수 있습니다.";
-                    }
+                maxLength: 7,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "닉네임을 입력하세요";
+                  } else if (value.length < 2) {
+                    return "닉네임은 2자 이상이어야 합니다.";
+                  } else if (value.length > 7) {
+                    return "닉네임은 7자 이하이어야 합니다.";
+                  } else if (!RegExp(r'^[a-zA-Z0-9가-힣]+$').hasMatch(value)) {
+                    return "닉네임은 한글, 영어, 숫자만 사용할 수 있습니다.";
+                  }
 
-                    return null;
-                  },
-                ),
-                Text(
-                  "(닉네임은 7자 이하 입력 가능)",
-                  style: TextStyle(color: MainColors.mainDark),
-                ),
-                Text(
-                  "변경 후 7일 후에 재변경 가능합니다.",
-                  style: TextStyle(color: MainColors.mainDark),
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _buildButton(
-                      backColor: MainColors.main,
-                      textColor: MainColors.mainDark,
-                      ontap: () => Navigator.of(dialogContext).pop(),
-                      text: "취소",
-                    ),
-                    _buildButton(
-                      backColor: MainColors.mainLight,
-                      textColor: Colors.white,
-                      ontap: () {
-                        if (formKey.currentState!.validate()) {
-                          _saveNickname(dialogContext);
-                        }
-                      },
-                      text: "확인",
-                    ),
-                  ],
-                ),
-              ],
-            ),
+                  return null;
+                },
+              ),
+              Text(
+                "(닉네임은 7자 이하 입력 가능)",
+                style: TextStyle(color: MainColors.mainDark),
+              ),
+              Text(
+                "변경 후 7일 후에 재변경 가능합니다.",
+                style: TextStyle(color: MainColors.mainDark),
+              ),
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buildButton(
+                    backColor: MainColors.main,
+                    textColor: MainColors.mainDark,
+                    ontap: () => Navigator.of(dialogContext).pop(),
+                    text: "취소",
+                  ),
+                  _buildButton(
+                    backColor: MainColors.mainLight,
+                    textColor: Colors.white,
+                    ontap: () {
+                      if (formKey.currentState!.validate()) {
+                        _saveNickname(dialogContext);
+                      }
+                    },
+                    text: "확인",
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),

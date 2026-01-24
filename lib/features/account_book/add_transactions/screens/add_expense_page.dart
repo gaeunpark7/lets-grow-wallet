@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -10,6 +11,7 @@ import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/
 import 'package:lets_grow_wallet/features/main/widgets/date_selector.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/payment_amount_row.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/title_button.dart';
+import 'package:lets_grow_wallet/features/account_book/notifier/interstitial_ad_controller.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -186,14 +188,14 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
                             vertical: 10,
                             horizontal: 12,
                           ),
-                          counterText: '', // 카운터 제거로 높이 변경 방지, 어떻게 할지.
+                          // counterText: '', // 카운터 제거로 높이 변경 방지, 어떻게 할지.
                         ),
                         maxLength: 8,
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 18),
+                const SizedBox(height: 10),
                 // 카테고리 선택
                 CategorySelector(
                   categories: categories,
@@ -204,7 +206,7 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
                     });
                   },
                 ),
-                const SizedBox(height: 18),
+                const SizedBox(height: 8),
                 // 결제수단 + 금액 입력
                 PaymentAmountRow(
                   selectedPayType: selectedPayType,
@@ -217,10 +219,13 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
                   formatAmount: formatAmount,
                 ),
 
-                const SizedBox(height: 24),
+                const SizedBox(height: 18),
                 TextField(
                   controller: memoController,
                   style: TextStyle(color: MainColors.mainDark),
+                  inputFormatters: const [
+                    MaxLinesTextInputFormatter(maxLines: 4),
+                  ],
                   maxLines: 4,
                   minLines: 3,
                   maxLength: 50,
@@ -246,7 +251,7 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 18),
+                const SizedBox(height: 10),
                 SizedBox(
                   width: double.infinity,
                   height: 48,
@@ -255,8 +260,9 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
                       backgroundColor: MainColors.mainLight,
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(5),
                       ),
+                      elevation: 0,
                       textStyle: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -302,6 +308,11 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
                         );
                         await _addTransaction(transaction, ref);
 
+                        // 3번마다 전면 광고
+                        await ref
+                            .read(interstitialAdControllerProvider.notifier)
+                            .onTransactionAdded();
+
                         // 저장 후 이전 화면으로 이동
                         if (mounted) {
                           context.push(Routes.home);
@@ -325,5 +336,21 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
         ),
       ),
     );
+  }
+}
+
+class MaxLinesTextInputFormatter extends TextInputFormatter {
+  const MaxLinesTextInputFormatter({required this.maxLines});
+
+  final int maxLines;
+
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    final lineCount = '\n'.allMatches(newValue.text).length + 1;
+    if (lineCount <= maxLines) return newValue;
+    return oldValue;
   }
 }

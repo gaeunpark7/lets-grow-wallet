@@ -1,4 +1,5 @@
 class CharacterModel {
+  //캐릭터구매
   final String id;
   final String name;
   final String description;

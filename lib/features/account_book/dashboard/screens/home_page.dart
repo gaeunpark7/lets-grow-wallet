@@ -103,6 +103,7 @@ class _homePageState extends ConsumerState<HomePage> {
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(30),
           child: AppBar(
+            scrolledUnderElevation: 0,
             automaticallyImplyLeading: false,
             backgroundColor: MainColors.mainLight,
             titleSpacing: 0,

@@ -18,6 +18,13 @@ class _CalendarDesignState extends State<CalendarDesign> {
       return MainColors.mainDark; // 기본 날짜 텍스트
     }
 
+    Color? todayTextColor(Set<WidgetState> states) {
+      if (states.contains(WidgetState.selected)) {
+        return Colors.white; // 오늘 날짜가 선택된 경우
+      }
+      return MainColors.mainLight; // 오늘 날짜(선택 안됨)
+    }
+
     Color? yearTextColor(Set<WidgetState> states) {
       if (states.contains(WidgetState.selected))
         return Colors.white; // 선택 년도 텍스트
@@ -28,7 +35,7 @@ class _CalendarDesignState extends State<CalendarDesign> {
     return Theme(
       data: base.copyWith(
         colorScheme: base.colorScheme.copyWith(
-          primary: MainColors.mainLight, // 선택된 날짜(원) / 년도 선택 배경
+          primary: MainColors.mainLight, // 선택된 날짜 / 년도 선택 배경
           onPrimary: Colors.white, // 선택된 (날짜/년도) 텍스트 색
           surface: Colors.white,
           onSurface: MainColors.mainDark,
@@ -47,9 +54,7 @@ class _CalendarDesignState extends State<CalendarDesign> {
           weekdayStyle: const TextStyle(color: MainColors.mainDark),
           dayStyle: const TextStyle(color: MainColors.mainDark),
 
-          todayForegroundColor: const WidgetStatePropertyAll(
-            MainColors.mainLight,
-          ),
+          todayForegroundColor: WidgetStateProperty.resolveWith(todayTextColor),
           todayBorder: const BorderSide(
             color: MainColors.mainLight,
             width: 1.5,

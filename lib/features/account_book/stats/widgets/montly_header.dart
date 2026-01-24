@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lets_grow_wallet/features/account_book/notifier/stats_notifier.dart';
+import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/month_picker_dialog.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 
 class MonthHeader extends ConsumerWidget {
@@ -24,17 +25,38 @@ class MonthHeader extends ConsumerWidget {
     final month = ref.watch(selectedMonthProvider);
     final label = '${month.year}년 ${month.month}월';
 
+    final minMonth = DateTime(2025, 1, 1);
+    final now = DateTime.now();
+    final maxMonth = DateTime(now.year, now.month, 1);
+
+    final canPrev = month.isAfter(minMonth);
+    final canNext = month.isBefore(maxMonth);
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         IconButton(
-          onPressed: () => ref.read(selectedMonthProvider.notifier).state =
-              _addMonths(month, -1),
-          icon: const Icon(Icons.chevron_left, color: MainColors.mainDark),
+          onPressed: canPrev
+              ? () => ref.read(selectedMonthProvider.notifier).state =
+                    _addMonths(month, -1)
+              : null,
+          icon: const Icon(Icons.chevron_left),
+          color: MainColors.mainDark,
+          disabledColor: MainColors.point,
         ),
         GestureDetector(
           onTap: () async {
-            // MonthPicker 패키지로 교체 가능
+            final picked = await showMonthPickerDialog(
+              context: context,
+              initialMonth: month,
+              firstYear: 2025,
+            );
+
+            if (picked == null) return;
+            if (picked.isAfter(maxMonth)) return;
+            if (picked.isBefore(minMonth)) return;
+
+            ref.read(selectedMonthProvider.notifier).state = picked;
           },
           child: Text(
             label,
@@ -46,18 +68,13 @@ class MonthHeader extends ConsumerWidget {
           ),
         ),
         IconButton(
-          onPressed: () {
-            // 다음달은 볼 수 없음.
-            final now = DateTime.now();
-            final thisMonth = DateTime(now.year, now.month, 1);
-            if (month.isBefore(thisMonth)) {
-              ref.read(selectedMonthProvider.notifier).state = _addMonths(
-                month,
-                1,
-              );
-            }
-          },
-          icon: const Icon(Icons.chevron_right, color: MainColors.mainDark),
+          onPressed: canNext
+              ? () => ref.read(selectedMonthProvider.notifier).state =
+                    _addMonths(month, 1)
+              : null,
+          icon: const Icon(Icons.chevron_right),
+          color: MainColors.mainDark,
+          disabledColor: MainColors.point,
         ),
       ],
     );

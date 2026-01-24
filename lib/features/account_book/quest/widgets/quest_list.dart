@@ -39,15 +39,64 @@ class _QuestListState extends ConsumerState<QuestList> {
         context: context,
         barrierDismissible: false,
         builder: (context) {
-          return AlertDialog(
-            title: const Text('보상 획득'),
-            content: const Text('15xp, 15coin 획득!'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('확인'),
+          return Dialog(
+            backgroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(14.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    '보상 획득',
+                    style: TextStyle(
+                      color: MainColors.mainDark,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Divider(color: MainColors.mainDark, height: 0, thickness: 1),
+                  const SizedBox(height: 12),
+                  _buildDialogTile('EXP', '50 XP'),
+                  Divider(
+                    color: MainColors.mainDark,
+                    thickness: 1 / MediaQuery.of(context).devicePixelRatio,
+                    height: 0,
+                  ),
+                  const SizedBox(height: 8),
+                  _buildDialogTile('Coin', '15'),
+                  Divider(
+                    color: MainColors.mainDark,
+                    thickness: 1 / MediaQuery.of(context).devicePixelRatio,
+                    height: 0,
+                  ),
+                  const SizedBox(height: 14),
+                  FilledButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: MainColors.mainLight,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      minimumSize: const Size(double.infinity, 45),
+                    ),
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text(
+                      '확인',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           );
         },
       );
@@ -62,6 +111,16 @@ class _QuestListState extends ConsumerState<QuestList> {
         _claimingReward = false;
       });
     }
+  }
+
+  Row _buildDialogTile(String title, String value) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(title, style: TextStyle(fontSize: 14, color: MainColors.mainDark)),
+        Text(value, style: TextStyle(fontSize: 14, color: MainColors.mainDark)),
+      ],
+    );
   }
 
   @override

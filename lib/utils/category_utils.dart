@@ -22,6 +22,8 @@ IconData getCategoryIcon(String name) {
       return Icons.local_cafe;
     case '생활용품':
       return Icons.shopping_bag;
+    case '경조사':
+      return Icons.card_giftcard;
     case '기타':
       return Icons.more_horiz;
     case '월급':

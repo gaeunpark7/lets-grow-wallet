@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lets_grow_wallet/features/account_book/calendar/widgets/calendar_cell.dart';
-import 'package:lets_grow_wallet/features/account_book/model/daily_stat_model.dart';
 import 'package:lets_grow_wallet/features/account_book/notifier/calendar_notifier.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -28,7 +27,8 @@ class _CalendarState extends ConsumerState<Calendar> {
   @override
   Widget build(BuildContext context) {
     final statAsyncValue = ref.watch(calendarStatNotifierProvider);
-    final emotionAsyncValue = ref.watch(emotionsByMonthProvider(_focusedDay));
+    final focusedMonth = DateTime(_focusedDay.year, _focusedDay.month, 1);
+    final emotionAsyncValue = ref.watch(emotionsByMonthProvider(focusedMonth));
 
     return Scaffold(
       backgroundColor: Colors.white,

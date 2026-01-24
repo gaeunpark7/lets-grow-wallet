@@ -46,6 +46,7 @@ class _GoalDialogState extends State<GoalDialog> {
     final supabase = Supabase.instance.client;
     final userId = supabase.auth.currentUser?.id;
     if (userId == null) {
+      if (!mounted) return;
       setState(() {
         _loadingExisting = false;
         _goalAlreadySet = false;
@@ -93,17 +94,33 @@ class _GoalDialogState extends State<GoalDialog> {
         }
       }
 
+      if (!mounted) return;
       setState(() {
         _goalAlreadySet = hasExisting;
         _loadingExisting = false;
       });
     } catch (e) {
       // 로딩 실패 시에도 입력은 가능하게
+      if (!mounted) return;
       setState(() {
         _goalAlreadySet = false;
         _loadingExisting = false;
       });
     }
+  }
+
+  bool _isCurrentMonth(String month) {
+    final parts = month.split('-');
+    if (parts.length != 2) return true;
+
+    final year = int.tryParse(parts[0]);
+    final m = int.tryParse(parts[1]);
+    if (year == null || m == null) return true;
+
+    final now = DateTime.now();
+    final currentMonth = DateTime(now.year, now.month, 1);
+    final selected = DateTime(year, m, 1);
+    return selected == currentMonth;
   }
 
   Future<void> _saveGoal() async {
@@ -114,6 +131,11 @@ class _GoalDialogState extends State<GoalDialog> {
     final userId = supabase.auth.currentUser?.id;
 
     try {
+      if (!_isCurrentMonth(month)) {
+        showAppSnackBar('과거의 달이면, 이번 달의 목표만 설정 가능합니다.');
+        return;
+      }
+
       final goalService = GoalService(supabase); //이번 달 목표가 이미 있는지 확인
       final expenseGoals = await goalService.isGoalExists(
         userId!,
@@ -206,7 +228,9 @@ class _GoalDialogState extends State<GoalDialog> {
                   size: 30,
                 ),
                 contentPadding: EdgeInsets.only(bottom: 4),
+                counterText: '',
               ),
+              maxLength: 12,
             ),
             const SizedBox(height: 12),
             _buildGoalsAmount(
