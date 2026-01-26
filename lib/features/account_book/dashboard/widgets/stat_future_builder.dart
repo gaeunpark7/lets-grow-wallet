@@ -1,7 +1,7 @@
 // ...existing code...
 import 'package:flutter/material.dart';
 import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/build_total.dart';
-import 'package:lets_grow_wallet/features/account_book/model/montyle_stat_model.dart';
+import 'package:lets_grow_wallet/features/account_book/model/monthly_stat_model.dart';
 
 class StatFutureBuilder extends StatelessWidget {
   final Future<MonthlyStat?> future;

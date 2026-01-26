@@ -29,8 +29,6 @@ class _EditExpensePageState extends ConsumerState<EditExpensePage> {
   final amountController = TextEditingController();
   final memoController = TextEditingController();
 
-  late GoRouter _router;
-
   DateTime selectedDate = DateTime.now();
   int? selectedCategoryIdx;
   int selectedPayType = 0; // 0: 카드, 1: 현금
@@ -47,12 +45,6 @@ class _EditExpensePageState extends ConsumerState<EditExpensePage> {
     selectedDate = tx.date;
     selectedPayType = tx.paymentMethod;
     loadCategories(tx.categoryId);
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _router = GoRouter.of(context);
   }
 
   @override
@@ -300,7 +292,7 @@ class _EditExpensePageState extends ConsumerState<EditExpensePage> {
                           : titleController.text.trim();
                       final transaction = TransactionModel(
                         id: widget.transaction.id,
-                        userId: userId, // 실제 로그인 유저 uuid로 대체
+                        userId: userId,
                         title: titleText,
                         amount:
                             int.tryParse(
@@ -316,13 +308,14 @@ class _EditExpensePageState extends ConsumerState<EditExpensePage> {
                       );
                       try {
                         await _updateTransaction(transaction, ref);
+                        if (!mounted) return;
 
-                        showAppSnackBar('수정되었습니다.');
-                        if (_router.canPop()) {
-                          _router.pop();
-                        } else {
-                          _router.go(Routes.home);
+                        final didPop = await Navigator.of(context).maybePop();
+                        if (!didPop) {
+                          if (!mounted) return;
+                          context.go(Routes.home);
                         }
+                        showAppSnackBar('수정되었습니다.');
                       } catch (e) {
                         showAppSnackBar('수정에 실패하였습니다. 다시 시도해주세요.');
                         print("수정 실패: $e");

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lets_grow_wallet/features/account_book/calendar/widgets/calendar_cell.dart';
 import 'package:lets_grow_wallet/features/account_book/notifier/calendar_notifier.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
+import 'package:lets_grow_wallet/utils/friendly_error_message.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class Calendar extends ConsumerStatefulWidget {
@@ -167,11 +168,13 @@ class _CalendarState extends ConsumerState<Calendar> {
                 );
               },
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (error, stack) => Center(child: Text('Error: $error')),
+              error: (error, stack) =>
+                  Center(child: Text(FriendlyErrorMessage.of(error))),
             );
           },
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, stack) => Center(child: Text('Error: $error')),
+          error: (error, stack) =>
+              Center(child: Text(FriendlyErrorMessage.of(error))),
         ),
       ),
     );

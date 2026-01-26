@@ -10,11 +10,10 @@ import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/stat_fu
 import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/table_header.dart';
 import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/table_list.dart';
 import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/month_picker_dialog.dart';
+import 'package:lets_grow_wallet/features/account_book/notifier/user_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/services/stat_service.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'dart:async';
-import '../../model/montyle_stat_model.dart';
+import '../../model/monthly_stat_model.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -30,9 +29,6 @@ class _homePageState extends ConsumerState<HomePage> {
   late DateTime start;
   late DateTime end;
 
-  StreamSubscription<AuthState>? _authSub;
-  String? _lastUserId;
-
   @override
   void initState() {
     super.initState();
@@ -40,22 +36,7 @@ class _homePageState extends ConsumerState<HomePage> {
     start = DateTime(selectedMonth.year, selectedMonth.month, 1);
     end = DateTime(selectedMonth.year, selectedMonth.month + 1, 1);
 
-    _lastUserId = Supabase.instance.client.auth.currentUser?.id;
     _statFuture = statService.fetchMonthlyStat(start, end);
-
-    // 로그아웃/다른 계정 로그인 시 캐시된 provider/future를 갱신
-    _authSub = Supabase.instance.client.auth.onAuthStateChange.listen((event) {
-      final nextUserId = event.session?.user.id;
-      if (nextUserId == _lastUserId) return;
-      _lastUserId = nextUserId;
-
-      ref.invalidate(transactionNotifierProvider);
-      if (mounted) {
-        setState(() {
-          _statFuture = statService.fetchMonthlyStat(start, end);
-        });
-      }
-    });
   }
 
   void _setSelectedMonth({required int year, required int month}) {
@@ -87,7 +68,6 @@ class _homePageState extends ConsumerState<HomePage> {
 
   @override
   void dispose() {
-    _authSub?.cancel();
     super.dispose();
   }
 
@@ -96,6 +76,21 @@ class _homePageState extends ConsumerState<HomePage> {
     final selectedMonth = ref.watch(selectedMonthProvider);
     final year = selectedMonth.year;
     final month = selectedMonth.month;
+
+    // auth 변경(로그아웃/계정 전환) 감지: ref.listen은 build 내부에서만 사용 가능
+    ref.listen<AsyncValue<String?>>(authUserIdProvider, (prev, next) {
+      if (next.isLoading) return;
+      final prevId = prev?.value;
+      final nextId = next.value;
+      if (prevId == nextId) return;
+
+      // 거래/통계 화면이 즉시 새 계정으로 갱신되도록 refresh 트리거
+      ref.invalidate(transactionNotifierProvider);
+      if (!mounted) return;
+      setState(() {
+        _statFuture = statService.fetchMonthlyStat(start, end);
+      });
+    });
 
     return SafeArea(
       child: Scaffold(

@@ -3,6 +3,7 @@ import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
 import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/goals_dialog.dart';
 import 'package:lets_grow_wallet/features/account_book/services/goal_service.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
+import 'package:lets_grow_wallet/utils/friendly_error_message.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MonthlyHeader extends StatefulWidget {
@@ -45,7 +46,7 @@ class _MonthlyHeaderState extends State<MonthlyHeader> {
 
     if (userId == null) {
       if (mounted) {
-        showAppSnackBar('사용자 인증이 필요합니다.');
+        showAppSnackBar('사용자 인증이 필요합니다. 다시 로그인 해주세요.');
       }
       return;
     }
@@ -61,7 +62,7 @@ class _MonthlyHeaderState extends State<MonthlyHeader> {
     } catch (e) {
       print('오류 발생: $e');
       if (mounted) {
-        showAppSnackBar('목표를 불러오는 중 오류가 발생했습니다: $e');
+        showAppSnackBar('목표를 불러오는 중 오류가 발생했습니다.');
       }
     }
   }

@@ -13,6 +13,7 @@ import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/
 import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/title_button.dart';
 import 'package:lets_grow_wallet/features/account_book/notifier/interstitial_ad_controller.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
+import 'package:lets_grow_wallet/utils/friendly_error_message.dart';
 import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
@@ -315,11 +316,15 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
 
                         // 저장 후 이전 화면으로 이동
                         if (mounted) {
-                          context.push(Routes.home);
+                          if (context.canPop()) {
+                            context.pop();
+                          } else {
+                            context.go(Routes.home);
+                          }
                         }
                       } catch (e) {
                         if (mounted) {
-                          showAppSnackBar('지출 추가 실패: $e');
+                          showAppSnackBar(FriendlyErrorMessage.of(e));
                         }
                       }
                     },

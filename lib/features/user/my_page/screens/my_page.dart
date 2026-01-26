@@ -8,6 +8,7 @@ import 'package:lets_grow_wallet/features/account_book/notifier/user_notifier.da
 import 'package:lets_grow_wallet/features/account_book/services/admob_service.dart';
 import 'package:lets_grow_wallet/features/user/widgets/my_page_userprofile.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
+import 'package:lets_grow_wallet/utils/friendly_error_message.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MyPage extends ConsumerStatefulWidget {
@@ -19,6 +20,8 @@ class MyPage extends ConsumerStatefulWidget {
 
 class _MyPageState extends ConsumerState<MyPage> {
   BannerAd? _bannerAd;
+  bool _isLoggingOut = false;
+  bool _redirectedToLogin = false;
 
   @override
   void initState() {
@@ -37,6 +40,11 @@ class _MyPageState extends ConsumerState<MyPage> {
 
   Future<void> _logout() async {
     try {
+      if (mounted) {
+        setState(() {
+          _isLoggingOut = true;
+        });
+      }
       await Supabase.instance.client.auth.signOut();
       if (mounted) {
         context.go(Routes.login);
@@ -44,7 +52,13 @@ class _MyPageState extends ConsumerState<MyPage> {
     } catch (e) {
       print('로그아웃 오류: $e');
       if (mounted) {
-        showAppSnackBar('로그아웃 실패: $e');
+        showAppSnackBar(FriendlyErrorMessage.of(e));
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoggingOut = false;
+        });
       }
     }
   }
@@ -52,6 +66,16 @@ class _MyPageState extends ConsumerState<MyPage> {
   @override
   Widget build(BuildContext context) {
     final userProfileAsync = ref.watch(userProfileNotifierProvider);
+    final authUserIdAsync = ref.watch(authUserIdProvider);
+
+    // 로그아웃 상태면(혹은 로그아웃 완료 직후) 에러 UI 대신 로그인으로 이동
+    if (!_redirectedToLogin && authUserIdAsync.value == null) {
+      _redirectedToLogin = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        context.go(Routes.login);
+      });
+    }
 
     return SafeArea(
       child: Scaffold(
@@ -63,50 +87,61 @@ class _MyPageState extends ConsumerState<MyPage> {
             automaticallyImplyLeading: false,
           ),
         ),
-        body: userProfileAsync.when(
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (e, _) => Center(child: Text('유저 정보를 불러올 수 없습니다. ($e)')),
-          data: (userProfile) {
-            if (userProfile == null) {
-              return const Center(child: Text("유저 정보를 불러올 수 없습니다."));
-            }
+        body: Stack(
+          children: [
+            userProfileAsync.when(
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (e, _) => Center(child: Text(FriendlyErrorMessage.of(e))),
+              data: (userProfile) {
+                if (userProfile == null) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-            return ListView(
-              padding: EdgeInsets.zero,
-              children: [
-                const SizedBox(height: 32),
-                MyPageUserProfilePage(userProfile: userProfile),
-                const SizedBox(height: 32),
-                const Divider(color: MainColors.mainDark, thickness: 0.5),
-                _buildListTile(
-                  icon: Icons.workspace_premium_outlined,
-                  text: "프리미엄",
+                return ListView(
+                  padding: EdgeInsets.zero,
+                  children: [
+                    const SizedBox(height: 32),
+                    MyPageUserProfilePage(userProfile: userProfile),
+                    const SizedBox(height: 32),
+                    const Divider(color: MainColors.mainDark, thickness: 0.5),
+                    _buildListTile(
+                      icon: Icons.workspace_premium_outlined,
+                      text: "프리미엄",
+                    ),
+                    const Divider(color: MainColors.mainDark, thickness: 0.5),
+                    _buildListTile(icon: Icons.feedback_outlined, text: "오류문의"),
+                    const Divider(color: MainColors.mainDark, thickness: 0.5),
+                    _buildListTile(
+                      icon: Icons.info_outline,
+                      text: "앱 정보",
+                      onTap: () {
+                        showAboutDialog(
+                          context: context,
+                          applicationName: "레츠고 가계부",
+                          applicationVersion: "1.0.0",
+                          applicationLegalese: "© 2025 LetsGrow",
+                        );
+                      },
+                    ),
+                    const Divider(color: MainColors.mainDark, thickness: 0.5),
+                    _buildListTile(
+                      icon: Icons.logout,
+                      text: "로그아웃",
+                      onTap: _isLoggingOut ? null : _logout,
+                    ),
+                    const Divider(color: MainColors.mainDark, thickness: 0.5),
+                  ],
+                );
+              },
+            ),
+            if (_isLoggingOut)
+              Positioned.fill(
+                child: ColoredBox(
+                  color: Colors.black54,
+                  child: const Center(child: CircularProgressIndicator()),
                 ),
-                const Divider(color: MainColors.mainDark, thickness: 0.5),
-                _buildListTile(icon: Icons.feedback_outlined, text: "오류문의"),
-                const Divider(color: MainColors.mainDark, thickness: 0.5),
-                _buildListTile(
-                  icon: Icons.info_outline,
-                  text: "앱 정보",
-                  onTap: () {
-                    showAboutDialog(
-                      context: context,
-                      applicationName: "레츠고 가계부",
-                      applicationVersion: "1.0.0",
-                      applicationLegalese: "© 2025 LetsGrow",
-                    );
-                  },
-                ),
-                const Divider(color: MainColors.mainDark, thickness: 0.5),
-                _buildListTile(
-                  icon: Icons.logout,
-                  text: "로그아웃",
-                  onTap: _logout,
-                ),
-                const Divider(color: MainColors.mainDark, thickness: 0.5),
-              ],
-            );
-          },
+              ),
+          ],
         ),
         bottomNavigationBar: Container(
           width: double.infinity,

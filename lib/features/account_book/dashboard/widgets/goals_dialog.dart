@@ -132,7 +132,7 @@ class _GoalDialogState extends State<GoalDialog> {
 
     try {
       if (!_isCurrentMonth(month)) {
-        showAppSnackBar('과거의 달이면, 이번 달의 목표만 설정 가능합니다.');
+        showAppSnackBar('이번 달의 목표만 설정 가능합니다.');
         return;
       }
 
@@ -181,11 +181,11 @@ class _GoalDialogState extends State<GoalDialog> {
         });
       }
 
-      showAppSnackBar('목표가 성공적으로 저장되었습니다!');
+      showAppSnackBar('목표가 성공적으로 저장되었습니다.');
 
       Navigator.of(context).pop(); // 다이얼로그 닫기
     } catch (e) {
-      showAppSnackBar('저장 중 오류가 발생했습니다: $e');
+      showAppSnackBar('저장 중 오류가 발생했습니다.');
     }
   }
 

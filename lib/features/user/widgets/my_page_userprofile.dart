@@ -4,6 +4,7 @@ import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
 import 'package:lets_grow_wallet/features/account_book/notifier/user_notifier.dart';
 import 'package:lets_grow_wallet/features/user/model/user_profile_model.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
+import 'package:lets_grow_wallet/utils/friendly_error_message.dart';
 
 class MyPageUserProfilePage extends ConsumerStatefulWidget {
   const MyPageUserProfilePage({super.key, required this.userProfile});
@@ -35,7 +36,8 @@ class _MyPageUserProfileState extends ConsumerState<MyPageUserProfilePage> {
       showAppSnackBar('닉네임이 변경되었습니다.');
     } catch (e) {
       if (!mounted) return;
-      showAppSnackBar('닉네임 변경 실패: $e');
+      showAppSnackBar(FriendlyErrorMessage.of(e));
+      print('닉네임 저장 오류: $e');
     }
   }
 
@@ -136,12 +138,14 @@ class _MyPageUserProfileState extends ConsumerState<MyPageUserProfilePage> {
               const SizedBox(height: 16),
               TextFormField(
                 controller: nicknameController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   border: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.grey, width: 0.1),
                   ),
                   hintText: "새로운 닉네임을 입력하세요.",
-                  hintStyle: TextStyle(color: MainColors.mainDark),
+                  hintStyle: TextStyle(
+                    color: MainColors.mainDark.withOpacity(0.5),
+                  ),
                   filled: true,
                   fillColor: Color.fromARGB(255, 251, 251, 251),
                   focusedBorder: OutlineInputBorder(

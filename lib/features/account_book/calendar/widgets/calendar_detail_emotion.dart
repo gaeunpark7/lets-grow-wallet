@@ -74,10 +74,7 @@ class _CalendarDetailEmotionState extends ConsumerState<CalendarDetailEmotion> {
           widget.selectedDate.month,
           1,
         );
-        // 감정 데이터(월 단위) 즉시 갱신
         ref.invalidate(emotionsByMonthProvider(month));
-
-        // 캘린더 소비/수입 통계도 함께 새로고침(기존 동작 유지)
         ref.read(calendarStatNotifierProvider.notifier).refreshDailyStats();
       }
     } catch (e) {

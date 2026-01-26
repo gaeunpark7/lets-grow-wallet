@@ -16,6 +16,12 @@ class ShopItemGridview extends StatelessWidget {
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
 
+    //상점 목록>이미지 로드에서 제외
+    const excludedNames = {'크왕', '꽃개'};
+    final filteredItems = items
+        .where((item) => !excludedNames.contains(item.name.trim()))
+        .toList();
+
     return Expanded(
       flex: 6,
       child: Container(
@@ -33,9 +39,9 @@ class ShopItemGridview extends StatelessWidget {
               mainAxisSpacing: 10,
               childAspectRatio: 0.6,
             ),
-            itemCount: items.length,
+            itemCount: filteredItems.length,
             itemBuilder: (context, index) {
-              final item = items[index];
+              final item = filteredItems[index];
               final opacity = item.isPurchased ? 1.0 : 0.30;
 
               return GestureDetector(

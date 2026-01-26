@@ -44,7 +44,7 @@ class FriendlyErrorMessage {
     if (_isNetworkError(error)) {
       return FriendlyErrorMessage(
         type: FriendlyErrorType.network,
-        message: '네트워크 연결이 불안정해요.\n인터넷/VPN/방화벽 설정을 확인한 뒤 다시 시도해주세요.',
+        message: '네트워크 연결을 확인해주세요.',
       ); //리로드 필요.
     }
 
@@ -57,7 +57,7 @@ class FriendlyErrorMessage {
 
     return FriendlyErrorMessage(
       type: FriendlyErrorType.unknown,
-      message: '데이터를 불러오는 중 오류가 발생했어요.\n잠시 후 다시 시도해주세요.',
+      message: '데이터를 불러오는 중 오류가 발생하였습니다.\n잠시 후 다시 시도해주세요.',
     );
   }
 
@@ -112,7 +112,7 @@ class FriendlyErrorMessage {
   static String _authMessage(AuthException e) {
     final lower = e.message.toLowerCase();
 
-    // Supabase가 주는 대표 문구(영문)를 한국어로 완화
+    // Supabase가 주는 영문 문구를 > 한국어로 변경
     if (lower.contains('invalid login credentials')) {
       return '로그인 정보가 올바르지 않습니다.';
     }
@@ -165,7 +165,7 @@ class FriendlyErrorMessage {
 
     return FriendlyErrorMessage(
       type: FriendlyErrorType.server,
-      message: '서버 처리 중 오류가 발생했어요.\n잠시 후 다시 시도해주세요.',
+      message: '서버 처리 중 오류가 발생하였습니다.\n잠시 후 다시 시도해주세요.',
     );
   }
 }

@@ -59,18 +59,18 @@ class _QuestListState extends ConsumerState<QuestList> {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  Divider(color: MainColors.mainDark, height: 0, thickness: 1),
+                  Divider(color: MainColors.mainLight, height: 0, thickness: 1),
                   const SizedBox(height: 12),
-                  _buildDialogTile('EXP', '50 XP'),
+                  _buildDialogTile('EXP', '50'),
                   Divider(
-                    color: MainColors.mainDark,
+                    color: MainColors.mainLight,
                     thickness: 1 / MediaQuery.of(context).devicePixelRatio,
                     height: 0,
                   ),
                   const SizedBox(height: 8),
                   _buildDialogTile('Coin', '15'),
                   Divider(
-                    color: MainColors.mainDark,
+                    color: MainColors.mainLight,
                     thickness: 1 / MediaQuery.of(context).devicePixelRatio,
                     height: 0,
                   ),
@@ -104,7 +104,7 @@ class _QuestListState extends ConsumerState<QuestList> {
       widget.onRewardClaimed?.call();
     } catch (e) {
       if (!mounted) return;
-      showAppSnackBar('보상 수령 실패: $e');
+      showAppSnackBar('보상 수령에 실패하였습니다.');
     } finally {
       if (!mounted) return;
       setState(() {

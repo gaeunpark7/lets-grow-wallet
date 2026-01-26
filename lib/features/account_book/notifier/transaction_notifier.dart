@@ -4,6 +4,7 @@ import 'package:lets_grow_wallet/features/account_book/notifier/calendar_notifie
 import 'package:lets_grow_wallet/features/account_book/notifier/month_selection_notifier.dart'
     as dashboard_month;
 import 'package:lets_grow_wallet/features/account_book/notifier/stats_notifier.dart';
+import 'package:lets_grow_wallet/features/account_book/notifier/user_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/services/transaction_service.dart';
 
 class TransactionNotifier extends AsyncNotifier<List<TransactionModel>> {
@@ -11,11 +12,18 @@ class TransactionNotifier extends AsyncNotifier<List<TransactionModel>> {
 
   @override
   Future<List<TransactionModel>> build() async {
+    // 로그인/로그아웃/계정 전환 시 거래 목록 캐시 자동 갱신
+    final userId = ref.watch(authUserIdProvider).value;
+    if (userId == null) return [];
+
     return _fetchMonthlyTransactions();
   }
 
   // 이번 달 거래 내역 불러오기
   Future<List<TransactionModel>> _fetchMonthlyTransactions() async {
+    final userId = ref.watch(authUserIdProvider).value;
+    if (userId == null) return [];
+
     final selectedMonth = ref.watch(dashboard_month.selectedMonthProvider);
     final start = DateTime(selectedMonth.year, selectedMonth.month, 1);
     final end = DateTime(selectedMonth.year, selectedMonth.month + 1, 1);

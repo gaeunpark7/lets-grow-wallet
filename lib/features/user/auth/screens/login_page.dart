@@ -39,7 +39,8 @@ class _LoginPageState extends State<LoginPage> {
     } catch (e) {
       print('구글 로그인 시작 오류: $e');
       if (mounted) {
-        showAppSnackBar('구글 로그인실패');
+        showAppSnackBar('구글 로그인에 실패하였습니다.\n다시 시도해주세요.');
+        print("구글 로그인 실패: $e");
       }
     }
   }
@@ -53,7 +54,8 @@ class _LoginPageState extends State<LoginPage> {
       );
     } catch (e) {
       if (mounted) {
-        showAppSnackBar('카카오 로그인 실패: $e');
+        showAppSnackBar('카카오 로그인에 실패하였습니다.\n다시 시도해주세요.');
+        print("카카오 로그인 실패: $e");
       }
     }
   }
@@ -69,11 +71,7 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(
-                  Icons.account_balance_wallet_outlined,
-                  size: 100,
-                  color: Color.fromARGB(255, 84, 142, 152),
-                ),
+                Image.asset('assets/icons/app_icon.png'),
                 const Text(
                   "레츠고 가계부",
                   style: TextStyle(

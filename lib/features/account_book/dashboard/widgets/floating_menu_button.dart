@@ -89,11 +89,13 @@ class _FloatingMenuButtonState extends State<FloatingMenuButton> {
               child: AnimatedRotation(
                 turns: _isFabExpanded ? 0.130 : 0,
                 duration: const Duration(milliseconds: 200),
-                child: Icon(
-                  _isFabExpanded ? Icons.add : Icons.cruelty_free_outlined,
-                  color: Colors.white,
-                  size: 40,
-                ),
+                child: _isFabExpanded
+                    ? Icon(Icons.add, color: Colors.white, size: 40)
+                    : Image.asset(
+                        'assets/icons/flower_dog.png',
+                        width: 40,
+                        height: 40,
+                      ),
               ),
             ),
           ),

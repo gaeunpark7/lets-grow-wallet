@@ -29,8 +29,6 @@ class _EditIncomePageState extends ConsumerState<EditIncomePage> {
   final amountController = TextEditingController();
   final memoController = TextEditingController();
 
-  late GoRouter _router;
-
   DateTime selectedDate = DateTime.now();
   int? selectedCategoryIdx;
   int selectedPayType = 0; // 0: 카드, 1: 현금
@@ -47,12 +45,6 @@ class _EditIncomePageState extends ConsumerState<EditIncomePage> {
     selectedDate = tx.date;
     selectedPayType = tx.paymentMethod;
     loadCategories(tx.categoryId);
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _router = GoRouter.of(context);
   }
 
   @override
@@ -312,10 +304,11 @@ class _EditIncomePageState extends ConsumerState<EditIncomePage> {
                         await _updateTransaction(transaction, ref);
 
                         showAppSnackBar('수정되었습니다.');
-                        if (_router.canPop()) {
-                          _router.pop();
+                        if (!mounted) return;
+                        if (context.canPop()) {
+                          context.pop();
                         } else {
-                          _router.go(Routes.home);
+                          context.go(Routes.home);
                         }
                       } catch (e) {
                         showAppSnackBar('수정 실패에 실패하였습니다. 다시 시도해주세요.');

@@ -33,12 +33,14 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
           .deleteTransaction(widget.transaction.id);
 
       if (mounted) {
+        // 상세 다이얼로그를 닫고(뒤 화면으로 복귀) 스낵바 표시
+        Navigator.of(context, rootNavigator: true).pop();
         showAppSnackBar('삭제 되었습니다.');
-        context.go(Routes.home);
       }
     } catch (e) {
+      print(e);
       if (mounted) {
-        showAppSnackBar('삭제 실패: $e');
+        showAppSnackBar('삭제 실패하였습니다. 다시 시도해주세요.');
       }
     }
   }

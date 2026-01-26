@@ -6,6 +6,12 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class TransactionService {
   final supabase = Supabase.instance.client;
 
+  String _formatDateOnly(DateTime dt) {
+    return '${dt.year.toString().padLeft(4, '0')}-'
+        '${dt.month.toString().padLeft(2, '0')}-'
+        '${dt.day.toString().padLeft(2, '0')}';
+  }
+
   int _compareByDayDescTimeAsc(TransactionModel a, TransactionModel b) {
     final aDay = DateTime(a.date.year, a.date.month, a.date.day);
     final bDay = DateTime(b.date.year, b.date.month, b.date.day);
@@ -13,7 +19,8 @@ class TransactionService {
     final dayCompare = bDay.compareTo(aDay); // 날짜는 내림차순
     if (dayCompare != 0) return dayCompare;
 
-    return a.date.compareTo(b.date); // 같은 날짜는 시간 오름차순
+    // 같은 날짜의  created_at기준 오름차순
+    return a.createdAt.compareTo(b.createdAt);
   }
 
   //내역 추가 - 소비
@@ -26,12 +33,16 @@ class TransactionService {
     DateTime start,
     DateTime end,
   ) async {
+    final startDate = _formatDateOnly(start);
+    final endDate = _formatDateOnly(end);
+
     final response = await supabase
         .from('transactions')
         .select('*, categories(name)')
-        .gte('date', start.toIso8601String())
-        .lt('date', end.toIso8601String())
-        .order('date', ascending: false);
+        .gte('date', startDate)
+        .lt('date', endDate)
+        .order('date', ascending: false)
+        .order('created_at', ascending: true);
 
     final transactions = (response as List)
         .map((e) => TransactionModel.fromMap(e))

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lets_grow_wallet/app/router/route_paths.dart';
 import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
+import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ProfileSettingPage extends StatefulWidget {
@@ -45,7 +46,7 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
     } catch (e) {
       print('닉네임 저장 오류: $e');
       if (mounted) {
-        showAppSnackBar('닉네임 저장 실패');
+        showAppSnackBar('닉네임 저장에 실패하였습니다.\n다시 시도해주세요.');
       }
     }
   }
@@ -69,22 +70,22 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
                     "닉네임 설정",
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 5),
                   const Text(
                     "나중에 언제든지 변경할 수 있습니다.",
                     style: TextStyle(fontSize: 16, color: Colors.grey),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 12),
                   const Icon(
                     Icons.account_circle,
                     size: 120,
-                    color: _mainColor,
+                    color: MainColors.mainLight,
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 12),
                   _buildNicknameField(),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 12),
                   _buildConfirmButton(context),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 12),
                 ],
               ),
             ),
@@ -97,11 +98,20 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
   Widget _buildNicknameField() {
     return TextFormField(
       controller: _nicknameController,
-      decoration: const InputDecoration(
-        border: OutlineInputBorder(),
-        labelText: "닉네임",
-        // counterText: "",
+      decoration: InputDecoration(
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(5),
+          borderSide: BorderSide(color: MainColors.mainDark),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(5),
+          borderSide: BorderSide(color: MainColors.mainDark, width: 2),
+        ),
+        hintText: '닉네임을 입력해주세요.',
+        hintStyle: TextStyle(color: MainColors.mainDark.withOpacity(0.5)),
       ),
+
       maxLength: 7,
       validator: (value) {
         if (value == null || value.isEmpty) {
@@ -121,11 +131,13 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
   Widget _buildConfirmButton(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: 50,
+      height: 55,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-          backgroundColor: _mainColor,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          backgroundColor: MainColors.mainLight,
+          foregroundColor: Colors.white,
+          elevation: 0,
         ),
         onPressed: () {
           if (_formKey.currentState!.validate()) {

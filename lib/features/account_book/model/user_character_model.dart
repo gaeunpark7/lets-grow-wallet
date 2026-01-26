@@ -1,5 +1,6 @@
 import 'package:lets_grow_wallet/features/account_book/model/character_images_model.dart';
 import 'package:lets_grow_wallet/utils/character_interation_enum.dart';
+import 'package:lets_grow_wallet/utils/character_interaction_overrides.dart';
 
 class UserCharacterModel {
   final String id;
@@ -133,30 +134,4 @@ class UserCharacterModel {
 
     return resolveEmotion(interaction: interaction);
   }
-
-  static const Map<String, Map<Stage, Map<InteractionType, Emotion>>>
-  interactionEmotionOverridesByStage = {
-    '589c96d4-64cc-419c-8125-1e27dfb0d44b': {
-      // egg: idle/pet -> surprised, feed/play -> happy
-      Stage.egg: {
-        InteractionType.idle: Emotion.surprised,
-        InteractionType.pet: Emotion.surprised,
-        InteractionType.feed: Emotion.happy,
-        InteractionType.play: Emotion.happy,
-      },
-      // child/adult: feed->good, play->happy, pet->surprised, idle->sad
-      Stage.child: {
-        InteractionType.feed: Emotion.good,
-        InteractionType.play: Emotion.happy,
-        InteractionType.pet: Emotion.surprised,
-        InteractionType.idle: Emotion.sad,
-      },
-      Stage.adult: {
-        InteractionType.feed: Emotion.good,
-        InteractionType.play: Emotion.happy,
-        InteractionType.pet: Emotion.surprised,
-        InteractionType.idle: Emotion.sad,
-      },
-    },
-  };
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lets_grow_wallet/features/account_book/notifier/shop_notifier.dart';
+import 'package:lets_grow_wallet/features/account_book/shop/widgets/shop_appbar_premium_dialog.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 
 class ShopAppbar extends ConsumerWidget {
@@ -14,17 +15,25 @@ class ShopAppbar extends ConsumerWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        Container(
-          height: 40,
-          width: 40,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            shape: BoxShape.circle,
-            border: Border.all(color: MainColors.mainLight, width: 1),
-          ),
-          child: Icon(
-            Icons.workspace_premium_outlined,
-            color: MainColors.mainLight,
+        GestureDetector(
+          onTap: () async {
+            await showDialog(
+              context: context,
+              builder: (ctx) => ShopAppbarPremiumDialog(),
+            );
+          },
+          child: Container(
+            height: 40,
+            width: 40,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+              border: Border.all(color: MainColors.mainLight, width: 1),
+            ),
+            child: Icon(
+              Icons.workspace_premium_outlined,
+              color: MainColors.mainLight,
+            ),
           ),
         ),
         const SizedBox(width: 10),

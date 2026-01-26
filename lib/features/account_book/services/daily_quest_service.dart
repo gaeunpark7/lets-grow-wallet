@@ -4,67 +4,33 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class DailyQuestService {
   final supabase = Supabase.instance.client;
 
+  // kst 날짜 형식으로 변환(한국 시간 기준)
+  String _formatKstDate(DateTime dt) {
+    final kst = dt.toUtc().add(const Duration(hours: 9));
+    return '${kst.year.toString().padLeft(4, '0')}-'
+        '${kst.month.toString().padLeft(2, '0')}-'
+        '${kst.day.toString().padLeft(2, '0')}';
+  }
+
   // 오늘 퀘스트 조회하기
   Future<List<DailyQuest>> getTodayQuests() async {
     final user = supabase.auth.currentUser;
+
     if (user == null) {
-      print('DailyQuestService.getTodayQuests: no current user');
       return [];
     }
     final userId = user.id;
-
-    final today = DateTime.now();
-    final start = DateTime(
-      today.year,
-      today.month,
-      today.day,
-    ).toIso8601String();
-    final end = DateTime(
-      today.year,
-      today.month,
-      today.day,
-      23,
-      59,
-      59,
-    ).toIso8601String();
-
-    print(
-      'DailyQuestService.getTodayQuests: user=$userId start=$start end=$end',
-    );
+    final todayDate = _formatKstDate(DateTime.now());
 
     try {
       final response = await supabase
           .from('daily_quests')
           .select()
           .eq('user_id', userId)
-          .gte('created_at', start)
-          .lte('created_at', end);
-
-      print('DailyQuestService.getTodayQuests raw response: $response');
+          .eq('user_date', todayDate);
 
       final list = List<Map<String, dynamic>>.from(response);
-      final result = <DailyQuest>[];
-      for (var m in list) {
-        try {
-          final createdAtRaw = m['created_at'];
-          final createdAt = createdAtRaw != null
-              ? DateTime.parse(createdAtRaw.toString())
-              : DateTime.now();
-          result.add(
-            DailyQuest(
-              id: m['id']?.toString() ?? '',
-              questType: m['quest_type']?.toString() ?? '',
-              isCompleted: m['is_completed'] == true,
-              rewardGiven: m['reward_given'] == true,
-              createdAt: createdAt,
-            ),
-          );
-        } catch (e, st) {
-          print('DailyQuestService: failed to parse item $m -> $e\n$st');
-        }
-      }
-      print('DailyQuestService.getTodayQuests parsed count: ${result.length}');
-      return result;
+      return list.map(DailyQuest.fromMap).toList(growable: false);
     } catch (e, st) {
       print('DailyQuestService.getTodayQuests error: $e\n$st');
       return [];
@@ -98,16 +64,14 @@ class DailyQuestService {
   /// 퀘스트 완료 처리
   Future<void> completeQuest(String questType) async {
     final userId = supabase.auth.currentUser!.id;
+    final todayDate = _formatKstDate(DateTime.now());
 
     await supabase
         .from('daily_quests')
         .update({'is_completed': true})
         .eq('user_id', userId)
         .eq('quest_type', questType)
-        .gte(
-          'created_at',
-          "${DateTime.now().toIso8601String().substring(0, 10)} 00:00:00",
-        );
+        .eq('user_date', todayDate);
   }
 
   //퀘스트 보상 지급

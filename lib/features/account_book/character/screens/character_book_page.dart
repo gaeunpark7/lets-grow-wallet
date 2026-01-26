@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lets_grow_wallet/features/account_book/character/widgets/character_book_list.dart';
@@ -6,6 +8,7 @@ import 'package:lets_grow_wallet/features/account_book/notifier/character_book_n
 import 'package:lets_grow_wallet/features/account_book/quest/widgets/quest_title.dart';
 import 'package:lets_grow_wallet/features/account_book/shop/widgets/shop_appbar.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
+import 'package:lets_grow_wallet/utils/friendly_error_message.dart';
 
 class CharacterBookPage extends ConsumerWidget {
   const CharacterBookPage({super.key});
@@ -13,6 +16,7 @@ class CharacterBookPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final asyncState = ref.watch(characterBookNotifierProvider);
+    final error = FriendlyErrorMessage.resolve(e);
 
     return SafeArea(
       child: Scaffold(
@@ -21,6 +25,7 @@ class CharacterBookPage extends ConsumerWidget {
           scrolledUnderElevation: 0,
           title: ShopAppbar(),
           backgroundColor: Colors.white,
+          iconTheme: IconThemeData(color: MainColors.mainDark),
         ),
         body: Padding(
           padding: const EdgeInsets.only(left: 24, right: 24, bottom: 24),
@@ -41,7 +46,7 @@ class CharacterBookPage extends ConsumerWidget {
                         color: MainColors.mainLight,
                       ),
                     ),
-                    error: (e, _) => Center(child: Text('도감을 불러올 수 없습니다: $e')),
+                    error: (e, _) => Center(child: Text(error.message)),
                     data: (state) {
                       final items = state.items;
                       final selected = state.selectedItem;

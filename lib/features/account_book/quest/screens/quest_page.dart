@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
 import 'package:lets_grow_wallet/features/account_book/model/daily_quest_model.dart';
 import 'package:lets_grow_wallet/features/account_book/model/goal_model.dart';
 import 'package:lets_grow_wallet/features/account_book/quest/widgets/monthly_goals.dart';
@@ -37,6 +38,7 @@ class _QuestPageState extends State<QuestPage> {
         await _questService.createTodayQuestsIfNeeded();
       } catch (e) {
         print('오늘의 미션 생성 실패: $e');
+        showAppSnackBar('오늘의 미션 생성에 실패했습니다.');
       }
       await _loadQuests();
       await _loadMonthlyGoals();
@@ -69,6 +71,7 @@ class _QuestPageState extends State<QuestPage> {
       }
     } catch (e) {
       print('월별 목표 로드 실패: $e');
+      showAppSnackBar('월별 목표를 불러오는 중 오류가 발생했습니다.');
       _monthlyGoals = [];
     } finally {
       setState(() => _loadingMonthly = false);
@@ -104,7 +107,6 @@ class _QuestPageState extends State<QuestPage> {
               questType: t,
               isCompleted: false,
               rewardGiven: false,
-              createdAt: DateTime.now(),
             );
       }).toList();
       setState(() {
@@ -113,6 +115,7 @@ class _QuestPageState extends State<QuestPage> {
     } catch (e) {
       _todayQuests = [];
       print('오늘의 미션 로드 실패: $e');
+      showAppSnackBar('오늘의 미션을 불러오는 중 오류가 발생했습니다.');
     } finally {
       setState(() => _loading = false);
     }
@@ -173,6 +176,7 @@ class _QuestPageState extends State<QuestPage> {
         backgroundColor: Colors.white,
         appBar: AppBar(
           backgroundColor: Colors.white,
+          iconTheme: IconThemeData(color: MainColors.mainDark),
           title: const ShopAppbar(),
         ),
         body: SingleChildScrollView(

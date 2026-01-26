@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lets_grow_wallet/features/account_book/model/daily_stat_model.dart';
 import 'package:lets_grow_wallet/features/account_book/services/stat_service.dart';
 import 'package:lets_grow_wallet/features/account_book/services/user_emotion_service.dart';
+import 'package:lets_grow_wallet/features/account_book/notifier/user_notifier.dart';
 
 class CalendarStatNotifier extends AsyncNotifier<Map<DateTime, DailyStat>> {
   final _statService = StatService();
@@ -9,6 +10,13 @@ class CalendarStatNotifier extends AsyncNotifier<Map<DateTime, DailyStat>> {
 
   @override
   Future<Map<DateTime, DailyStat>> build() async {
+    // 로그인/로그아웃/계정 전환 시 캘린더 캐시 자동 갱신
+    final userId = ref.watch(authUserIdProvider).value;
+    if (userId == null) {
+      _focusedMonth = DateTime.now();
+      return {};
+    }
+
     _focusedMonth = DateTime.now();
     return _fetchDailyStatsForMonth(_focusedMonth);
   }
@@ -45,5 +53,8 @@ final calendarStatNotifierProvider =
 // 감정 데이터 notifier
 final emotionsByMonthProvider =
     FutureProvider.family<Map<DateTime, String>, DateTime>((ref, month) async {
+      // 로그인/로그아웃/계정 전환 시 이전 계정 감정 아이콘 캐시가 남지 않도록 의존 추가
+      final userId = ref.watch(authUserIdProvider).value;
+      if (userId == null) return {};
       return UserEmotionService().getEmotionsByMonth(month);
     });

@@ -42,6 +42,7 @@ class TransactionModel {
   }
 
   Map<String, dynamic> toMap() {
+    final dateOnly = date.toIso8601String().substring(0, 10);
     return {
       'id': id,
       'user_id': userId,
@@ -50,8 +51,7 @@ class TransactionModel {
       'category_id': categoryId,
       'payment_method': paymentMethod,
       'memo': memo,
-      'date': date.toIso8601String(),
-      'created_at': createdAt.toIso8601String(),
+      'date': dateOnly,
       'type': type,
     };
   }

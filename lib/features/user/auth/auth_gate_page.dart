@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lets_grow_wallet/app/router/route_paths.dart';
 import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
+import 'package:lets_grow_wallet/utils/friendly_error_message.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthGatePage extends StatefulWidget {
@@ -44,9 +45,10 @@ class _AuthGatePageState extends State<AuthGatePage> {
         context.go(Routes.home);
       }
     } catch (e) {
+      final error = FriendlyErrorMessage.resolve(e);
       print('로그인 오류: $e');
       if (mounted) {
-        showAppSnackBar('로그인 실패: $e');
+        showAppSnackBar(error.message);
       }
     }
   }

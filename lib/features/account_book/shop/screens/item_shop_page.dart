@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
@@ -9,6 +11,7 @@ import 'package:lets_grow_wallet/features/account_book/shop/widgets/shop_item_bu
 import 'package:lets_grow_wallet/features/account_book/shop/widgets/shop_item_detail.dart';
 import 'package:lets_grow_wallet/features/account_book/shop/widgets/shop_item_gridview.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
+import 'package:lets_grow_wallet/utils/friendly_error_message.dart';
 
 class ItemShopPage extends ConsumerWidget {
   const ItemShopPage({super.key});
@@ -16,7 +19,7 @@ class ItemShopPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final shopAsync = ref.watch(characterShopNotifierProvider);
-
+    final error = FriendlyErrorMessage.resolve(e);
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -33,7 +36,7 @@ class ItemShopPage extends ConsumerWidget {
             loading: () => Center(
               child: CircularProgressIndicator(color: MainColors.mainLight),
             ),
-            error: (e, st) => Center(child: Text('오류: $e')),
+            error: (e, st) => Center(child: Text(error.message)),
             data: (shop) {
               final items = shop.items;
               final CharacterModel? selectedItem = shop.selectedItem;
@@ -69,7 +72,8 @@ class ItemShopPage extends ConsumerWidget {
                             } on InsufficientCoinException {
                               showAppSnackBar('코인이 부족합니다.');
                             } catch (e) {
-                              showAppSnackBar('구매에 실패했습니다: $e');
+                              showAppSnackBar('구매에 실패하였습니다.');
+                              print('아이템 구매 실패: $e');
                             }
                           },
                   ),

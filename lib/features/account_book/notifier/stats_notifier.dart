@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lets_grow_wallet/features/account_book/model/monthly_category_stat_model.dart';
 import 'package:lets_grow_wallet/features/account_book/notifier/transaction_notifier.dart';
+import 'package:lets_grow_wallet/features/account_book/notifier/user_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/services/stat_service.dart';
 
 final statServiceProvider = Provider((ref) => StatService());
@@ -19,6 +20,10 @@ class MonthlyCategoryStatsNotifier
 
   @override
   Future<List<MonthlyCategoryStat>> build() async {
+    // 로그인/로그아웃/계정 전환 시 통계 캐시 자동 갱신
+    final userId = ref.watch(authUserIdProvider).value;
+    if (userId == null) return [];
+
     _selectedMonth = ref.watch(selectedMonthProvider);
     ref.watch(transactionNotifierProvider); // 거래 변경시 자동 갱신
     return _fetchMonthlyCategoryStats(_selectedMonth);
