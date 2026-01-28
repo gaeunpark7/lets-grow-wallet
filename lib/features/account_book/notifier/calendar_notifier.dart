@@ -3,6 +3,7 @@ import 'package:lets_grow_wallet/features/account_book/model/daily_stat_model.da
 import 'package:lets_grow_wallet/features/account_book/services/stat_service.dart';
 import 'package:lets_grow_wallet/features/account_book/services/user_emotion_service.dart';
 import 'package:lets_grow_wallet/features/account_book/notifier/user_notifier.dart';
+import 'package:lets_grow_wallet/utils/kst_time.dart';
 
 class CalendarStatNotifier extends AsyncNotifier<Map<DateTime, DailyStat>> {
   final _statService = StatService();
@@ -13,11 +14,13 @@ class CalendarStatNotifier extends AsyncNotifier<Map<DateTime, DailyStat>> {
     // 로그인/로그아웃/계정 전환 시 캘린더 캐시 자동 갱신
     final userId = ref.watch(authUserIdProvider).value;
     if (userId == null) {
-      _focusedMonth = DateTime.now();
+      final now = nowKst();
+      _focusedMonth = DateTime(now.year, now.month, 1);
       return {};
     }
 
-    _focusedMonth = DateTime.now();
+    final now = nowKst();
+    _focusedMonth = DateTime(now.year, now.month, 1);
     return _fetchDailyStatsForMonth(_focusedMonth);
   }
 

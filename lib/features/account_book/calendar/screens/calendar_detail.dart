@@ -4,6 +4,7 @@ import 'package:lets_grow_wallet/features/account_book/calendar/widgets/calendar
 import 'package:lets_grow_wallet/features/account_book/model/daily_category_stat_model.dart';
 import 'package:lets_grow_wallet/features/account_book/services/daily_category_stat_service.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
+import 'package:lets_grow_wallet/utils/kst_time.dart';
 
 class CalendartDetail extends StatefulWidget {
   final DateTime? selectedDate;
@@ -16,12 +17,14 @@ class CalendartDetail extends StatefulWidget {
 
 class _CalendartDetailState extends State<CalendartDetail> {
   late Future<List<DailyCategoryStatModel>> _dailyStatsFuture;
+  late final DateTime _date;
 
   @override
   void initState() {
     super.initState();
+    _date = widget.selectedDate ?? todayKst();
     _dailyStatsFuture = DailyCategoryStatService().fetchDailyCategoryStat(
-      date: widget.selectedDate ?? DateTime.now(),
+      date: _date,
     );
   }
 
@@ -49,9 +52,7 @@ class _CalendartDetailState extends State<CalendartDetail> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text(
-                  DateFormat(
-                    'dd',
-                  ).format(widget.selectedDate ?? DateTime.now()),
+                  DateFormat('dd').format(_date),
                   style: TextStyle(
                     fontSize: 24,
                     color: MainColors.mainDark,
@@ -60,7 +61,7 @@ class _CalendartDetailState extends State<CalendartDetail> {
                 ),
                 SizedBox(width: 5),
                 Text(
-                  "${_getWeekday(widget.selectedDate ?? DateTime.now())}요일",
+                  "${_getWeekday(_date)}요일",
                   style: TextStyle(
                     fontSize: 18,
                     color: MainColors.mainDark,
@@ -68,9 +69,7 @@ class _CalendartDetailState extends State<CalendartDetail> {
                   ),
                 ),
                 Spacer(),
-                CalendarDetailEmotion(
-                  selectedDate: widget.selectedDate ?? DateTime.now(),
-                ),
+                CalendarDetailEmotion(selectedDate: _date),
               ],
             ),
             Divider(color: MainColors.mainLight, thickness: 2),

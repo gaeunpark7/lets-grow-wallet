@@ -12,6 +12,7 @@ import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
 import 'package:lets_grow_wallet/app/router/route_paths.dart';
+import 'package:lets_grow_wallet/utils/kst_time.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../model/transaction_model.dart';
 import '../../model/category_model.dart';
@@ -29,7 +30,7 @@ class _EditIncomePageState extends ConsumerState<EditIncomePage> {
   final amountController = TextEditingController();
   final memoController = TextEditingController();
 
-  DateTime selectedDate = DateTime.now();
+  DateTime selectedDate = todayKst();
   int? selectedCategoryIdx;
   int selectedPayType = 0; // 0: 카드, 1: 현금
   List<Category> categories = [];
@@ -79,7 +80,7 @@ class _EditIncomePageState extends ConsumerState<EditIncomePage> {
   }
 
   Future<void> _selectDate(BuildContext context) async {
-    final now = DateTime.now();
+    final now = nowKst();
     final first = DateTime(2026, 1, 1);
     final last = DateTime(now.year, now.month, now.day); //오늘까지만 선택 가능
 
@@ -89,6 +90,7 @@ class _EditIncomePageState extends ConsumerState<EditIncomePage> {
 
     final DateTime? picked = await showDatePicker(
       context: context,
+      currentDate: todayKst(),
       initialDate: initial,
       firstDate: first,
       lastDate: last,

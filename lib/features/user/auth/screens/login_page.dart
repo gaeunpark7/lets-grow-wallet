@@ -71,7 +71,14 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset('assets/icons/app_icon.png'),
+                Image.asset(
+                  'assets/icons/app_icon2.png',
+                  color: MainColors.mainLight,
+                  width: 120,
+                  height: 130,
+                ),
+
+                SizedBox(height: 10),
                 const Text(
                   "레츠고 가계부",
                   style: TextStyle(
@@ -80,7 +87,7 @@ class _LoginPageState extends State<LoginPage> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 30),
+                SizedBox(height: 30),
                 LoginButton(
                   backcolor: Color(0xFF7da8ff),
                   text: "구글 계정으로 로그인",
@@ -91,6 +98,16 @@ class _LoginPageState extends State<LoginPage> {
                   backcolor: Color(0xFFf6e762),
                   text: "카카오톡 계정으로 로그인",
                   onPressed: _signInWithKakao,
+                ),
+                SizedBox(height: 5),
+                GestureDetector(
+                  onTap: () {
+                    context.push(Routes.privacyPolicy);
+                  },
+                  child: Text(
+                    "개인정보 처리방침",
+                    style: TextStyle(color: Colors.grey, fontSize: 12),
+                  ),
                 ),
               ],
             ),

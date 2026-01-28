@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:lets_grow_wallet/app/router/route_paths.dart';
 import 'package:lets_grow_wallet/features/account_book/services/daily_quest_service.dart';
 import 'package:lets_grow_wallet/features/main/widgets/custom_bottom_bar.dart';
+import 'package:lets_grow_wallet/features/main/widgets/first_character_dialog.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -77,31 +78,7 @@ class _MainPageState extends State<MainPage> {
         showDialog(
           context: context,
           builder: (context) {
-            return AlertDialog(
-              title: Center(child: const Text("캐릭터 획득")),
-              backgroundColor: Colors.white,
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Image.network(
-                    defaultCharacter,
-                    width: 130,
-                    height: 130,
-                    fit: BoxFit.cover,
-                  ),
-                  const SizedBox(height: 16),
-                  const Text("귀여운 알을 획득했어요!"),
-                ],
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text("확인"),
-                ),
-              ],
-            );
+            return FirstCharacterDialog();
           },
         );
       }

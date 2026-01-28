@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:lets_grow_wallet/app/router/route_paths.dart';
 import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
+import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/delete_dialog.dart';
 import 'package:lets_grow_wallet/features/account_book/notifier/transaction_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/model/transaction_model.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
@@ -56,27 +57,15 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
   }
 
   //삭제 다이얼로그
-  void showDeleteDialog() {
-    showDialog(
+  void showDeleteDialog() async {
+    await showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          backgroundColor: Colors.white,
-          title: Text("삭제 확인", style: TextStyle(fontSize: 20)),
-          content: Text("정말로 이 내역을 삭제하시겠습니까?"),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text("취소", style: TextStyle(color: MainColors.mainDark)),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                deleteTransaction();
-              },
-              child: Text("삭제", style: TextStyle(color: MainColors.mainDark)),
-            ),
-          ],
+        return DeleteDialog(
+          onTap: () {
+            Navigator.pop(context);
+            deleteTransaction();
+          },
         );
       },
     );
@@ -124,13 +113,19 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                       PopupMenuItem(
                         value: 'edit',
                         height: 32,
-                        child: Text('수정'),
+                        child: Text(
+                          '수정',
+                          style: TextStyle(color: MainColors.mainDark),
+                        ),
                       ),
                       PopupMenuDivider(),
                       PopupMenuItem(
                         value: 'delete',
                         height: 32,
-                        child: Text('삭제'),
+                        child: Text(
+                          '삭제',
+                          style: TextStyle(color: MainColors.mainDark),
+                        ),
                       ),
                     ],
                   ),

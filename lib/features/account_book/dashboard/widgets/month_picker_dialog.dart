@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
+import 'package:lets_grow_wallet/utils/kst_time.dart';
 
 Future<DateTime?> showMonthPickerDialog({
   required BuildContext context,
   required DateTime initialMonth,
-  int firstYear = 2025,
+  int firstYear = 2026,
 }) {
-  final now = DateTime.now();
+  final now = nowKst();
   final currentYear = now.year;
 
   return showDialog<DateTime>(
@@ -21,6 +22,9 @@ Future<DateTime?> showMonthPickerDialog({
           final canNextYear = tempYear < currentYear;
 
           return AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
             backgroundColor: Colors.white,
             content: SizedBox(
               width: 320,
@@ -114,35 +118,25 @@ Future<DateTime?> showMonthPickerDialog({
               Row(
                 children: [
                   Expanded(
-                    child: SizedBox(
-                      height: 40,
-                      child: TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        style: TextButton.styleFrom(
-                          backgroundColor: MainColors.main,
-                          foregroundColor: MainColors.mainDark,
-                        ),
-                        child: const Text('취소'),
-                      ),
+                    child: _buildButton(
+                      context,
+                      () => Navigator.pop(context),
+                      MainColors.main,
+                      MainColors.mainDark,
+                      '취소',
                     ),
                   ),
                   const SizedBox(width: 8),
                   Expanded(
-                    child: SizedBox(
-                      height: 40,
-                      child: FilledButton(
-                        onPressed: () => Navigator.pop(
-                          context,
-                          DateTime(tempYear, tempMonth, 1),
-                        ),
-                        style: FilledButton.styleFrom(
-                          backgroundColor: MainColors.mainLight,
-                        ),
-                        child: const Text(
-                          '선택',
-                          style: TextStyle(color: Colors.white),
-                        ),
+                    child: _buildButton(
+                      context,
+                      () => Navigator.pop(
+                        context,
+                        DateTime(tempYear, tempMonth, 1),
                       ),
+                      MainColors.mainLight,
+                      Colors.white,
+                      '선택',
                     ),
                   ),
                 ],
@@ -152,5 +146,26 @@ Future<DateTime?> showMonthPickerDialog({
         },
       );
     },
+  );
+}
+
+_buildButton(
+  BuildContext context,
+  VoidCallback onPressed,
+  Color backColor,
+  Color textColor,
+  String text,
+) {
+  return SizedBox(
+    height: 40,
+    child: TextButton(
+      onPressed: onPressed,
+      style: TextButton.styleFrom(
+        backgroundColor: backColor,
+        foregroundColor: textColor,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ),
+      child: Text(text),
+    ),
   );
 }

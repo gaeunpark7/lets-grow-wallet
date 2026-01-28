@@ -14,6 +14,7 @@ import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/
 import 'package:lets_grow_wallet/features/account_book/notifier/interstitial_ad_controller.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:lets_grow_wallet/utils/friendly_error_message.dart';
+import 'package:lets_grow_wallet/utils/kst_time.dart';
 import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
@@ -32,7 +33,7 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
   final amountController = TextEditingController();
   final memoController = TextEditingController();
 
-  DateTime selectedDate = DateTime.now();
+  DateTime selectedDate = todayKst();
   int? selectedCategoryIdx;
   int selectedPayType = 0; // 0: 카드, 1: 현금
   List<Category> categories = [];
@@ -81,7 +82,7 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
   }
 
   Future<void> _selectDate(BuildContext context) async {
-    final now = DateTime.now();
+    final now = nowKst();
     final first = DateTime(2026, 1, 1);
     final last = DateTime(now.year, now.month, now.day); //오늘까지만 선택 가능
 
@@ -91,6 +92,7 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
 
     final DateTime? picked = await showDatePicker(
       context: context,
+      currentDate: todayKst(),
       initialDate: initial,
       firstDate: first,
       lastDate: last,
@@ -304,7 +306,7 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
                           paymentMethod: selectedPayType,
                           memo: memoController.text,
                           date: selectedDate,
-                          createdAt: DateTime.now(),
+                          createdAt: nowKst(),
                           type: 'expense',
                         );
                         await _addTransaction(transaction, ref);

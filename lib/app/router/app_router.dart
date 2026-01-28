@@ -17,10 +17,11 @@ final router = GoRouter(
 
     final isLogin = state.matchedLocation == Routes.login;
     final isLoginCallback = state.matchedLocation == Routes.loginCallback;
+    final isPrivacyPolicy = state.matchedLocation == Routes.privacyPolicy;
     // final isProfileSettingPage = state.matchedLocation == Routes.profileSetting;
 
     // 로그인 안됨 > 로그인 페이지
-    if (!isLoggedIn && !isLogin) {
+    if (!isLoggedIn && !isLogin && !isLoginCallback && !isPrivacyPolicy) {
       return Routes.login;
     }
 

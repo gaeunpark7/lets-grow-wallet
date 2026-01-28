@@ -47,6 +47,7 @@ class _MyPageState extends ConsumerState<MyPage> {
       }
       await Supabase.instance.client.auth.signOut();
       if (mounted) {
+        _redirectedToLogin = true;
         context.go(Routes.login);
       }
     } catch (e) {
@@ -69,13 +70,15 @@ class _MyPageState extends ConsumerState<MyPage> {
     final authUserIdAsync = ref.watch(authUserIdProvider);
 
     // 로그아웃 상태면(혹은 로그아웃 완료 직후) 에러 UI 대신 로그인으로 이동
-    if (!_redirectedToLogin && authUserIdAsync.value == null) {
+    authUserIdAsync.whenData((userId) {
+      if (_redirectedToLogin) return;
+      if (userId != null) return;
       _redirectedToLogin = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
         context.go(Routes.login);
       });
-    }
+    });
 
     return SafeArea(
       child: Scaffold(
@@ -87,60 +90,99 @@ class _MyPageState extends ConsumerState<MyPage> {
             automaticallyImplyLeading: false,
           ),
         ),
-        body: Stack(
+        body: Column(
           children: [
-            userProfileAsync.when(
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (e, _) => Center(child: Text(FriendlyErrorMessage.of(e))),
-              data: (userProfile) {
-                if (userProfile == null) {
-                  return const Center(child: CircularProgressIndicator());
-                }
+            if (_isLoggingOut) const LinearProgressIndicator(minHeight: 2),
+            Expanded(
+              child: AbsorbPointer(
+                absorbing: _isLoggingOut,
+                child: userProfileAsync.when(
+                  loading: () =>
+                      const Center(child: CircularProgressIndicator()),
+                  error: (e, _) {
+                    // 로그아웃 중에는(토큰 만료 등으로) 에러가 잠깐 뜰 수 있어서 UI를 숨김
+                    if (_isLoggingOut || _redirectedToLogin) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    return _MyPageErrorView(
+                      message: FriendlyErrorMessage.of(e),
+                      onRetry: () => ref
+                          .read(userProfileNotifierProvider.notifier)
+                          .refresh(),
+                      onLogout: _logout,
+                    );
+                  },
+                  data: (userProfile) {
+                    if (userProfile == null) {
+                      // 로그인 정보가 없거나, 아직 provider가 갱신 중인 상태
+                      return const Center(child: CircularProgressIndicator());
+                    }
 
-                return ListView(
-                  padding: EdgeInsets.zero,
-                  children: [
-                    const SizedBox(height: 32),
-                    MyPageUserProfilePage(userProfile: userProfile),
-                    const SizedBox(height: 32),
-                    const Divider(color: MainColors.mainDark, thickness: 0.5),
-                    _buildListTile(
-                      icon: Icons.workspace_premium_outlined,
-                      text: "프리미엄",
-                    ),
-                    const Divider(color: MainColors.mainDark, thickness: 0.5),
-                    _buildListTile(icon: Icons.feedback_outlined, text: "오류문의"),
-                    const Divider(color: MainColors.mainDark, thickness: 0.5),
-                    _buildListTile(
-                      icon: Icons.info_outline,
-                      text: "앱 정보",
-                      onTap: () {
-                        showAboutDialog(
-                          context: context,
-                          applicationName: "레츠고 가계부",
-                          applicationVersion: "1.0.0",
-                          applicationLegalese: "© 2025 LetsGrow",
-                        );
-                      },
-                    ),
-                    const Divider(color: MainColors.mainDark, thickness: 0.5),
-                    _buildListTile(
-                      icon: Icons.logout,
-                      text: "로그아웃",
-                      onTap: _isLoggingOut ? null : _logout,
-                    ),
-                    const Divider(color: MainColors.mainDark, thickness: 0.5),
-                  ],
-                );
-              },
-            ),
-            if (_isLoggingOut)
-              Positioned.fill(
-                child: ColoredBox(
-                  color: Colors.black54,
-                  child: const Center(child: CircularProgressIndicator()),
+                    return ListView(
+                      padding: EdgeInsets.zero,
+                      children: [
+                        const SizedBox(height: 32),
+                        MyPageUserProfilePage(userProfile: userProfile),
+                        const SizedBox(height: 32),
+                        const Divider(
+                          color: MainColors.mainDark,
+                          thickness: 0.5,
+                        ),
+                        _buildListTile(
+                          icon: Icons.workspace_premium_outlined,
+                          text: "프리미엄",
+                        ),
+                        const Divider(
+                          color: MainColors.mainDark,
+                          thickness: 0.5,
+                        ),
+                        _buildListTile(
+                          icon: Icons.privacy_tip_outlined,
+                          text: "개인정보 처리방침",
+                          onTap: () {
+                            context.push(Routes.privacyPolicy);
+                          },
+                        ),
+                        const Divider(
+                          color: MainColors.mainDark,
+                          thickness: 0.5,
+                        ),
+                        _buildListTile(
+                          icon: Icons.feedback_outlined,
+                          text: "오류문의",
+                        ),
+                        const Divider(
+                          color: MainColors.mainDark,
+                          thickness: 0.5,
+                        ),
+                        _buildListTile(
+                          icon: Icons.logout,
+                          text: _isLoggingOut ? "로그아웃 중..." : "로그아웃",
+                          onTap: _isLoggingOut ? null : _logout,
+                        ),
+                        const Divider(
+                          color: MainColors.mainDark,
+                          thickness: 0.5,
+                        ),
+                        _buildListTile(
+                          icon: Icons.delete_forever_outlined,
+                          text: "회원탈퇴",
+                          onTap: _isLoggingOut
+                              ? null
+                              : () {
+                                  context.push(Routes.deleteUser);
+                                },
+                        ),
+                        const Divider(
+                          color: MainColors.mainDark,
+                          thickness: 0.5,
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ),
+            ),
           ],
         ),
         bottomNavigationBar: Container(
@@ -172,6 +214,63 @@ class _buildListTile extends StatelessWidget {
         style: const TextStyle(color: MainColors.mainDark, fontSize: 16),
       ),
       onTap: onTap,
+    );
+  }
+}
+
+class _MyPageErrorView extends StatelessWidget {
+  final String message;
+  final VoidCallback onRetry;
+  final VoidCallback onLogout;
+
+  const _MyPageErrorView({
+    required this.message,
+    required this.onRetry,
+    required this.onLogout,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.error_outline, color: MainColors.point, size: 40),
+            const SizedBox(height: 12),
+            Text(
+              message,
+              textAlign: TextAlign.center,
+              style: const TextStyle(color: MainColors.mainDark),
+            ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ElevatedButton(
+                  onPressed: onRetry,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: MainColors.mainLight,
+                    foregroundColor: Colors.white,
+                    elevation: 0,
+                  ),
+                  child: const Text('다시 시도'),
+                ),
+                const SizedBox(width: 10),
+                OutlinedButton(
+                  onPressed: onLogout,
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: MainColors.mainDark,
+                    side: const BorderSide(color: MainColors.mainDark),
+                  ),
+                  child: const Text('로그아웃'),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

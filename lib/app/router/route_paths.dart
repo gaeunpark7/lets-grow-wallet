@@ -18,4 +18,7 @@ class Routes {
   static const characterDetail = 'detail';
   static const quest = '/quest';
   static const shop = '/shop';
+
+  static const privacyPolicy = '/privacy-policy';
+  static const deleteUser = '/delete-user';
 }

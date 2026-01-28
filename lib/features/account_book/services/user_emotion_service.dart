@@ -1,4 +1,5 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:lets_grow_wallet/utils/kst_time.dart';
 
 class UserEmotionService {
   final supabase = Supabase.instance.client;
@@ -10,7 +11,7 @@ class UserEmotionService {
     final userId = supabase.auth.currentUser?.id;
     if (userId == null) throw Exception('로그인이 필요합니다.');
 
-    final today = DateTime.now();
+    final today = todayKst();
     if (date.year != today.year ||
         date.month != today.month ||
         date.day != today.day) {

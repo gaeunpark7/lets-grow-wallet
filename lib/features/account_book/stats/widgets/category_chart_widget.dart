@@ -31,7 +31,12 @@ class CategoryChartWidget extends StatelessWidget {
     if (data.isEmpty || total == 0) {
       return const SizedBox(
         height: 320,
-        child: Center(child: Text('데이터가 없어요.')),
+        child: Center(
+          child: Text(
+            '데이터가 없어요.',
+            style: TextStyle(color: MainColors.mainDark),
+          ),
+        ),
       );
     }
 

@@ -4,6 +4,7 @@ import 'package:lets_grow_wallet/features/account_book/character/screens/charact
 import 'package:lets_grow_wallet/features/account_book/character/screens/character_page.dart';
 import 'package:lets_grow_wallet/features/account_book/quest/screens/quest_page.dart';
 import 'package:lets_grow_wallet/features/account_book/shop/screens/item_shop_page.dart';
+import 'package:lets_grow_wallet/features/user/my_page/screens/delete_user_page.dart';
 
 List<GoRoute> buildFeatureRoutes() => [
   GoRoute(
@@ -18,4 +19,5 @@ List<GoRoute> buildFeatureRoutes() => [
   ),
   GoRoute(path: Routes.quest, builder: (_, __) => QuestPage()),
   GoRoute(path: Routes.shop, builder: (_, __) => ItemShopPage()),
+  GoRoute(path: Routes.deleteUser, builder: (_, __) => const DeleteUserPage()),
 ];

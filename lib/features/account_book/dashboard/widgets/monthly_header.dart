@@ -3,7 +3,7 @@ import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
 import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/goals_dialog.dart';
 import 'package:lets_grow_wallet/features/account_book/services/goal_service.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
-import 'package:lets_grow_wallet/utils/friendly_error_message.dart';
+import 'package:lets_grow_wallet/utils/kst_time.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MonthlyHeader extends StatefulWidget {
@@ -81,7 +81,7 @@ class _MonthlyHeaderState extends State<MonthlyHeader> {
     final monthString =
         "${widget.month.year}-${widget.month.month.toString().padLeft(2, '0')}";
 
-    final now = DateTime.now();
+    final now = nowKst();
     final currentMonth = DateTime(now.year, now.month, 1);
     final selectedMonth = DateTime(widget.month.year, widget.month.month, 1);
     final isCurrentMonth = selectedMonth == currentMonth;

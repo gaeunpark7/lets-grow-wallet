@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lets_grow_wallet/features/account_book/notifier/stats_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/month_picker_dialog.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
+import 'package:lets_grow_wallet/utils/kst_time.dart';
 
 class MonthHeader extends ConsumerWidget {
   final ValueChanged<StatsKind> onKindChanged;
@@ -26,7 +27,7 @@ class MonthHeader extends ConsumerWidget {
     final label = '${month.year}년 ${month.month}월';
 
     final minMonth = DateTime(2025, 1, 1);
-    final now = DateTime.now();
+    final now = nowKst();
     final maxMonth = DateTime(now.year, now.month, 1);
 
     final canPrev = month.isAfter(minMonth);

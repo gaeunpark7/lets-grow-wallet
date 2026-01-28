@@ -159,7 +159,7 @@ class _CellWidget extends StatelessWidget {
   }
 }
 
-//카드, 현금 셀(exapnded 이슈)
+//카드, 현금 셀
 class _PaymentCellWidget extends StatelessWidget {
   final IconData? icon;
 

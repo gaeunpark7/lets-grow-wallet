@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lets_grow_wallet/app/router/route_paths.dart';
 import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
+import 'package:lets_grow_wallet/features/account_book/services/admob_service.dart';
+import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:lets_grow_wallet/utils/friendly_error_message.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -13,12 +16,30 @@ class AuthGatePage extends StatefulWidget {
 }
 
 class _AuthGatePageState extends State<AuthGatePage> {
+  BannerAd? _bannerAd;
+  bool _isLoading = true;
+
   @override
   void initState() {
     super.initState();
-    _checkProfile();
+
+    // _createBannerAd();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkProfile();
+    });
   }
 
+  // 광고 배너
+  void _createBannerAd() {
+    _bannerAd = BannerAd(
+      adUnitId: AdmobService.BannerAdUnitId!,
+      request: const AdRequest(),
+      size: AdSize.fullBanner,
+      listener: AdmobService.bannerAdListener,
+    )..load();
+  }
+
+  //프로필 확인
   Future<void> _checkProfile() async {
     final supabase = Supabase.instance.client;
     final user = supabase.auth.currentUser;
@@ -28,7 +49,14 @@ class _AuthGatePageState extends State<AuthGatePage> {
       context.go(Routes.login);
       return;
     }
+
     try {
+      if (mounted) {
+        setState(() {
+          _isLoading = true;
+        });
+      }
+
       final profile = await supabase
           .from('user')
           .select('nickname')
@@ -41,23 +69,83 @@ class _AuthGatePageState extends State<AuthGatePage> {
 
       if (nickname.isEmpty) {
         context.go(Routes.profileSetting);
+        return;
       } else {
         context.go(Routes.home);
+        return;
       }
     } catch (e) {
       final error = FriendlyErrorMessage.resolve(e);
       print('로그인 오류: $e');
       if (mounted) {
         showAppSnackBar(error.message);
+        setState(() {
+          _isLoading = false;
+        });
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      backgroundColor: Colors.white,
-      body: Center(child: CircularProgressIndicator()),
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: MainColors.mainLight,
+        body: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            // mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Spacer(),
+              SizedBox(height: 20),
+              Image.asset(
+                'assets/icons/app_icon2.png',
+                width: 120,
+                height: 120,
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                "레츠고 가계부",
+                style: TextStyle(
+                  fontSize: 26,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 24),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 80),
+                child: Visibility(
+                  visible: _isLoading,
+                  maintainSize: true,
+                  maintainAnimation: true,
+                  maintainState: true,
+                  child: LinearProgressIndicator(
+                    minHeight: 12,
+                    backgroundColor: Colors.white.withOpacity(0.25),
+                    valueColor: const AlwaysStoppedAnimation<Color>(
+                      Colors.white,
+                    ),
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                ),
+              ),
+
+              // SizedBox(
+              //   height: 200, //배너 사이즈 수정 필요.
+              //   width: double.infinity,
+              //   child: _bannerAd != null
+              //       ? AdWidget(ad: _bannerAd!)
+              //       : const SizedBox.shrink(),
+              // ),
+              Spacer(),
+              Spacer(),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

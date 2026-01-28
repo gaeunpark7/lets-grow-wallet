@@ -77,14 +77,12 @@ class _homePageState extends ConsumerState<HomePage> {
     final year = selectedMonth.year;
     final month = selectedMonth.month;
 
-    // auth 변경(로그아웃/계정 전환) 감지: ref.listen은 build 내부에서만 사용 가능
     ref.listen<AsyncValue<String?>>(authUserIdProvider, (prev, next) {
       if (next.isLoading) return;
       final prevId = prev?.value;
       final nextId = next.value;
       if (prevId == nextId) return;
 
-      // 거래/통계 화면이 즉시 새 계정으로 갱신되도록 refresh 트리거
       ref.invalidate(transactionNotifierProvider);
       if (!mounted) return;
       setState(() {

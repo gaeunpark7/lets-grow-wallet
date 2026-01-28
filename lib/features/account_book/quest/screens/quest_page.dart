@@ -12,6 +12,7 @@ import 'package:lets_grow_wallet/features/account_book/services/daily_quest_serv
 import 'package:lets_grow_wallet/features/account_book/services/goal_service.dart';
 import 'package:lets_grow_wallet/features/account_book/shop/widgets/shop_appbar.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
+import 'package:lets_grow_wallet/utils/kst_time.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class QuestPage extends StatefulWidget {
@@ -63,7 +64,7 @@ class _QuestPageState extends State<QuestPage> {
       if (user == null) {
         _monthlyGoals = [];
       } else {
-        final now = DateTime.now();
+        final now = nowKst();
         final month =
             "${now.year.toString().padLeft(4, '0')}-${now.month.toString().padLeft(2, '0')}";
         final list = await _goalService.getGoalsForUserMonth(user.id, month);
@@ -138,6 +139,7 @@ class _QuestPageState extends State<QuestPage> {
     );
   }
 
+  // ignore: unused_element
   Widget _buildMonthlyGoals(double maxWidth) {
     if (_loadingMonthly)
       return const Center(child: CircularProgressIndicator());

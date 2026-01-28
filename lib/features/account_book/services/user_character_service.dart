@@ -1,6 +1,7 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:lets_grow_wallet/features/account_book/model/user_character_model.dart';
 import 'package:lets_grow_wallet/utils/character_interation_enum.dart';
+import 'package:lets_grow_wallet/utils/kst_time.dart';
 import 'package:uuid/uuid.dart';
 
 class UserCharacterService {
@@ -8,16 +9,6 @@ class UserCharacterService {
   static const _uuid = Uuid();
 
   static final Map<String, String> _recordedDayByCharacterId = {};
-
-  static String _iso8601WithTimezoneOffset(DateTime dt) {
-    final base = dt.toIso8601String();
-    final offset = dt.timeZoneOffset;
-    final sign = offset.isNegative ? '-' : '+';
-    final abs = offset.abs();
-    final hh = abs.inHours.toString().padLeft(2, '0');
-    final mm = abs.inMinutes.remainder(60).toString().padLeft(2, '0');
-    return '$base$sign$hh:$mm';
-  }
 
   // 활성화된 캐릭터
   Future<UserCharacterModel?> getActiveCharacter() async {
@@ -121,36 +112,38 @@ class UserCharacterService {
     final userId = supabase.auth.currentUser?.id;
     if (userId == null) return;
 
-    final nowLocal = DateTime.now();
-    final localDayKey =
-        '${nowLocal.year.toString().padLeft(4, '0')}-${nowLocal.month.toString().padLeft(2, '0')}-${nowLocal.day.toString().padLeft(2, '0')}';
-    if (_recordedDayByCharacterId[characterId] == localDayKey) return;
+    // KST 기준 '하루 1회' 보장 (디바이스가 UTC로 잡혀도 날짜가 밀리지 않도록)
+    final now = nowKst();
+    final kstDayKey =
+        '${now.year.toString().padLeft(4, '0')}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+    if (_recordedDayByCharacterId[characterId] == kstDayKey) return;
 
-    final startOfDayLocal = DateTime(
-      nowLocal.year,
-      nowLocal.month,
-      nowLocal.day,
-    );
-    final startOfNextDayLocal = startOfDayLocal.add(const Duration(days: 1));
+    // KST 자정(00:00) ~ 다음날 자정(00:00)을 UTC 타임스탬프로 변환
+    final startUtc = DateTime.utc(
+      now.year,
+      now.month,
+      now.day,
+    ).subtract(const Duration(hours: 9));
+    final endUtc = startUtc.add(const Duration(days: 1));
 
     try {
-      // 로컬 날짜 경계를 로컬 타임존 오프셋 포함 ISO 문자열로 비교
-      final startLocal = _iso8601WithTimezoneOffset(startOfDayLocal);
-      final endLocal = _iso8601WithTimezoneOffset(startOfNextDayLocal);
+      // KST 날짜 경계를 UTC ISO 문자열로 비교 (created_at이 timestamptz라고 가정)
+      final start = startUtc.toIso8601String();
+      final end = endUtc.toIso8601String();
 
       final existing = await supabase
           .from('character_interactions')
           .select('id')
           .eq('user_id', userId)
           .eq('character_id', characterId)
-          .gte('created_at', startLocal)
-          .lt('created_at', endLocal)
+          .gte('created_at', start)
+          .lt('created_at', end)
           .limit(1)
           .maybeSingle();
 
       // 하루 1회 저장
       if (existing != null) {
-        _recordedDayByCharacterId[characterId] = localDayKey;
+        _recordedDayByCharacterId[characterId] = kstDayKey;
         return;
       }
 
@@ -161,7 +154,7 @@ class UserCharacterService {
         'interaction_type': interactionType.name,
       });
 
-      _recordedDayByCharacterId[characterId] = localDayKey;
+      _recordedDayByCharacterId[characterId] = kstDayKey;
     } on PostgrestException catch (e) {
       if (e.code == '23505') return;
       rethrow;

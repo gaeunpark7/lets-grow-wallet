@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lets_grow_wallet/features/account_book/services/goal_service.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
+import 'package:lets_grow_wallet/utils/kst_time.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter/services.dart';
 
@@ -56,7 +57,7 @@ class _GoalDialogState extends State<GoalDialog> {
 
     final month =
         widget.month ??
-        "${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '0')}";
+        "${nowKst().year}-${nowKst().month.toString().padLeft(2, '0')}";
 
     try {
       final goals = await _goalService.getGoalsForUserMonth(userId, month);
@@ -117,7 +118,7 @@ class _GoalDialogState extends State<GoalDialog> {
     final m = int.tryParse(parts[1]);
     if (year == null || m == null) return true;
 
-    final now = DateTime.now();
+    final now = nowKst();
     final currentMonth = DateTime(now.year, now.month, 1);
     final selected = DateTime(year, m, 1);
     return selected == currentMonth;
@@ -127,7 +128,7 @@ class _GoalDialogState extends State<GoalDialog> {
     final supabase = Supabase.instance.client;
     final month =
         widget.month ??
-        "${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '0')}";
+        "${nowKst().year}-${nowKst().month.toString().padLeft(2, '0')}";
     final userId = supabase.auth.currentUser?.id;
 
     try {

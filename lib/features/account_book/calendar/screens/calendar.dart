@@ -4,6 +4,7 @@ import 'package:lets_grow_wallet/features/account_book/calendar/widgets/calendar
 import 'package:lets_grow_wallet/features/account_book/notifier/calendar_notifier.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:lets_grow_wallet/utils/friendly_error_message.dart';
+import 'package:lets_grow_wallet/utils/kst_time.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class Calendar extends ConsumerStatefulWidget {
@@ -14,7 +15,7 @@ class Calendar extends ConsumerStatefulWidget {
 }
 
 class _CalendarState extends ConsumerState<Calendar> {
-  DateTime _focusedDay = DateTime.now();
+  DateTime _focusedDay = todayKst();
   DateTime? _selectedDay;
 
   void _onPageChanged(DateTime focusedDay) {
@@ -40,9 +41,11 @@ class _CalendarState extends ConsumerState<Calendar> {
               data: (emotionMap) {
                 return TableCalendar(
                   locale: 'en_US',
+                  currentDay: todayKst(),
                   focusedDay: _focusedDay,
-                  firstDay: DateTime.utc(2020, 1, 1),
-                  lastDay: DateTime.utc(2030, 12, 31),
+
+                  firstDay: DateTime(2025, 1, 1),
+                  lastDay: DateTime(2035, 12, 31),
                   selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
                   onDaySelected: (selectedDay, focusedDay) {
                     setState(() {

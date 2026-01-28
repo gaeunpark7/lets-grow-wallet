@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lets_grow_wallet/app/router/app_router.dart';
+import 'package:lets_grow_wallet/features/user/auth/auth_gate_page.dart';
+import 'package:lets_grow_wallet/features/user/auth/screens/privacy_policy.dart';
+import 'package:lets_grow_wallet/features/user/my_page/screens/delete_user_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -37,9 +40,6 @@ class MyApp extends StatelessWidget {
       supportedLocales: const [Locale('ko'), Locale('en')],
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
     );
   }
 }

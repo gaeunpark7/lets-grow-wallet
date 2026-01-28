@@ -3,12 +3,13 @@ import 'package:lets_grow_wallet/features/account_book/model/monthly_category_st
 import 'package:lets_grow_wallet/features/account_book/notifier/transaction_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/notifier/user_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/services/stat_service.dart';
+import 'package:lets_grow_wallet/utils/kst_time.dart';
 
 final statServiceProvider = Provider((ref) => StatService());
 
 // 통계 화면- 월별 선택 상태관리
 final selectedMonthProvider = StateProvider<DateTime>((ref) {
-  final now = DateTime.now();
+  final now = nowKst();
   return DateTime(now.year, now.month, 1);
 });
 
