@@ -1,5 +1,35 @@
 import 'package:flutter/material.dart';
 
+const List<String> expenseCategoryOrder = [
+  '식비',
+  '카페',
+  '교통',
+  '문화생활',
+  '통신',
+  '주거',
+  '미용/패션',
+  '생활용품',
+  '건강',
+  '교육',
+  '경조사',
+  '기타',
+];
+
+const List<String> incomeCategoryOrder = [
+  '월급',
+  '부수입',
+  '상여금',
+  '용돈',
+  '투자소득',
+  '기타',
+];
+
+int getCategorySortIndex(String name, {required String type}) {
+  final order = type == 'income' ? incomeCategoryOrder : expenseCategoryOrder;
+  final idx = order.indexOf(name);
+  return idx == -1 ? 9999 : idx;
+}
+
 IconData getCategoryIcon(String name) {
   switch (name) {
     case '식비':

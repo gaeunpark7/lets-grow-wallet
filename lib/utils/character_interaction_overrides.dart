@@ -7,14 +7,12 @@ typedef InteractionEmotionOverrides =
 const InteractionEmotionOverrides interactionEmotionOverridesByStage = {
   //꽃개
   '589c96d4-64cc-419c-8125-1e27dfb0d44b': {
-    // egg: idle/pet -> surprised, feed/play -> happy
     Stage.egg: {
       InteractionType.idle: Emotion.surprised,
       InteractionType.pet: Emotion.surprised,
       InteractionType.feed: Emotion.happy,
       InteractionType.play: Emotion.happy,
     },
-    // child/adult: feed->good, play->happy, pet->surprised, idle->sad
     Stage.child: {
       InteractionType.feed: Emotion.good,
       InteractionType.play: Emotion.happy,

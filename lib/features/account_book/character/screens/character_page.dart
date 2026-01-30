@@ -78,9 +78,7 @@ class _CharacterPageState extends ConsumerState<CharacterPage> {
     for (final url in urls) {
       try {
         await precacheImage(NetworkImage(url), context);
-      } catch (_) {
-        // ignore precache failures; Image.network will still handle errors
-      }
+      } catch (_) {}
     }
   }
 

@@ -42,7 +42,7 @@ class _QuestListState extends ConsumerState<QuestList> {
           return Dialog(
             backgroundColor: Colors.white,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5),
+              borderRadius: BorderRadius.circular(12),
             ),
             child: Padding(
               padding: const EdgeInsets.all(14.0),
@@ -61,7 +61,7 @@ class _QuestListState extends ConsumerState<QuestList> {
                   const SizedBox(height: 8),
                   Divider(color: MainColors.mainLight, height: 0, thickness: 1),
                   const SizedBox(height: 12),
-                  _buildDialogTile('EXP', '50'),
+                  _buildDialogTile('EXP', '15'),
                   Divider(
                     color: MainColors.mainLight,
                     thickness: 1 / MediaQuery.of(context).devicePixelRatio,

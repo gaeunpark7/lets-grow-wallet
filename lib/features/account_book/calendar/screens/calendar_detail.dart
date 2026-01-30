@@ -38,97 +38,92 @@ class _CalendartDetailState extends State<CalendartDetail> {
 
   @override
   Widget build(BuildContext context) {
+    final media = MediaQuery.of(context);
+    // final dialogWidth = media.size.width.clamp(0, 360.0) * 0.92;
+    final dialogHeight = media.size.height * 0.4;
+
     return Dialog(
       backgroundColor: Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-
-          children: [
-            //헤더
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(
-                  DateFormat('dd').format(_date),
-                  style: TextStyle(
-                    fontSize: 24,
-                    color: MainColors.mainDark,
-                    fontWeight: FontWeight.bold,
+      child: SizedBox(
+        height: dialogHeight,
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            children: [
+              //헤더
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    DateFormat('dd').format(_date),
+                    style: TextStyle(
+                      fontSize: 24,
+                      color: MainColors.mainDark,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                SizedBox(width: 5),
-                Text(
-                  "${_getWeekday(_date)}요일",
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: MainColors.mainDark,
-                    fontWeight: FontWeight.bold,
+                  SizedBox(width: 5),
+                  Text(
+                    "${_getWeekday(_date)}요일",
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: MainColors.mainDark,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                Spacer(),
-                CalendarDetailEmotion(selectedDate: _date),
-              ],
-            ),
-            Divider(color: MainColors.mainLight, thickness: 2),
+                  Spacer(),
+                  CalendarDetailEmotion(selectedDate: _date),
+                ],
+              ),
+              Divider(color: MainColors.mainLight, thickness: 2),
+              SizedBox(height: 12),
+              Expanded(
+                child: FutureBuilder<List<DailyCategoryStatModel>>(
+                  future: _dailyStatsFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(
+                        child: CircularProgressIndicator(
+                          color: MainColors.mainLight,
+                        ),
+                      );
+                    }
 
-            SizedBox(height: 12),
+                    if (snapshot.hasError) {
+                      return Center(
+                        child: Text(
+                          '데이터를 불러올 수 없습니다.',
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      );
+                    }
 
-            // 데이터 표시
-            FutureBuilder<List<DailyCategoryStatModel>>(
-              future: _dailyStatsFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 32),
-                    child: CircularProgressIndicator(
-                      color: MainColors.mainLight,
-                    ),
-                  );
-                }
+                    final stats = snapshot.data ?? [];
 
-                if (snapshot.hasError) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 32),
-                    child: Text(
-                      '데이터를 불러올 수 없습니다.',
-                      style: TextStyle(color: Colors.red),
-                    ),
-                  );
-                }
+                    if (stats.isEmpty) {
+                      return Center(
+                        child: Text(
+                          '오늘의 데이터가 없습니다.',
+                          style: TextStyle(
+                            color: MainColors.mainDark,
+                            fontSize: 14,
+                          ),
+                        ),
+                      );
+                    }
 
-                final stats = snapshot.data ?? [];
+                    final incomeStats = stats
+                        .where((s) => s.type == 'income')
+                        .toList();
+                    final expenseStats = stats
+                        .where((s) => s.type == 'expense')
+                        .toList();
 
-                // 데이터가 없는 경우
-                if (stats.isEmpty) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 32),
-                    child: Text(
-                      '오늘의 데이터가 없습니다.',
-                      style: TextStyle(
-                        color: MainColors.mainDark,
-                        fontSize: 14,
-                      ),
-                    ),
-                  );
-                }
+                    final children = <Widget>[];
 
-                // 수입 / 지출 분류
-                final incomeStats = stats
-                    .where((s) => s.type == 'income')
-                    .toList();
-                final expenseStats = stats
-                    .where((s) => s.type == 'expense')
-                    .toList();
-
-                return SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // 수입
-                      if (incomeStats.isNotEmpty) ...[
+                    if (incomeStats.isNotEmpty) {
+                      children.add(
                         Text(
                           '수입',
                           style: TextStyle(
@@ -137,19 +132,22 @@ class _CalendartDetailState extends State<CalendartDetail> {
                             color: MainColors.income,
                           ),
                         ),
-                        SizedBox(height: 8),
-                        ...incomeStats.map(
+                      );
+                      children.add(SizedBox(height: 8));
+                      children.addAll(
+                        incomeStats.map(
                           (stat) => _buildCategoryRow(
                             stat.categoryName,
                             stat.totalAmount,
                             isIncome: true,
                           ),
                         ),
-                        SizedBox(height: 12),
-                      ],
+                      );
+                      children.add(SizedBox(height: 12));
+                    }
 
-                      // 지출
-                      if (expenseStats.isNotEmpty) ...[
+                    if (expenseStats.isNotEmpty) {
+                      children.add(
                         Text(
                           '지출',
                           style: TextStyle(
@@ -158,44 +156,49 @@ class _CalendartDetailState extends State<CalendartDetail> {
                             color: MainColors.expense,
                           ),
                         ),
-                        SizedBox(height: 8),
-                        ...expenseStats.map(
+                      );
+                      children.add(SizedBox(height: 8));
+                      children.addAll(
+                        expenseStats.map(
                           (stat) => _buildCategoryRow(
                             stat.categoryName,
                             stat.totalAmount,
                             isIncome: false,
                           ),
                         ),
-                        SizedBox(height: 12),
-                      ],
-                    ],
-                  ),
-                );
-              },
-            ),
-            SizedBox(height: 12),
+                      );
+                      children.add(SizedBox(height: 12));
+                    }
 
-            //닫기 버튼
-            GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                height: 45,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(6),
-                  color: MainColors.mainLight,
+                    return ListView(children: children);
+                  },
                 ),
-                child: Center(
-                  child: Text(
-                    "닫기",
-                    style: TextStyle(color: Colors.white, fontSize: 16),
+              ),
+
+              SizedBox(height: 12),
+
+              //닫기 버튼
+              GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Container(
+                  width: double.infinity,
+                  height: 45,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(6),
+                    color: MainColors.mainLight,
+                  ),
+                  child: Center(
+                    child: Text(
+                      "닫기",
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

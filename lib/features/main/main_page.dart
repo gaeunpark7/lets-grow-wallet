@@ -91,6 +91,7 @@ class _MainPageState extends State<MainPage> {
 
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Colors.white,
         body: widget.child,
         bottomNavigationBar: CustomBottomBar(
           selectedIndex: _selectedIndex,

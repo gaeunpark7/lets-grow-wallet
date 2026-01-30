@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lets_grow_wallet/features/account_book/calendar/widgets/calendar_cell.dart';
+import 'package:lets_grow_wallet/features/account_book/calendar/screens/calendar_detail.dart';
 import 'package:lets_grow_wallet/features/account_book/notifier/calendar_notifier.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:lets_grow_wallet/utils/friendly_error_message.dart';
@@ -17,6 +18,18 @@ class Calendar extends ConsumerStatefulWidget {
 class _CalendarState extends ConsumerState<Calendar> {
   DateTime _focusedDay = todayKst();
   DateTime? _selectedDay;
+
+  Future<void> _openDetailDialog(DateTime day) async {
+    await showDialog(
+      context: context,
+      builder: (ctx) => CalendartDetail(selectedDate: day),
+    );
+
+    // 다이얼로그에서 감정/수입/지출이 변경될 수 있으므로 닫힌 뒤 갱신
+    final month = DateTime(day.year, day.month, 1);
+    ref.invalidate(emotionsByMonthProvider(month));
+    ref.read(calendarStatNotifierProvider.notifier).refreshDailyStats();
+  }
 
   void _onPageChanged(DateTime focusedDay) {
     setState(() {
@@ -129,6 +142,7 @@ class _CalendarState extends ConsumerState<Calendar> {
                         day: day,
                         stat: stat,
                         emotion: emotion,
+                        onTap: () => _openDetailDialog(day),
                       );
                     },
                     todayBuilder: (context, day, focusedDay) {
@@ -141,6 +155,7 @@ class _CalendarState extends ConsumerState<Calendar> {
                         stat: stat,
                         emotion: emotion,
                         isToday: true,
+                        onTap: () => _openDetailDialog(day),
                       );
                     },
                     selectedBuilder: (context, day, focusedDay) {
@@ -153,6 +168,7 @@ class _CalendarState extends ConsumerState<Calendar> {
                         stat: stat,
                         emotion: emotion,
                         isSelected: true,
+                        onTap: () => _openDetailDialog(day),
                       );
                     },
                     outsideBuilder: (context, day, focusedDay) {

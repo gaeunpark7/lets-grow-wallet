@@ -47,7 +47,7 @@ class _DeleteUserPageState extends State<DeleteUserPage> {
       });
       await supabase.rpc('delete_user_account');
       await supabase.auth.signOut();
-      showAppSnackBar('회원탈퇴 하였습니다.');
+      showAppSnackBar('탈퇴가 완료되었습니다.\n그동안 이용해주셔서 감사합니다.');
       if (!mounted) return;
       context.go(Routes.login);
     } catch (e) {

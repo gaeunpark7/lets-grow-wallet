@@ -85,6 +85,7 @@ class _MonthlyHeaderState extends State<MonthlyHeader> {
     final currentMonth = DateTime(now.year, now.month, 1);
     final selectedMonth = DateTime(widget.month.year, widget.month.month, 1);
     final isCurrentMonth = selectedMonth == currentMonth;
+    final hasGoalTitle = (goalTitle?.trim().isNotEmpty ?? false);
 
     return SizedBox(
       height: 120,
@@ -127,7 +128,16 @@ class _MonthlyHeaderState extends State<MonthlyHeader> {
                   _loadGoalTitle();
                 }); // 다이얼로그 닫힌 후 목표 제목 다시 로드
               },
-              child: Icon(Icons.edit_square, size: 30, color: MainColors.point),
+              child: Image.asset(
+                hasGoalTitle
+                    ? 'assets/icons/edit2_icon.png'
+                    : 'assets/icons/edit1_icon.png',
+                width: screenWidth * 0.07,
+                height: screenWidth * 0.07,
+                // color: isCurrentMonth
+                //     ? MainColors.point
+                //     : MainColors.mainDark.withOpacity(0.5),
+              ),
             ),
           ),
         ],

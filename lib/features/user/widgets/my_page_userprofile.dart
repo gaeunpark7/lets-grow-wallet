@@ -138,6 +138,7 @@ class _MyPageUserProfileState extends ConsumerState<MyPageUserProfilePage> {
               const SizedBox(height: 16),
               TextFormField(
                 controller: nicknameController,
+                style: TextStyle(color: const Color.fromARGB(255, 70, 81, 100)),
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.grey, width: 0.1),
@@ -149,7 +150,10 @@ class _MyPageUserProfileState extends ConsumerState<MyPageUserProfilePage> {
                   filled: true,
                   fillColor: Color.fromARGB(255, 251, 251, 251),
                   focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: MainColors.mainDark),
+                    borderSide: BorderSide(
+                      color: MainColors.mainDark,
+                      width: 2,
+                    ),
                   ),
                 ),
                 maxLength: 7,

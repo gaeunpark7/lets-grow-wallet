@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lets_grow_wallet/features/account_book/calendar/screens/calendar_detail.dart';
 import 'package:lets_grow_wallet/features/account_book/model/daily_stat_model.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 
@@ -10,6 +9,7 @@ class CalendarCell extends StatelessWidget {
   final bool isToday;
   final bool isSelected;
   final bool isOutside;
+  final VoidCallback? onTap;
 
   const CalendarCell({
     super.key,
@@ -19,6 +19,7 @@ class CalendarCell extends StatelessWidget {
     this.isToday = false,
     this.isSelected = false,
     this.isOutside = false,
+    this.onTap,
   });
 
   @override
@@ -26,14 +27,7 @@ class CalendarCell extends StatelessWidget {
     final textColor = isOutside ? Colors.grey[300] : MainColors.mainDark;
 
     return GestureDetector(
-      onTap: isOutside
-          ? null
-          : () {
-              showDialog(
-                context: context,
-                builder: (ctx) => CalendartDetail(selectedDate: day),
-              );
-            },
+      onTap: isOutside ? null : onTap,
       child: SizedBox(
         height: 110,
         width: 110,
@@ -75,7 +69,11 @@ class CalendarCell extends StatelessWidget {
                 if (stat!.totalExpense != 0)
                   Text(
                     '-${stat!.totalExpense}',
-                    style: const TextStyle(fontSize: 11, color: Colors.red),
+                    style: const TextStyle(
+                      fontSize: 11,
+                      color: Colors.red,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                 if (stat!.totalIncome != 0)
                   Text(
@@ -83,6 +81,7 @@ class CalendarCell extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 11,
                       color: Color(0xFF7986CB),
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
               ],

@@ -313,11 +313,7 @@ class _AddIncomePageState extends ConsumerState<AddIncomePage> {
                             .onTransactionAdded();
 
                         if (mounted) {
-                          if (context.canPop()) {
-                            context.pop();
-                          } else {
-                            context.go(Routes.home);
-                          }
+                          context.go(Routes.home);
                         }
                       } catch (e) {
                         if (mounted) {

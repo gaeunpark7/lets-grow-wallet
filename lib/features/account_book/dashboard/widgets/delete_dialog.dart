@@ -19,7 +19,11 @@ class DeleteDialog extends StatelessWidget {
             SizedBox(height: 30),
             Text(
               "정말로 이 내역을 삭제하시겠습니까?",
-              style: TextStyle(fontSize: 16, color: MainColors.mainDark),
+              style: TextStyle(
+                fontSize: 16,
+                color: MainColors.mainDark,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             SizedBox(height: 30),
 

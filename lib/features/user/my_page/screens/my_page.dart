@@ -6,6 +6,8 @@ import 'package:lets_grow_wallet/app/router/route_paths.dart';
 import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
 import 'package:lets_grow_wallet/features/account_book/notifier/user_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/services/admob_service.dart';
+import 'package:lets_grow_wallet/features/account_book/shop/widgets/shop_appbar_premium_dialog.dart';
+import 'package:lets_grow_wallet/features/user/widgets/my_page_error.dart';
 import 'package:lets_grow_wallet/features/user/widgets/my_page_userprofile.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:lets_grow_wallet/utils/friendly_error_message.dart';
@@ -100,11 +102,11 @@ class _MyPageState extends ConsumerState<MyPage> {
                   loading: () =>
                       const Center(child: CircularProgressIndicator()),
                   error: (e, _) {
-                    // 로그아웃 중에는(토큰 만료 등으로) 에러가 잠깐 뜰 수 있어서 UI를 숨김
+                    //로그아웃 중 > 토근 완료로 인한 에러 발생시 에러뷰 대신
                     if (_isLoggingOut || _redirectedToLogin) {
                       return const Center(child: CircularProgressIndicator());
                     }
-                    return _MyPageErrorView(
+                    return MyPageErrorView(
                       message: FriendlyErrorMessage.of(e),
                       onRetry: () => ref
                           .read(userProfileNotifierProvider.notifier)
@@ -114,7 +116,7 @@ class _MyPageState extends ConsumerState<MyPage> {
                   },
                   data: (userProfile) {
                     if (userProfile == null) {
-                      // 로그인 정보가 없거나, 아직 provider가 갱신 중인 상태
+                      // 로그인 정보가 없거나 아직 provider가 갱신 중인 상태
                       return const Center(child: CircularProgressIndicator());
                     }
 
@@ -131,6 +133,12 @@ class _MyPageState extends ConsumerState<MyPage> {
                         _buildListTile(
                           icon: Icons.workspace_premium_outlined,
                           text: "프리미엄",
+                          onTap: () async {
+                            await showDialog(
+                              context: context,
+                              builder: (ctx) => ShopAppbarPremiumDialog(),
+                            );
+                          },
                         ),
                         const Divider(
                           color: MainColors.mainDark,
@@ -214,63 +222,6 @@ class _buildListTile extends StatelessWidget {
         style: const TextStyle(color: MainColors.mainDark, fontSize: 16),
       ),
       onTap: onTap,
-    );
-  }
-}
-
-class _MyPageErrorView extends StatelessWidget {
-  final String message;
-  final VoidCallback onRetry;
-  final VoidCallback onLogout;
-
-  const _MyPageErrorView({
-    required this.message,
-    required this.onRetry,
-    required this.onLogout,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.error_outline, color: MainColors.point, size: 40),
-            const SizedBox(height: 12),
-            Text(
-              message,
-              textAlign: TextAlign.center,
-              style: const TextStyle(color: MainColors.mainDark),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ElevatedButton(
-                  onPressed: onRetry,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: MainColors.mainLight,
-                    foregroundColor: Colors.white,
-                    elevation: 0,
-                  ),
-                  child: const Text('다시 시도'),
-                ),
-                const SizedBox(width: 10),
-                OutlinedButton(
-                  onPressed: onLogout,
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: MainColors.mainDark,
-                    side: const BorderSide(color: MainColors.mainDark),
-                  ),
-                  child: const Text('로그아웃'),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

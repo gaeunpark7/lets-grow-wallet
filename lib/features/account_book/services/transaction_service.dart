@@ -73,7 +73,7 @@ class TransactionService {
         .isFilter('user_id', null)
         .eq('type', 'expense');
 
-    return (response as List)
+    final categories = (response as List)
         .map(
           (e) => Category(
             id: e['id'].toString(),
@@ -82,6 +82,15 @@ class TransactionService {
           ),
         )
         .toList();
+
+    categories.sort((a, b) {
+      final ai = getCategorySortIndex(a.label, type: 'expense');
+      final bi = getCategorySortIndex(b.label, type: 'expense');
+      if (ai != bi) return ai.compareTo(bi);
+      return a.label.compareTo(b.label);
+    });
+
+    return categories;
   }
 }
 
@@ -101,7 +110,7 @@ class TransactionServiceIncome {
         .isFilter('user_id', null)
         .eq('type', 'income');
 
-    return (response as List)
+    final categories = (response as List)
         .map(
           (e) => Category(
             id: e['id'].toString(),
@@ -110,5 +119,14 @@ class TransactionServiceIncome {
           ),
         )
         .toList();
+
+    categories.sort((a, b) {
+      final ai = getCategorySortIndex(a.label, type: 'income');
+      final bi = getCategorySortIndex(b.label, type: 'income');
+      if (ai != bi) return ai.compareTo(bi);
+      return a.label.compareTo(b.label);
+    });
+
+    return categories;
   }
 }

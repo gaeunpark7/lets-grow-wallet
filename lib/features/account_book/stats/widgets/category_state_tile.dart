@@ -13,11 +13,13 @@ class CategoryStatList extends StatelessWidget {
     Color(0xFFC5CAE9),
     Color(0xFFE8EAF6),
     Color(0xFFF5F5FA),
+    Color.fromARGB(255, 139, 192, 217),
     Color(0xFFB3E5FC),
     Color(0xFFB2DFDB),
     Color(0xFFC8E6C9),
     Color(0xFFFFF9C4),
     Color(0xFFFFE4B5),
+    Color.fromARGB(255, 255, 238, 238),
   ];
 
   Color _colorFor(String id) {

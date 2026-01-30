@@ -34,6 +34,7 @@ class BuildTotal extends StatelessWidget {
       child: Text(
         text ?? "",
         textAlign: TextAlign.center,
+        overflow: TextOverflow.ellipsis,
         style: TextStyle(fontSize: 14, color: textColor),
       ),
     );

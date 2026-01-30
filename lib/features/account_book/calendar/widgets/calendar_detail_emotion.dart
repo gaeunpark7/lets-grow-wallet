@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lets_grow_wallet/features/account_book/notifier/calendar_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/services/user_emotion_service.dart';
 import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
+import 'package:lets_grow_wallet/utils/friendly_error_message.dart';
 
 class CalendarDetailEmotion extends ConsumerStatefulWidget {
   final DateTime selectedDate;
@@ -19,7 +19,8 @@ class _CalendarDetailEmotionState extends ConsumerState<CalendarDetailEmotion> {
   final _emotionService = UserEmotionService();
   String _selectedEmotion = 'basic';
   bool _isLoading = true;
-  bool _hasEmotion = false; // 감정 등록 여부 확인
+  bool _hasEmotion = false;
+  bool _isSaving = false;
   final List<String> _emotions = ['happy', 'good', 'basic', 'angry', 'sad'];
 
   @override
@@ -63,30 +64,32 @@ class _CalendarDetailEmotionState extends ConsumerState<CalendarDetailEmotion> {
         iconName: emotion,
         date: widget.selectedDate,
       );
-      if (mounted) {
-        setState(() {
-          _hasEmotion = true;
-        });
-        showAppSnackBar('오늘의 감정을 등록했어요');
+      if (!mounted) return;
+      setState(() {
+        _hasEmotion = true;
+        _isSaving = false;
+      });
 
-        final month = DateTime(
-          widget.selectedDate.year,
-          widget.selectedDate.month,
-          1,
-        );
-        ref.invalidate(emotionsByMonthProvider(month));
-        ref.read(calendarStatNotifierProvider.notifier).refreshDailyStats();
-      }
+      // 드롭다운/오버레이 정리 이후 스낵바 표시(디버그에서 간헐적 경고 방지)
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        showAppSnackBar('오늘의 감정을 등록했어요');
+      });
     } catch (e) {
-      if (mounted) {
-        showAppSnackBar(e.toString().replaceAll('Exception: ', ''));
-      }
+      if (!mounted) return;
+      setState(() {
+        _isSaving = false;
+      });
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        showAppSnackBar(FriendlyErrorMessage.of(e));
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) {
+    if (_isLoading || _isSaving) {
       return SizedBox(
         width: 30,
         height: 30,
@@ -122,8 +125,10 @@ class _CalendarDetailEmotionState extends ConsumerState<CalendarDetailEmotion> {
               if (value != null) {
                 setState(() {
                   _selectedEmotion = _emotions[value];
+                  _isSaving = true;
                 });
-                _saveEmotion(_emotions[value]);
+                // 드롭다운 오버레이가 닫힌 뒤 저장 로직 실행
+                Future.microtask(() => _saveEmotion(_emotions[value]));
               }
             },
     );
