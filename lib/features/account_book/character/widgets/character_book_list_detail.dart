@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
+import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 
 import '../../model/character_book_item_model.dart';
 
@@ -15,22 +16,24 @@ class CharacterBookListDetail extends StatelessWidget {
   }) {
     return ClipOval(
       child: Container(
-        width: 70,
-        height: 70,
+        width: 70.wClamp,
+        height: 70.hClamp,
         color: MainColors.main,
         child: Center(
           child: isUnlocked
-              ? (imageUrl
-                        .isNotEmpty // 잠금 해제된 경우
-                    ? Image.network(
-                        imageUrl,
-                        fit: BoxFit.cover,
-                        errorBuilder: (ctx, err, st) => Text(
-                          //이미지 로드 실패
-                          '?',
-                          style: TextStyle(
-                            color: MainColors.mainLight,
-                            fontSize: 22,
+              ? (imageUrl.isNotEmpty
+                    ? Padding(
+                        padding: EdgeInsets.all(8.wClamp),
+                        child: Image.network(
+                          imageUrl,
+                          fit: BoxFit.contain,
+                          errorBuilder: (ctx, err, st) => Text(
+                            //이미지 로드 실패
+                            '?',
+                            style: TextStyle(
+                              color: MainColors.mainLight,
+                              fontSize: 22.spClamp,
+                            ),
                           ),
                         ),
                       )
@@ -39,12 +42,15 @@ class CharacterBookListDetail extends StatelessWidget {
                         '?',
                         style: TextStyle(
                           color: MainColors.mainLight,
-                          fontSize: 22,
+                          fontSize: 22.spClamp,
                         ),
                       ))
               : Text(
                   '?',
-                  style: TextStyle(color: MainColors.mainDark, fontSize: 22),
+                  style: TextStyle(
+                    color: MainColors.mainDark,
+                    fontSize: 22.spClamp,
+                  ),
                 ),
         ),
       ),
@@ -58,7 +64,7 @@ class CharacterBookListDetail extends StatelessWidget {
     final adultUnlocked = item.hasAdultUnlocked;
 
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: EdgeInsets.all(12.wClamp),
       decoration: BoxDecoration(
         border: Border.all(color: MainColors.mainLight),
       ),
@@ -86,12 +92,11 @@ class CharacterBookListDetail extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 12),
-
-          const SizedBox(height: 12),
-          _buildIntro(context, 40, item.name),
-          const SizedBox(height: 12),
-          _buildIntro(context, 80, item.description),
+          SizedBox(height: 12.hClamp),
+          SizedBox(height: 12.hClamp),
+          _buildIntro(context, 40.hClamp, item.name),
+          SizedBox(height: 12.hClamp),
+          _buildIntro(context, 80.hClamp, item.description),
         ],
       ),
     );
@@ -99,8 +104,12 @@ class CharacterBookListDetail extends StatelessWidget {
 
   _buildIntroArrow() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: Icon(Icons.arrow_forward, color: MainColors.mainDark, size: 28),
+      padding: EdgeInsets.symmetric(horizontal: 8.0.wClamp),
+      child: Icon(
+        Icons.arrow_forward,
+        color: MainColors.mainDark,
+        size: 28.rClamp,
+      ),
     );
   }
 
@@ -112,10 +121,10 @@ class CharacterBookListDetail extends StatelessWidget {
         border: Border.all(color: MainColors.mainLight),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: EdgeInsets.all(8.0.wClamp),
         child: Text(
           text,
-          style: const TextStyle(fontSize: 14, color: MainColors.mainDark),
+          style: TextStyle(fontSize: 14.spClamp, color: MainColors.mainDark),
         ),
       ),
     );

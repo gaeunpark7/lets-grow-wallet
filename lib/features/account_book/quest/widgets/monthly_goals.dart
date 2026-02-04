@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 
 class MonthlyGoals extends StatelessWidget {
@@ -15,7 +16,7 @@ class MonthlyGoals extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Container(
-        constraints: BoxConstraints(minHeight: 80),
+        constraints: BoxConstraints(minHeight: 80.h),
         width: double.infinity,
         decoration: BoxDecoration(
           border: Border.all(color: MainColors.mainLight),
@@ -28,11 +29,11 @@ class MonthlyGoals extends StatelessWidget {
             children: [
               Text(
                 goalTitle,
-                style: TextStyle(fontSize: 18, color: MainColors.mainDark),
+                style: TextStyle(fontSize: 18.sp, color: MainColors.mainDark),
               ),
               Text(
                 subtitle,
-                style: TextStyle(fontSize: 14, color: MainColors.mainLight),
+                style: TextStyle(fontSize: 14.sp, color: MainColors.mainLight),
               ),
             ],
           ),

@@ -1,11 +1,14 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/goals_dialog_amount_row.dart';
+import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/goals_dialog_confirm.dart';
 import 'package:lets_grow_wallet/features/account_book/services/goal_service.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:lets_grow_wallet/utils/kst_time.dart';
+import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:flutter/services.dart';
 
 class GoalDialog extends StatefulWidget {
   final TextEditingController goalController;
@@ -34,6 +37,23 @@ class _GoalDialogState extends State<GoalDialog> {
   late GoalService _goalService;
   bool _loadingExisting = true;
   bool _goalAlreadySet = false;
+  String? _titleErrorText;
+
+  Future<bool> _showConfirmDialog() async {
+    if (!mounted) return false;
+    final result = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => GoalsDialogConfirm(),
+    );
+    return result ?? false;
+  }
+
+  int? _parseAmount(String text) {
+    final trimmed = text.trim();
+    if (trimmed.isEmpty) return null;
+    return int.tryParse(trimmed.replaceAll(',', ''));
+  }
 
   @override
   void initState() {
@@ -132,14 +152,42 @@ class _GoalDialogState extends State<GoalDialog> {
     final userId = supabase.auth.currentUser?.id;
 
     try {
+      final title = widget.goalController.text.trim();
+      final expenseAmount = _parseAmount(widget.expenseController.text);
+      final incomeAmount = _parseAmount(widget.incomeController.text);
+      final hasAnyAmount = expenseAmount != null || incomeAmount != null;
+
+      var hasError = false;
+      if (title.isEmpty) {
+        hasError = true;
+        _titleErrorText = '목표 이름을 작성해주세요';
+      } else {
+        _titleErrorText = null;
+      }
+
+      if (!hasAnyAmount) {
+        showAppSnackBar('금액을 작성해주세요.');
+        return;
+      }
+
+      if (hasError) {
+        if (mounted) setState(() {});
+        return;
+      }
+
       if (!_isCurrentMonth(month)) {
         showAppSnackBar('이번 달의 목표만 설정 가능합니다.');
         return;
       }
 
+      if (userId == null) {
+        showAppSnackBar('로그인이 필요합니다.');
+        return;
+      }
+
       final goalService = GoalService(supabase); //이번 달 목표가 이미 있는지 확인
       final expenseGoals = await goalService.isGoalExists(
-        userId!,
+        userId,
         month,
         'expense',
       );
@@ -154,36 +202,34 @@ class _GoalDialogState extends State<GoalDialog> {
         return;
       }
 
+      final confirmed = await _showConfirmDialog();
+      if (!confirmed) return;
+
       // 소비 데이터 삽입
-      if (widget.expenseController.text.isNotEmpty) {
+      if (expenseAmount != null) {
         await supabase.from('goals').insert({
           'user_id': supabase.auth.currentUser?.id,
           'month': month,
           'goal_type': 'expense',
-          'target_amount': int.tryParse(
-            widget.expenseController.text.replaceAll(',', ''),
-          ),
-          'title': widget.goalController.text,
+          'target_amount': expenseAmount,
+          'title': title,
           'created_at': DateTime.now().toIso8601String(),
         });
       }
 
       // 수입 데이터 삽입
-      if (widget.incomeController.text.isNotEmpty) {
+      if (incomeAmount != null) {
         await supabase.from('goals').insert({
           'user_id': supabase.auth.currentUser?.id,
           'month': month,
           'goal_type': 'income',
-          'target_amount': int.tryParse(
-            widget.incomeController.text.replaceAll(',', ''),
-          ), // 목표 금액
-          'title': widget.goalController.text,
+          'target_amount': incomeAmount, // 목표 금액
+          'title': title,
           'created_at': DateTime.now().toIso8601String(),
         });
       }
-
-      showAppSnackBar('목표가 성공적으로 저장되었습니다.');
-
+      showAppSnackBar('이번달의 목표가 저장되었습니다.');
+      if (!mounted) return;
       Navigator.of(context).pop(); // 다이얼로그 닫기
     } catch (e) {
       showAppSnackBar('저장 중 오류가 발생했습니다.');
@@ -201,15 +247,23 @@ class _GoalDialogState extends State<GoalDialog> {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (_loadingExisting) ...[
-              const SizedBox(height: 8),
+              SizedBox(height: 8.h),
               Center(
                 child: CircularProgressIndicator(color: MainColors.mainLight),
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12.h),
             ],
             TextField(
               controller: widget.goalController,
               enabled: !_goalAlreadySet,
+              onChanged: (value) {
+                if (_titleErrorText == null) return;
+                if (value.trim().isNotEmpty) {
+                  setState(() {
+                    _titleErrorText = null;
+                  });
+                }
+              },
               decoration: InputDecoration(
                 enabledBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: MainColors.mainLight, width: 2),
@@ -221,20 +275,21 @@ class _GoalDialogState extends State<GoalDialog> {
                 labelStyle: TextStyle(
                   color: MainColors.mainDark,
                   fontWeight: FontWeight.bold,
-                  fontSize: 18,
+                  fontSize: 18.spClamp,
                 ),
+                errorText: _goalAlreadySet ? null : _titleErrorText,
                 suffixIcon: Icon(
                   Icons.edit,
                   color: MainColors.mainLight,
-                  size: 30,
+                  size: 30.hClamp,
                 ),
                 contentPadding: EdgeInsets.only(bottom: 4),
                 counterText: '',
               ),
-              maxLength: 12,
+              maxLength: 10,
             ),
-            const SizedBox(height: 12),
-            _buildGoalsAmount(
+            SizedBox(height: 12.h),
+            GoalsDialogAmountRow(
               textController: widget.expenseController,
               text: "지출",
               hintText: "목표 금액을 입력하세요.",
@@ -247,8 +302,8 @@ class _GoalDialogState extends State<GoalDialog> {
                 });
               },
             ),
-            const SizedBox(height: 12),
-            _buildGoalsAmount(
+            SizedBox(height: 12.h),
+            GoalsDialogAmountRow(
               textController: widget.incomeController,
               text: "수입",
               hintText: "목표 금액을 입력하세요.",
@@ -261,7 +316,7 @@ class _GoalDialogState extends State<GoalDialog> {
                 });
               },
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12.h),
             FilledButton(
               style: FilledButton.styleFrom(
                 backgroundColor: MainColors.mainLight,
@@ -271,13 +326,16 @@ class _GoalDialogState extends State<GoalDialog> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(5),
                 ),
-                fixedSize: Size(MediaQuery.of(context).size.width * 1, 50),
+                fixedSize: Size(
+                  MediaQuery.of(context).size.width * 1,
+                  50.hClamp,
+                ),
               ),
               onPressed: _goalAlreadySet ? null : _saveGoal, // Supabase로 데이터 저장
               child: Text(
                 _goalAlreadySet ? "목표 설정 완료" : "목표 설정",
-                style: const TextStyle(
-                  fontSize: 16,
+                style: TextStyle(
+                  fontSize: 16.spClamp,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -285,113 +343,6 @@ class _GoalDialogState extends State<GoalDialog> {
           ],
         ),
       ),
-    );
-  }
-}
-
-class _buildGoalsAmount extends StatelessWidget {
-  const _buildGoalsAmount({
-    required this.textController,
-    required this.text,
-    required this.hintText,
-    this.isSelected = false,
-    this.enabled = true,
-    required this.onPressed,
-  });
-
-  final TextEditingController textController;
-  final String text;
-  final String hintText;
-  final bool isSelected;
-  final bool enabled;
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        FilledButton(
-          style: FilledButton.styleFrom(
-            backgroundColor: isSelected
-                ? MainColors.mainLight
-                : MainColors.main,
-            foregroundColor: isSelected ? Colors.white : MainColors.mainDark,
-            disabledBackgroundColor: MainColors.main,
-            disabledForegroundColor: MainColors.mainDark,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5),
-            ),
-            fixedSize: Size(MediaQuery.of(context).size.width * 0.19, 45),
-          ),
-          onPressed: enabled ? onPressed : null,
-          child: Text(
-            text,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-        ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: SizedBox(
-            child: TextField(
-              controller: textController,
-              enabled: enabled && isSelected,
-              keyboardType: TextInputType.number,
-              inputFormatters: [
-                FilteringTextInputFormatter.digitsOnly, // 숫자만 입력 가능
-                LengthLimitingTextInputFormatter(9), // 최대 9자리 제한
-                ThousandsSeparatorInputFormatter(), // 천 단위 구분 추가
-              ],
-              decoration: InputDecoration(
-                hintText: hintText,
-                hintStyle: TextStyle(color: MainColors.mainLight),
-                border: const OutlineInputBorder(
-                  borderRadius: BorderRadius.zero,
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: 12,
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: MainColors.mainLight, width: 2),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.zero,
-                  borderSide: BorderSide(color: MainColors.mainLight, width: 1),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class ThousandsSeparatorInputFormatter extends TextInputFormatter {
-  @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
-    final text = newValue.text.replaceAll(',', ''); // 기존 , 제거
-
-    // 빈 문자열 처리
-    if (text.isEmpty) {
-      return TextEditingValue(
-        text: '',
-        selection: TextSelection.collapsed(offset: 0),
-      );
-    }
-    final number = int.tryParse(text); // 숫자로 변환
-
-    if (number == null) {
-      return oldValue; // 숫자가 아니면 기존 값 유지
-    }
-
-    final formattedText = NumberFormat('#,###').format(number); // 천 단위 구분
-    return TextEditingValue(
-      text: formattedText,
-      selection: TextSelection.collapsed(offset: formattedText.length),
     );
   }
 }

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
 import 'package:lets_grow_wallet/features/account_book/model/character_model.dart';
 import 'package:lets_grow_wallet/features/account_book/notifier/shop_notifier.dart';
+import 'package:lets_grow_wallet/features/account_book/services/admob_service.dart';
 import 'package:lets_grow_wallet/features/account_book/services/character_service.dart';
 import 'package:lets_grow_wallet/features/account_book/shop/widgets/shop_appbar.dart';
 import 'package:lets_grow_wallet/features/account_book/shop/widgets/shop_item_buy_button.dart';
@@ -12,14 +13,46 @@ import 'package:lets_grow_wallet/features/account_book/shop/widgets/shop_item_de
 import 'package:lets_grow_wallet/features/account_book/shop/widgets/shop_item_gridview.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:lets_grow_wallet/utils/friendly_error_message.dart';
+import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
-class ItemShopPage extends ConsumerWidget {
+class ItemShopPage extends ConsumerStatefulWidget {
   const ItemShopPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ItemShopPage> createState() => _ItemShopPageState();
+}
+
+class _ItemShopPageState extends ConsumerState<ItemShopPage> {
+  BannerAd? _bannerAd;
+
+  @override
+  void initState() {
+    super.initState();
+    _createBannerAd();
+  }
+
+  void _createBannerAd() {
+    final adUnitId = AdmobService.BannerAdUnitId;
+    if (adUnitId == null) return;
+
+    _bannerAd = BannerAd(
+      adUnitId: adUnitId,
+      request: const AdRequest(),
+      size: AdSize.fullBanner,
+      listener: AdmobService.bannerAdListener,
+    )..load();
+  }
+
+  @override
+  void dispose() {
+    _bannerAd?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final shopAsync = ref.watch(characterShopNotifierProvider);
-    final error = FriendlyErrorMessage.resolve(e);
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -31,19 +64,22 @@ class ItemShopPage extends ConsumerWidget {
           iconTheme: IconThemeData(color: MainColors.mainDark),
         ),
         body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: EdgeInsets.symmetric(horizontal: 24.wClamp),
           child: shopAsync.when(
             loading: () => Center(
               child: CircularProgressIndicator(color: MainColors.mainLight),
             ),
-            error: (e, st) => Center(child: Text(error.message)),
+            error: (e, st) {
+              final error = FriendlyErrorMessage.resolve(e);
+              return Center(child: Text(error.message));
+            },
             data: (shop) {
               final items = shop.items;
               final CharacterModel? selectedItem = shop.selectedItem;
 
               return Column(
                 mainAxisAlignment: MainAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
+                mainAxisSize: MainAxisSize.max,
                 children: [
                   ShopItemGridview(
                     items: items,
@@ -54,12 +90,12 @@ class ItemShopPage extends ConsumerWidget {
                     },
                   ),
 
-                  SizedBox(height: 12),
+                  SizedBox(height: 12.hClamp),
                   selectedItem == null
                       ? const Center(child: CircularProgressIndicator())
                       : ShopItemDetail(item: selectedItem),
 
-                  SizedBox(height: 12),
+                  SizedBox(height: 12.hClamp),
                   ShopItemBuyButton(
                     isPurchased: selectedItem?.isPurchased ?? false,
                     onPressed: shop.isPurchasing
@@ -77,10 +113,22 @@ class ItemShopPage extends ConsumerWidget {
                             }
                           },
                   ),
-                  SizedBox(height: 12),
+                  SizedBox(height: 12.hClamp),
                 ],
               );
             },
+          ),
+        ),
+        // 구매 버튼 아래(화면 하단)에 배너 광고 표시
+        bottomNavigationBar: SafeArea(
+          top: false,
+          child: Container(
+            width: double.infinity,
+            height: 60.hClamp,
+            alignment: Alignment.center,
+            child: _bannerAd != null
+                ? AdWidget(ad: _bannerAd!)
+                : const SizedBox.shrink(),
           ),
         ),
       ),

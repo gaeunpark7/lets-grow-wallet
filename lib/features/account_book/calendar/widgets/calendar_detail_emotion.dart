@@ -4,6 +4,7 @@ import 'package:lets_grow_wallet/features/account_book/services/user_emotion_ser
 import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:lets_grow_wallet/utils/friendly_error_message.dart';
+import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 
 class CalendarDetailEmotion extends ConsumerStatefulWidget {
   final DateTime selectedDate;
@@ -91,8 +92,8 @@ class _CalendarDetailEmotionState extends ConsumerState<CalendarDetailEmotion> {
   Widget build(BuildContext context) {
     if (_isLoading || _isSaving) {
       return SizedBox(
-        width: 30,
-        height: 30,
+        width: 30.wClamp,
+        height: 30.hClamp,
         child: CircularProgressIndicator(
           strokeWidth: 2,
           color: MainColors.point,
@@ -137,6 +138,10 @@ class _CalendarDetailEmotionState extends ConsumerState<CalendarDetailEmotion> {
 
 Widget _buildIconImage(String iconName) {
   return Center(
-    child: Image.asset('assets/emotions/$iconName.png', width: 30, height: 30),
+    child: Image.asset(
+      'assets/emotions/$iconName.png',
+      width: 30.wClamp,
+      height: 30.hClamp,
+    ),
   );
 }

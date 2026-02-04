@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lets_grow_wallet/features/account_book/character/widgets/character_book_list.dart';
 import 'package:lets_grow_wallet/features/account_book/character/widgets/character_book_list_detail.dart';
 import 'package:lets_grow_wallet/features/account_book/notifier/character_book_notifier.dart';
@@ -32,7 +33,7 @@ class CharacterBookPage extends ConsumerWidget {
           child: Column(
             children: [
               QuestTitle(title: "도감"),
-              SizedBox(height: 12),
+              SizedBox(height: 12.h),
               Expanded(
                 child: Container(
                   padding: EdgeInsets.all(12),
@@ -74,7 +75,7 @@ class CharacterBookPage extends ConsumerWidget {
                               return Text(
                                 "달성률 $percent%",
                                 style: TextStyle(
-                                  fontSize: 16,
+                                  fontSize: 16.h,
                                   color: MainColors.mainDark,
                                 ),
                               );
@@ -86,7 +87,7 @@ class CharacterBookPage extends ConsumerWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 12),
+              SizedBox(height: 12.h),
               asyncState.when(
                 loading: () => const SizedBox.shrink(),
                 error: (_, __) => const SizedBox.shrink(),
@@ -109,7 +110,7 @@ class CharacterBookPage extends ConsumerWidget {
                   return Column(
                     children: [
                       CharacterBookListDetail(item: selected),
-                      SizedBox(height: 12),
+                      SizedBox(height: 12.h),
                       GestureDetector(
                         onTap: canActivate
                             ? () => ref
@@ -118,7 +119,7 @@ class CharacterBookPage extends ConsumerWidget {
                             : null,
                         child: Container(
                           width: MediaQuery.of(context).size.width,
-                          height: 50,
+                          height: 50.h,
                           decoration: BoxDecoration(
                             color: bgColor,
                             borderRadius: BorderRadius.circular(8),
@@ -126,8 +127,8 @@ class CharacterBookPage extends ConsumerWidget {
                           child: Center(
                             child: state.isSaving
                                 ? SizedBox(
-                                    width: 18,
-                                    height: 18,
+                                    width: 18.w,
+                                    height: 18.h,
                                     child: CircularProgressIndicator(
                                       strokeWidth: 2,
                                       color: Colors.white,
@@ -136,7 +137,7 @@ class CharacterBookPage extends ConsumerWidget {
                                 : Text(
                                     label,
                                     style: TextStyle(
-                                      fontSize: 18,
+                                      fontSize: 18.sp,
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
                                     ),

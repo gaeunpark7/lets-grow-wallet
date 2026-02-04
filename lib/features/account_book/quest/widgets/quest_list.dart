@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
 import 'package:lets_grow_wallet/features/account_book/model/daily_quest_model.dart';
 import 'package:lets_grow_wallet/features/account_book/notifier/quest_reward_controller.dart';
@@ -157,21 +158,21 @@ class _QuestListState extends ConsumerState<QuestList> {
         children: [
           Text(
             subtitle,
-            style: TextStyle(fontSize: 18, color: MainColors.mainDark),
+            style: TextStyle(fontSize: 18.sp, color: MainColors.mainDark),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
             child: LinearProgressIndicator(
               value: progress,
-              minHeight: 14,
+              minHeight: 14.h,
               backgroundColor: MainColors.main,
               valueColor: AlwaysStoppedAnimation(
                 progress > 0.0 ? MainColors.mainLight : MainColors.main,
               ),
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           Row(
             mainAxisAlignment: canClaimReward
                 ? MainAxisAlignment.spaceBetween
@@ -179,32 +180,32 @@ class _QuestListState extends ConsumerState<QuestList> {
             children: [
               Text(
                 "달성률 ${(progress * 100).toStringAsFixed(0)}%",
-                style: TextStyle(fontSize: 14, color: MainColors.mainLight),
+                style: TextStyle(fontSize: 14.sp, color: MainColors.mainLight),
               ),
               if (canClaimReward) ...[
-                const SizedBox(width: 12),
+                SizedBox(width: 12.w),
                 ElevatedButton(
                   onPressed: _claimingReward ? null : _claimReward,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: MainColors.mainLight,
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 12.w,
+                      vertical: 8.h,
                     ),
-                    minimumSize: const Size(0, 32),
+                    minimumSize: Size(0, 32.h),
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   ),
                   child: _claimingReward
-                      ? const SizedBox(
-                          width: 14,
-                          height: 14,
+                      ? SizedBox(
+                          width: 14.w,
+                          height: 14.h,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
                             color: Colors.white,
                           ),
                         )
-                      : const Text('보상 받기'),
+                      : Text('보상 받기', style: TextStyle(fontSize: 14.sp)),
                 ),
               ],
             ],

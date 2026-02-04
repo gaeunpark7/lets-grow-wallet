@@ -14,6 +14,7 @@ import 'package:lets_grow_wallet/utils/character_interation_enum.dart';
 import 'package:lets_grow_wallet/utils/character_level_progress.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:lets_grow_wallet/utils/friendly_error_message.dart';
+import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 
 class CharacterPage extends ConsumerStatefulWidget {
   const CharacterPage({super.key});
@@ -73,6 +74,10 @@ class _CharacterPageState extends ConsumerState<CharacterPage> {
 
     if (character.characterImage.isNotEmpty) {
       urls.add(character.characterImage);
+    }
+
+    if (character.characterBackground.isNotEmpty) {
+      urls.add(character.characterBackground);
     }
 
     for (final url in urls) {
@@ -138,7 +143,7 @@ class _CharacterPageState extends ConsumerState<CharacterPage> {
           backgroundColor: Colors.white,
           body: Center(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
+              padding: EdgeInsets.symmetric(horizontal: 24),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -150,7 +155,7 @@ class _CharacterPageState extends ConsumerState<CharacterPage> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12.hClamp),
                   FilledButton(
                     onPressed: () => ref
                         .read(activeCharacterNotifierProvider.notifier)
@@ -174,6 +179,7 @@ class _CharacterPageState extends ConsumerState<CharacterPage> {
         );
         final imageUrl =
             activeCharacter?.imageUrlForEmotion(_currentEmotion) ?? '';
+        final backgroundUrl = activeCharacter?.characterBackground ?? '';
 
         return SafeArea(
           child: Scaffold(
@@ -181,22 +187,25 @@ class _CharacterPageState extends ConsumerState<CharacterPage> {
             body: activeCharacter == null
                 ? NotCharacter()
                 : Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(50),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          CharacterPageLevel(
-                            level: "Lv.${levelProgress.level}",
-                            characterName: activeCharacter.characterName,
-                            progress: levelProgress.progress,
-                            currentExp: levelProgress.currentExp.toDouble(),
-                            maxExp: levelProgress.maxExp.toDouble(),
-                          ),
-                          const SizedBox(height: 50),
-                          CharacterPageCharacter(imageUrl: imageUrl),
-                        ],
-                      ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(height: 20.hClamp),
+                        CharacterPageLevel(
+                          level: "Lv.${levelProgress.level}",
+                          characterName: activeCharacter.characterName,
+                          progress: levelProgress.progress,
+                          currentExp: levelProgress.currentExp.toDouble(),
+                          maxExp: levelProgress.maxExp.toDouble(),
+                        ),
+                        SizedBox(height: 70.hClamp),
+                        CharacterPageCharacter(
+                          imageUrl: imageUrl,
+                          backgroundUrl: backgroundUrl,
+                          characterName: activeCharacter.characterName,
+                          isEggStage: activeCharacter.stage == Stage.egg,
+                        ),
+                      ],
                     ),
                   ),
             floatingActionButton: FloatingActionButton(

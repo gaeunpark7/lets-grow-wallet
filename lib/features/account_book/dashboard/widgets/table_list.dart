@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lets_grow_wallet/features/account_book/dashboard/screens/home_page_detail.dart';
-import 'package:lets_grow_wallet/features/account_book/model/category_model.dart';
 import 'package:lets_grow_wallet/features/account_book/model/transaction_model.dart';
 import 'package:lets_grow_wallet/features/account_book/services/transaction_service.dart';
 import 'package:lets_grow_wallet/utils/category_utils.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
+import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 
 class TableList extends StatelessWidget {
   final transactionService = TransactionService();
@@ -57,7 +57,10 @@ class TableList extends StatelessWidget {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: EdgeInsets.symmetric(
+                      vertical: 6.0.hClamp,
+                      horizontal: 8.0.wClamp,
+                    ),
                     child: Text(
                       isExpense
                           ? "-${NumberFormat('#,###').format(tx.amount)}"
@@ -130,20 +133,23 @@ class _CellWidget extends StatelessWidget {
     Widget? leadingIcon;
     if (icon != null) {
       leadingIcon = CircleAvatar(
-        radius: 12,
+        radius: 10.0.rClamp,
         backgroundColor: MainColors.mainLight,
-        child: Icon(icon, color: MainColors.main, size: 16),
+        child: Icon(icon, color: MainColors.main, size: 14.0.rClamp),
       );
     }
 
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: EdgeInsets.symmetric(
+        vertical: 6.0.hClamp,
+        horizontal: 8.0.wClamp,
+      ),
       child: Row(
         mainAxisAlignment: alignment,
         // crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           if (leadingIcon != null) leadingIcon,
-          if (icon != null) const SizedBox(width: 3),
+          if (icon != null) SizedBox(width: 3.wClamp),
           Flexible(
             child: Text(
               text,
@@ -169,10 +175,13 @@ class _PaymentCellWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget? leadingIcon;
     if (icon != null) {
-      leadingIcon = Icon(icon, color: MainColors.mainDark, size: 16);
+      leadingIcon = Icon(icon, color: MainColors.mainDark, size: 14.0.rClamp);
     }
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: EdgeInsets.symmetric(
+        vertical: 6.0.hClamp,
+        horizontal: 8.0.wClamp,
+      ),
       child: Center(child: leadingIcon),
     );
   }

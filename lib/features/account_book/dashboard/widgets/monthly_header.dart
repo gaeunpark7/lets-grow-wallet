@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
-import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/goals_dialog.dart';
+import 'package:lets_grow_wallet/features/account_book/dashboard/screens/goals_dialog.dart';
 import 'package:lets_grow_wallet/features/account_book/services/goal_service.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:lets_grow_wallet/utils/kst_time.dart';
+import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MonthlyHeader extends StatefulWidget {
@@ -88,7 +89,7 @@ class _MonthlyHeaderState extends State<MonthlyHeader> {
     final hasGoalTitle = (goalTitle?.trim().isNotEmpty ?? false);
 
     return SizedBox(
-      height: 120,
+      height: 120.hClamp,
       child: Stack(
         alignment: Alignment.center,
         children: [
@@ -96,7 +97,7 @@ class _MonthlyHeaderState extends State<MonthlyHeader> {
             goalTitle ?? "이번달의 목표는?",
             style: TextStyle(
               color: MainColors.mainDark,
-              fontSize: screenWidth * 0.06, // 반응형 폰트
+              fontSize: screenWidth * 0.06.hClamp, // 반응형 폰트
               fontWeight: FontWeight.w900,
             ),
           ),
@@ -132,8 +133,8 @@ class _MonthlyHeaderState extends State<MonthlyHeader> {
                 hasGoalTitle
                     ? 'assets/icons/edit2_icon.png'
                     : 'assets/icons/edit1_icon.png',
-                width: screenWidth * 0.07,
-                height: screenWidth * 0.07,
+                width: screenWidth * 0.07.hClamp,
+                // height: screenHeight * 0.07.hClamp,
                 // color: isCurrentMonth
                 //     ? MainColors.point
                 //     : MainColors.mainDark.withOpacity(0.5),

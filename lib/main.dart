@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lets_grow_wallet/app/router/app_router.dart';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -27,17 +28,28 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      routerConfig: router,
-      scaffoldMessengerKey: rootScaffoldMessengerKey,
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: const [Locale('ko'), Locale('en')],
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+    return ScreenUtilInit(
+      designSize: const Size(412, 892),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      // 업스케일 금지
+      fontSizeResolver: (fontSize, instance) {
+        final scale = instance.scaleText;
+        final clamped = scale > 1 ? 1.0 : scale;
+        return fontSize * clamped;
+      },
+      child: MaterialApp.router(
+        routerConfig: router,
+        scaffoldMessengerKey: rootScaffoldMessengerKey,
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [Locale('ko'), Locale('en')],
+        debugShowCheckedModeBanner: false,
+        title: 'Flutter Demo',
+      ),
     );
   }
 }

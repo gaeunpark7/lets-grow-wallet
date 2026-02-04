@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:lets_grow_wallet/features/account_book/notifier/month_selection_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/notifier/transaction_notifier.dart';
@@ -13,6 +14,7 @@ import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/month_p
 import 'package:lets_grow_wallet/features/account_book/notifier/user_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/services/stat_service.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
+import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 import '../../model/monthly_stat_model.dart';
 
 class HomePage extends ConsumerStatefulWidget {
@@ -94,7 +96,7 @@ class _homePageState extends ConsumerState<HomePage> {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(30),
+          preferredSize: Size.fromHeight(30.hClamp),
           child: AppBar(
             scrolledUnderElevation: 0,
             automaticallyImplyLeading: false,
@@ -104,10 +106,10 @@ class _homePageState extends ConsumerState<HomePage> {
         ),
         //메인 목표
         body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15),
+          padding: EdgeInsets.symmetric(horizontal: 15.wClamp),
           child: Column(
             children: [
-              SizedBox(height: 10),
+              SizedBox(height: 10.hClamp),
               MonthlyHeader(month: selectedMonth),
               //년도, 월
               Row(
@@ -116,14 +118,14 @@ class _homePageState extends ConsumerState<HomePage> {
                   InkWell(
                     onTap: _pickMonth,
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 6,
-                        horizontal: 4,
+                      padding: EdgeInsets.symmetric(
+                        vertical: 6.hClamp,
+                        horizontal: 4.wClamp,
                       ),
                       child: Text(
                         "$year년  $month월",
                         style: TextStyle(
-                          fontSize: 15,
+                          fontSize: 15.spClamp,
                           color: MainColors.mainDark,
                           fontWeight: FontWeight.bold,
                         ),
@@ -150,7 +152,7 @@ class _homePageState extends ConsumerState<HomePage> {
               ),
               //여백
               Container(
-                height: 5,
+                height: 5.hClamp,
                 decoration: BoxDecoration(
                   border: Border(
                     top: BorderSide(color: MainColors.point, width: 1),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lets_grow_wallet/app/router/route_paths.dart';
 import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
@@ -6,6 +7,7 @@ import 'package:lets_grow_wallet/features/user/widgets/delete_user_dialog.dart';
 import 'package:lets_grow_wallet/features/user/widgets/delete_user_page_text.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:lets_grow_wallet/utils/friendly_error_message.dart';
+import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class DeleteUserPage extends StatefulWidget {
@@ -76,9 +78,13 @@ class _DeleteUserPageState extends State<DeleteUserPage> {
         scrolledUnderElevation: 0,
         centerTitle: true,
         backgroundColor: Colors.white,
-        title: const Text(
+        title: Text(
           '회원탈퇴',
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+            fontSize: 18.spClampBetween(min: 16, max: 18),
+          ),
         ),
       ),
       body: Column(
@@ -151,17 +157,20 @@ class _DeleteUserFooter extends StatelessWidget {
                   visualDensity: VisualDensity.compact,
                   // materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
-                const Expanded(
+                Expanded(
                   child: Text(
                     "유의사항을 모두 확인하였으며, 회원 탈퇴에 동의합니다.",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ],
             ),
           ),
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         Row(
           children: [
             _ActionButton(
@@ -170,7 +179,7 @@ class _DeleteUserFooter extends StatelessWidget {
               text: '취소',
               onTap: onCancel,
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12.w),
             _ActionButton(
               backColor: agreed
                   ? MainColors.mainLight
@@ -212,7 +221,7 @@ class _ActionButton extends StatelessWidget {
         onPressed: onTap,
         child: Text(
           text,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
         ),
       ),
     );

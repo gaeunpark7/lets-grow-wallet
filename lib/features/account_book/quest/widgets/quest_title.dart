@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
+import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 
 class QuestTitle extends StatelessWidget {
   String title;
@@ -8,7 +10,7 @@ class QuestTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 45,
+      height: 45.h,
       decoration: BoxDecoration(
         color: MainColors.main,
         borderRadius: BorderRadius.circular(12),
@@ -16,7 +18,10 @@ class QuestTitle extends StatelessWidget {
       child: Center(
         child: Text(
           title,
-          style: TextStyle(color: MainColors.mainDark, fontSize: 20),
+          style: TextStyle(
+            color: MainColors.mainDark,
+            fontSize: 20.spClampBetween(min: 16, max: 20),
+          ),
         ),
       ),
     );

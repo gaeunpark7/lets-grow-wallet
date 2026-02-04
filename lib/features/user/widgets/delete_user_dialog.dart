@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 
 class DeleteUserDialog extends StatelessWidget {
@@ -19,16 +20,16 @@ class DeleteUserDialog extends StatelessWidget {
               '회원탈퇴',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 18,
+                fontSize: 18.sp,
                 color: Colors.black,
               ),
             ),
-            SizedBox(height: 12),
+            SizedBox(height: 12.h),
             Text(
               '정말 탈퇴하시겠어요?\n삭제된 계정은 복구할 수 없습니다.',
-              style: TextStyle(fontSize: 16),
+              style: TextStyle(fontSize: 16.sp),
             ),
-            SizedBox(height: 12),
+            SizedBox(height: 12.h),
             Row(
               children: [
                 _buildSelectButton(

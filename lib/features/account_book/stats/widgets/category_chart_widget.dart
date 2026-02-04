@@ -1,7 +1,9 @@
 import 'dart:math';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
+import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 
 class CategoryChartWidget extends StatelessWidget {
   final List<({String id, String name, int amount})> data;
@@ -32,8 +34,8 @@ class CategoryChartWidget extends StatelessWidget {
     final total = data.fold<int>(0, (p, e) => p + e.amount);
 
     if (data.isEmpty || total == 0) {
-      return const SizedBox(
-        height: 320,
+      return SizedBox(
+        height: 320.hClamp,
         child: Center(
           child: Text(
             '데이터가 없어요.',
@@ -48,8 +50,8 @@ class CategoryChartWidget extends StatelessWidget {
     sorted.sort((a, b) => b.amount.compareTo(a.amount));
 
     // 차트 크기 키우기
-    const chartSize = 320.0;
-    const pieRadius = 120.0;
+    final chartSize = 320.0.hClamp;
+    final pieRadius = 120.0.hClamp;
     final center = Offset(chartSize / 2, chartSize / 2);
     final labelRadius = pieRadius + 24; // 라벨 위치 반지름
 
@@ -101,14 +103,11 @@ class CategoryChartWidget extends StatelessWidget {
               left: dx - 24, // 가운데 정렬 (텍스트 폭의 절반만큼 빼줌)
               top: dy - 14,
               child: SizedBox(
-                width: 48,
+                width: 48.wClamp,
                 child: Text(
                   '${percent.toStringAsFixed(0)}%',
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    color: MainColors.mainDark,
-                  ),
+                  style: TextStyle(fontSize: 18.sp, color: MainColors.mainDark),
                 ),
               ),
             );

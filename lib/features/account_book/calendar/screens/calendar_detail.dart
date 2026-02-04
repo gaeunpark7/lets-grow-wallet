@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:lets_grow_wallet/features/account_book/calendar/widgets/calendar_detail_emotion.dart';
 import 'package:lets_grow_wallet/features/account_book/model/daily_category_stat_model.dart';
 import 'package:lets_grow_wallet/features/account_book/services/daily_category_stat_service.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:lets_grow_wallet/utils/kst_time.dart';
+import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 
 class CalendartDetail extends StatefulWidget {
   final DateTime? selectedDate;
@@ -39,7 +41,7 @@ class _CalendartDetailState extends State<CalendartDetail> {
   @override
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context);
-    // final dialogWidth = media.size.width.clamp(0, 360.0) * 0.92;
+    final dialogWidth = media.size.width * 0.75;
     final dialogHeight = media.size.height * 0.4;
 
     return Dialog(
@@ -47,6 +49,7 @@ class _CalendartDetailState extends State<CalendartDetail> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: SizedBox(
         height: dialogHeight,
+        width: dialogWidth,
         child: Padding(
           padding: const EdgeInsets.all(12),
           child: Column(
@@ -67,7 +70,7 @@ class _CalendartDetailState extends State<CalendartDetail> {
                   Text(
                     "${_getWeekday(_date)}요일",
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 18.spClamp,
                       color: MainColors.mainDark,
                       fontWeight: FontWeight.bold,
                     ),
@@ -107,7 +110,7 @@ class _CalendartDetailState extends State<CalendartDetail> {
                           '오늘의 데이터가 없습니다.',
                           style: TextStyle(
                             color: MainColors.mainDark,
-                            fontSize: 14,
+                            fontSize: 14.spClamp,
                           ),
                         ),
                       );
@@ -127,7 +130,7 @@ class _CalendartDetailState extends State<CalendartDetail> {
                         Text(
                           '수입',
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: 16.spClamp,
                             fontWeight: FontWeight.bold,
                             color: MainColors.income,
                           ),
@@ -143,7 +146,7 @@ class _CalendartDetailState extends State<CalendartDetail> {
                           ),
                         ),
                       );
-                      children.add(SizedBox(height: 12));
+                      children.add(SizedBox(height: 12.hClamp));
                     }
 
                     if (expenseStats.isNotEmpty) {
@@ -151,13 +154,13 @@ class _CalendartDetailState extends State<CalendartDetail> {
                         Text(
                           '지출',
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: 16.spClamp,
                             fontWeight: FontWeight.bold,
                             color: MainColors.expense,
                           ),
                         ),
                       );
-                      children.add(SizedBox(height: 8));
+                      children.add(SizedBox(height: 8.hClamp));
                       children.addAll(
                         expenseStats.map(
                           (stat) => _buildCategoryRow(
@@ -167,7 +170,7 @@ class _CalendartDetailState extends State<CalendartDetail> {
                           ),
                         ),
                       );
-                      children.add(SizedBox(height: 12));
+                      children.add(SizedBox(height: 12.hClamp));
                     }
 
                     return ListView(children: children);
@@ -175,7 +178,7 @@ class _CalendartDetailState extends State<CalendartDetail> {
                 ),
               ),
 
-              SizedBox(height: 12),
+              SizedBox(height: 12.hClamp),
 
               //닫기 버튼
               GestureDetector(
@@ -184,7 +187,7 @@ class _CalendartDetailState extends State<CalendartDetail> {
                 },
                 child: Container(
                   width: double.infinity,
-                  height: 45,
+                  height: 45.hClamp,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(6),
                     color: MainColors.mainLight,
@@ -192,7 +195,10 @@ class _CalendartDetailState extends State<CalendartDetail> {
                   child: Center(
                     child: Text(
                       "닫기",
-                      style: TextStyle(color: Colors.white, fontSize: 16),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16.spClamp,
+                      ),
                     ),
                   ),
                 ),
@@ -213,7 +219,7 @@ class _CalendartDetailState extends State<CalendartDetail> {
     final formattedAmount = formatter.format(amount);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2),
+      padding: EdgeInsets.symmetric(vertical: 2.hClamp),
       child: Column(
         children: [
           Row(
@@ -221,15 +227,21 @@ class _CalendartDetailState extends State<CalendartDetail> {
             children: [
               Text(
                 categoryName,
-                style: TextStyle(fontSize: 14, color: MainColors.mainDark),
+                style: TextStyle(
+                  fontSize: 14.spClamp,
+                  color: MainColors.mainDark,
+                ),
               ),
               Text(
                 isIncome ? '+$formattedAmount원' : '-$formattedAmount원',
-                style: TextStyle(fontSize: 14, color: MainColors.mainDark),
+                style: TextStyle(
+                  fontSize: 14.spClamp,
+                  color: MainColors.mainDark,
+                ),
               ),
             ],
           ),
-          SizedBox(height: 2),
+          SizedBox(height: 2.hClamp),
           _separator(),
         ],
       ),

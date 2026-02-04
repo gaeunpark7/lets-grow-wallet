@@ -6,6 +6,7 @@ import 'package:lets_grow_wallet/features/account_book/stats/screens/stats_expen
 import 'package:lets_grow_wallet/features/account_book/stats/screens/stats_income_view.dart';
 import 'package:lets_grow_wallet/features/account_book/stats/widgets/montly_header.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
+import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 
 class StatsPage extends StatefulWidget {
   const StatsPage({super.key});
@@ -51,9 +52,9 @@ class _StatsPageState extends State<StatsPage>
         backgroundColor: Colors.white,
         title: MonthHeader(onKindChanged: (_) {}, current: StatsKind.income),
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(56),
+          preferredSize: Size.fromHeight(56.hClamp),
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
+            padding: EdgeInsets.symmetric(vertical: 8.hClamp),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -86,7 +87,7 @@ class _StatsPageState extends State<StatsPage>
                 ),
               ),
               child: SizedBox(
-                height: 56,
+                height: 56.hClamp,
                 width: _bannerAd?.size.width.toDouble() ?? 0,
                 child: _bannerAd != null
                     ? AdWidget(ad: _bannerAd!)

@@ -8,8 +8,8 @@ const InteractionEmotionOverrides interactionEmotionOverridesByStage = {
   //꽃개
   '589c96d4-64cc-419c-8125-1e27dfb0d44b': {
     Stage.egg: {
-      InteractionType.idle: Emotion.surprised,
-      InteractionType.pet: Emotion.surprised,
+      InteractionType.idle: Emotion.sad,
+      InteractionType.pet: Emotion.sad,
       InteractionType.feed: Emotion.happy,
       InteractionType.play: Emotion.happy,
     },
@@ -136,18 +136,18 @@ const InteractionEmotionOverrides interactionEmotionOverridesByStage = {
     Stage.egg: {
       InteractionType.feed: Emotion.happy,
       InteractionType.play: Emotion.happy,
-      InteractionType.pet: Emotion.surprised,
+      InteractionType.pet: Emotion.sad,
       InteractionType.idle: Emotion.sad,
     },
     Stage.child: {
       InteractionType.feed: Emotion.good,
-      InteractionType.play: Emotion.good,
+      InteractionType.play: Emotion.happy,
       InteractionType.pet: Emotion.surprised,
       InteractionType.idle: Emotion.sad,
     },
     Stage.adult: {
       InteractionType.feed: Emotion.good,
-      InteractionType.play: Emotion.good,
+      InteractionType.play: Emotion.happy,
       InteractionType.pet: Emotion.surprised,
       InteractionType.idle: Emotion.sad,
     },

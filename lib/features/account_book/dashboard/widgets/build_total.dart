@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
+import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 
 class BuildTotal extends StatelessWidget {
   final String? text;
@@ -17,7 +18,7 @@ class BuildTotal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 30,
+      height: 30.hClamp,
       decoration: BoxDecoration(
         border: Border(
           top: topBorder == 0

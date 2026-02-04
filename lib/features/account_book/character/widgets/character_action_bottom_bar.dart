@@ -147,9 +147,8 @@ class _CharacterActionBottomBarState extends State<CharacterActionBottomBar> {
         width: 55,
         height: 55,
         decoration: BoxDecoration(
-          // color: MainColors.main,
           shape: BoxShape.circle,
-          border: Border.all(color: MainColors.mainLight, width: 0.8),
+          border: Border.all(color: MainColors.mainLight, width: 1.2),
         ),
         child: Center(
           child: Text(

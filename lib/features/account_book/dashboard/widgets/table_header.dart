@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
+import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 
 class TableHeader extends StatelessWidget {
   const TableHeader({super.key});
@@ -36,11 +37,15 @@ class TableHeader extends StatelessWidget {
 
 Widget _buildHeaderCell(String text) {
   return Padding(
-    padding: const EdgeInsets.all(8.0),
+    padding: EdgeInsets.all(8.0.wClamp),
     child: Text(
       text,
       textAlign: TextAlign.center,
-      style: TextStyle(fontWeight: FontWeight.bold, color: MainColors.mainDark),
+      style: TextStyle(
+        fontWeight: FontWeight.bold,
+        color: MainColors.mainDark,
+        fontSize: 14.spClamp,
+      ),
     ),
   );
 }

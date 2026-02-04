@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
+import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 
 class CategoryStatList extends StatelessWidget {
   final List<({String id, String name, int amount})> data;
@@ -52,7 +54,10 @@ class CategoryStatList extends StatelessWidget {
           final percent = total == 0 ? 0 : (e.amount / total * 100).round();
           final color = _palette[idx % _palette.length]; // 내림차순 순서대로 색상 적용
           return Container(
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            padding: EdgeInsets.symmetric(
+              vertical: 8.hClamp,
+              horizontal: 16.wClamp,
+            ),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(12),
@@ -62,8 +67,8 @@ class CategoryStatList extends StatelessWidget {
               children: [
                 // 퍼센트와 색상 박스
                 Container(
-                  width: 40,
-                  height: 28,
+                  width: 40.wClamp,
+                  height: 28.hClamp,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     color: color,
@@ -88,8 +93,8 @@ class CategoryStatList extends StatelessWidget {
                 Expanded(
                   child: Text(
                     e.name,
-                    style: const TextStyle(
-                      fontSize: 16,
+                    style: TextStyle(
+                      fontSize: 16.sp,
                       color: MainColors.mainDark,
                       // fontWeight: FontWeight.w600,
                     ),
@@ -98,10 +103,7 @@ class CategoryStatList extends StatelessWidget {
                 // 금액
                 Text(
                   "${f.format(e.amount)}원",
-                  style: const TextStyle(
-                    color: MainColors.mainDark,
-                    fontSize: 16,
-                  ),
+                  style: TextStyle(color: MainColors.mainDark, fontSize: 16.sp),
                 ),
               ],
             ),

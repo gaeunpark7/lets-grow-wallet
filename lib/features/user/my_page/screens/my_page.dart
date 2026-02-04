@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lets_grow_wallet/app/router/route_paths.dart';
@@ -11,6 +14,7 @@ import 'package:lets_grow_wallet/features/user/widgets/my_page_error.dart';
 import 'package:lets_grow_wallet/features/user/widgets/my_page_userprofile.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:lets_grow_wallet/utils/friendly_error_message.dart';
+import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MyPage extends ConsumerStatefulWidget {
@@ -86,7 +90,7 @@ class _MyPageState extends ConsumerState<MyPage> {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(30),
+          preferredSize: Size.fromHeight(30.h),
           child: AppBar(
             backgroundColor: MainColors.mainLight,
             automaticallyImplyLeading: false,
@@ -123,13 +127,10 @@ class _MyPageState extends ConsumerState<MyPage> {
                     return ListView(
                       padding: EdgeInsets.zero,
                       children: [
-                        const SizedBox(height: 32),
+                        SizedBox(height: 32.h),
                         MyPageUserProfilePage(userProfile: userProfile),
-                        const SizedBox(height: 32),
-                        const Divider(
-                          color: MainColors.mainDark,
-                          thickness: 0.5,
-                        ),
+                        SizedBox(height: 32.h),
+                        Divider(color: MainColors.mainDark, thickness: 0.5),
                         _buildListTile(
                           icon: Icons.workspace_premium_outlined,
                           text: "프리미엄",
@@ -140,10 +141,7 @@ class _MyPageState extends ConsumerState<MyPage> {
                             );
                           },
                         ),
-                        const Divider(
-                          color: MainColors.mainDark,
-                          thickness: 0.5,
-                        ),
+                        Divider(color: MainColors.mainDark, thickness: 0.5),
                         _buildListTile(
                           icon: Icons.privacy_tip_outlined,
                           text: "개인정보 처리방침",
@@ -151,27 +149,18 @@ class _MyPageState extends ConsumerState<MyPage> {
                             context.push(Routes.privacyPolicy);
                           },
                         ),
-                        const Divider(
-                          color: MainColors.mainDark,
-                          thickness: 0.5,
-                        ),
+                        Divider(color: MainColors.mainDark, thickness: 0.5),
                         _buildListTile(
                           icon: Icons.feedback_outlined,
                           text: "오류문의",
                         ),
-                        const Divider(
-                          color: MainColors.mainDark,
-                          thickness: 0.5,
-                        ),
+                        Divider(color: MainColors.mainDark, thickness: 0.5),
                         _buildListTile(
                           icon: Icons.logout,
                           text: _isLoggingOut ? "로그아웃 중..." : "로그아웃",
                           onTap: _isLoggingOut ? null : _logout,
                         ),
-                        const Divider(
-                          color: MainColors.mainDark,
-                          thickness: 0.5,
-                        ),
+                        Divider(color: MainColors.mainDark, thickness: 0.5),
                         _buildListTile(
                           icon: Icons.delete_forever_outlined,
                           text: "회원탈퇴",
@@ -181,10 +170,7 @@ class _MyPageState extends ConsumerState<MyPage> {
                                   context.push(Routes.deleteUser);
                                 },
                         ),
-                        const Divider(
-                          color: MainColors.mainDark,
-                          thickness: 0.5,
-                        ),
+                        Divider(color: MainColors.mainDark, thickness: 0.5),
                       ],
                     );
                   },
@@ -195,7 +181,7 @@ class _MyPageState extends ConsumerState<MyPage> {
         ),
         bottomNavigationBar: Container(
           width: double.infinity,
-          height: 60,
+          height: 60.h,
           alignment: Alignment.center,
           child: _bannerAd != null
               ? AdWidget(ad: _bannerAd!)
@@ -216,10 +202,14 @@ class _buildListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Icon(icon, color: MainColors.point, size: 28),
+      dense: true,
+      visualDensity: const VisualDensity(vertical: -4),
+      minVerticalPadding: 0,
+      contentPadding: EdgeInsets.symmetric(horizontal: 16.w),
+      leading: Icon(icon, color: MainColors.point, size: 28.h),
       trailing: Text(
         text,
-        style: const TextStyle(color: MainColors.mainDark, fontSize: 16),
+        style: TextStyle(color: MainColors.mainDark, fontSize: 16.spClamp),
       ),
       onTap: onTap,
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lets_grow_wallet/features/account_book/notifier/shop_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/shop/widgets/shop_appbar_premium_dialog.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
@@ -23,8 +24,8 @@ class ShopAppbar extends ConsumerWidget {
             );
           },
           child: Container(
-            height: 40,
-            width: 40,
+            height: 40.h,
+            width: 40.w,
             decoration: BoxDecoration(
               color: Colors.white,
               shape: BoxShape.circle,
@@ -33,12 +34,13 @@ class ShopAppbar extends ConsumerWidget {
             child: Icon(
               Icons.workspace_premium_outlined,
               color: MainColors.mainLight,
+              size: 24.h,
             ),
           ),
         ),
         const SizedBox(width: 10),
         Container(
-          height: 40,
+          height: 40.h,
           width: mediaQuery.size.width * 0.35,
           decoration: BoxDecoration(
             border: Border.all(color: MainColors.mainLight, width: 1),
@@ -49,19 +51,28 @@ class ShopAppbar extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(width: 15),
+              SizedBox(width: 15.w),
               coinAsync.when(
                 data: (coin) => Text(
                   'C $coin',
-                  style: TextStyle(fontSize: 18, color: MainColors.mainLight),
+                  style: TextStyle(
+                    fontSize: 18.sp,
+                    color: MainColors.mainLight,
+                  ),
                 ),
                 loading: () => Text(
                   'C ...',
-                  style: TextStyle(fontSize: 18, color: MainColors.mainLight),
+                  style: TextStyle(
+                    fontSize: 18.sp,
+                    color: MainColors.mainLight,
+                  ),
                 ),
                 error: (e, st) => Text(
                   'C 0',
-                  style: TextStyle(fontSize: 18, color: MainColors.mainLight),
+                  style: TextStyle(
+                    fontSize: 18.sp,
+                    color: MainColors.mainLight,
+                  ),
                 ),
               ),
             ],

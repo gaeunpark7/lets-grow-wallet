@@ -10,6 +10,7 @@ class UserCharacterModel {
   final bool isActive;
   final String characterName;
   final String characterImage;
+  final String characterBackground;
   final Stage stage;
   final List<CharacterImagesModel> characterImages;
 
@@ -23,12 +24,14 @@ class UserCharacterModel {
     required this.isActive,
     required this.characterName,
     required this.characterImage,
+    required this.characterBackground,
     required this.stage,
     required this.characterImages,
   });
 
   factory UserCharacterModel.fromMap(Map<String, dynamic> map) {
     final character = map['characters'] as Map<String, dynamic>?;
+    final characterBackground = character?['background_url']?.toString() ?? '';
     final characterImagesRaw =
         (character?['character_images'] as List<dynamic>?) ?? const [];
 
@@ -54,6 +57,7 @@ class UserCharacterModel {
       isActive: map['is_active'] ?? false,
       characterName: character?['name'] ?? '',
       characterImage: defaultImageUrl,
+      characterBackground: characterBackground,
       stage: stage,
       characterImages: parsedImages,
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lets_grow_wallet/features/account_book/model/character_model.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
+import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 
 class ShopItemDetail extends StatelessWidget {
   final CharacterModel item;
@@ -15,17 +16,17 @@ class ShopItemDetail extends StatelessWidget {
           border: Border.all(color: MainColors.mainLight),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(12),
+          padding: EdgeInsets.all(12.wClamp),
           child: Row(
             children: [
               Container(
-                height: MediaQuery.of(context).size.height * 0.16,
-                width: MediaQuery.of(context).size.width * 0.25,
+                height: 150.hClamp,
+                width: 96.wClamp,
                 decoration: BoxDecoration(
                   border: Border.all(color: MainColors.mainLight),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(8),
+                  padding: EdgeInsets.all(8.wClamp),
                   child: Opacity(
                     opacity: item.isPurchased ? 1.0 : 0.30,
                     child: item.image.isNotEmpty
@@ -33,36 +34,51 @@ class ShopItemDetail extends StatelessWidget {
                         : Center(
                             child: Text(
                               "이미지 없음",
-                              style: TextStyle(color: MainColors.mainLight),
+                              style: TextStyle(
+                                color: MainColors.mainLight,
+                                fontSize: 12.spClamp,
+                              ),
                             ),
                           ),
                   ),
                 ),
               ),
-              SizedBox(width: 10),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    item.name,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: MainColors.mainDark,
+              SizedBox(width: 10.wClamp),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      item.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 16.spClamp,
+                        fontWeight: FontWeight.bold,
+                        color: MainColors.mainDark,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    "가격: ${item.price}",
-                    style: TextStyle(color: MainColors.mainDark),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    item.description,
-                    style: TextStyle(color: MainColors.mainDark),
-                  ),
-                ],
+                    SizedBox(height: 6.hClamp),
+                    Text(
+                      "가격: ${item.price}",
+                      style: TextStyle(
+                        color: MainColors.mainDark,
+                        fontSize: 14.spClamp,
+                      ),
+                    ),
+                    SizedBox(height: 6.hClamp),
+                    Text(
+                      item.description,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: MainColors.mainDark,
+                        fontSize: 13.spClamp,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),

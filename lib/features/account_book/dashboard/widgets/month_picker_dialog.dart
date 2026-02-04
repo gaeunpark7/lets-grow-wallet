@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:lets_grow_wallet/utils/kst_time.dart';
+import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 
 Future<DateTime?> showMonthPickerDialog({
   required BuildContext context,
@@ -21,127 +23,137 @@ Future<DateTime?> showMonthPickerDialog({
           final canPrevYear = tempYear > firstYear;
           final canNextYear = tempYear < currentYear;
 
-          return AlertDialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
+          return Dialog(
+            // insetPadding: EdgeInsets.symmetric(
+            //   horizontal: 20.wClamp,
+            //   vertical: 20.hClamp,
+            // ),
             backgroundColor: Colors.white,
-            content: SizedBox(
-              width: 320,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        onPressed: canPrevYear
-                            ? () => setLocalState(() => tempYear--)
-                            : null,
-                        icon: const Icon(Icons.chevron_left),
-                        color: MainColors.mainDark,
-                        disabledColor: MainColors.point,
-                      ),
-                      Text(
-                        '$tempYear년',
-                        style: TextStyle(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12.rClamp),
+            ),
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width * 0.75,
+              child: Padding(
+                padding: EdgeInsets.only(
+                  left: 16.wClamp,
+                  right: 16.wClamp,
+                  bottom: 16.h,
+                  top: 8.hClamp,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        IconButton(
+                          onPressed: canPrevYear
+                              ? () => setLocalState(() => tempYear--)
+                              : null,
+                          icon: Icon(Icons.chevron_left),
                           color: MainColors.mainDark,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                          disabledColor: MainColors.point,
                         ),
-                      ),
-                      IconButton(
-                        onPressed: canNextYear
-                            ? () => setLocalState(() => tempYear++)
-                            : null,
-                        icon: const Icon(Icons.chevron_right),
-                        color: MainColors.mainDark,
-                        disabledColor: MainColors.point,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  GridView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
-                          mainAxisSpacing: 8,
-                          crossAxisSpacing: 8,
-                          childAspectRatio: 2.2,
+                        Text(
+                          '$tempYear년',
+                          style: TextStyle(
+                            color: MainColors.mainDark,
+                            fontSize: 16.spClamp,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                    itemCount: 12,
-                    itemBuilder: (context, index) {
-                      final m = index + 1;
-                      final isSelected = m == tempMonth;
-                      final isDisabled =
-                          tempYear == currentYear && m > now.month;
+                        IconButton(
+                          onPressed: canNextYear
+                              ? () => setLocalState(() => tempYear++)
+                              : null,
+                          icon: Icon(Icons.chevron_right),
+                          color: MainColors.mainDark,
+                          disabledColor: MainColors.point,
+                        ),
+                      ],
+                    ),
+                    // SizedBox(height: 6.hClamp),
+                    GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                        mainAxisSpacing: 6.hClamp,
+                        crossAxisSpacing: 6.wClamp,
+                        childAspectRatio: 2.5,
+                      ),
+                      itemCount: 12,
+                      itemBuilder: (context, index) {
+                        final m = index + 1;
+                        final isSelected = m == tempMonth;
+                        final isDisabled =
+                            tempYear == currentYear && m > now.month;
 
-                      return InkWell(
-                        onTap: isDisabled
-                            ? null
-                            : () => setLocalState(() => tempMonth = m),
-                        borderRadius: BorderRadius.circular(10),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: isSelected
-                                ? MainColors.mainLight
-                                : Colors.transparent,
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
+                        return InkWell(
+                          onTap: isDisabled
+                              ? null
+                              : () => setLocalState(() => tempMonth = m),
+                          borderRadius: BorderRadius.circular(10.rClamp),
+                          child: Container(
+                            decoration: BoxDecoration(
                               color: isSelected
-                                  ? MainColors.mainDark
-                                  : MainColors.point,
-                              width: 1,
+                                  ? MainColors.mainLight
+                                  : Colors.transparent,
+                              borderRadius: BorderRadius.circular(10.rClamp),
+                              border: Border.all(
+                                color: isSelected
+                                    ? MainColors.mainDark
+                                    : MainColors.point,
+                                width: 1,
+                              ),
+                            ),
+                            alignment: Alignment.center,
+                            child: Text(
+                              '$m월',
+                              style: TextStyle(
+                                color: isDisabled
+                                    ? MainColors.point
+                                    : MainColors.mainDark,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14.spClamp,
+                              ),
                             ),
                           ),
-                          alignment: Alignment.center,
-                          child: Text(
-                            '$m월',
-                            style: TextStyle(
-                              color: isDisabled
-                                  ? MainColors.point
-                                  : MainColors.mainDark,
-                              fontWeight: FontWeight.bold,
-                            ),
+                        );
+                      },
+                    ),
+                    SizedBox(height: 16.hClamp),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildButton(
+                            context,
+                            () => Navigator.pop(context),
+                            MainColors.main,
+                            MainColors.mainDark,
+                            '취소',
                           ),
                         ),
-                      );
-                    },
-                  ),
-                ],
+                        SizedBox(width: 8.wClamp),
+                        Expanded(
+                          child: _buildButton(
+                            context,
+                            () => Navigator.pop(
+                              context,
+                              DateTime(tempYear, tempMonth, 1),
+                            ),
+                            MainColors.mainLight,
+                            Colors.white,
+                            '선택',
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
-            // actionsPadding: const EdgeInsets.fromLTRB(24, 0, 24, 16),
-            actions: [
-              Row(
-                children: [
-                  Expanded(
-                    child: _buildButton(
-                      context,
-                      () => Navigator.pop(context),
-                      MainColors.main,
-                      MainColors.mainDark,
-                      '취소',
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: _buildButton(
-                      context,
-                      () => Navigator.pop(
-                        context,
-                        DateTime(tempYear, tempMonth, 1),
-                      ),
-                      MainColors.mainLight,
-                      Colors.white,
-                      '선택',
-                    ),
-                  ),
-                ],
-              ),
-            ],
           );
         },
       );
@@ -149,7 +161,7 @@ Future<DateTime?> showMonthPickerDialog({
   );
 }
 
-_buildButton(
+Widget _buildButton(
   BuildContext context,
   VoidCallback onPressed,
   Color backColor,
@@ -157,15 +169,20 @@ _buildButton(
   String text,
 ) {
   return SizedBox(
-    height: 40,
+    height: 42.hClamp,
     child: TextButton(
       onPressed: onPressed,
       style: TextButton.styleFrom(
         backgroundColor: backColor,
         foregroundColor: textColor,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.rClamp),
+        ),
       ),
-      child: Text(text),
+      child: Text(
+        text,
+        style: TextStyle(fontSize: 16.spClamp, fontWeight: FontWeight.bold),
+      ),
     ),
   );
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lets_grow_wallet/features/account_book/model/character_model.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
+import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 
 class ShopItemGridview extends StatelessWidget {
   final Function(CharacterModel) onItemSelected;
@@ -14,8 +15,6 @@ class ShopItemGridview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final mediaQuery = MediaQuery.of(context);
-
     //상점 목록>이미지 로드에서 제외
     const excludedNames = {'크왕', '꽃개'};
     final filteredItems = items
@@ -23,20 +22,22 @@ class ShopItemGridview extends StatelessWidget {
         .toList();
 
     return Expanded(
-      flex: 6,
+      flex: 7,
       child: Container(
-        width: mediaQuery.size.width,
         decoration: BoxDecoration(
           border: Border.all(color: MainColors.mainLight),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(12),
+          padding: EdgeInsets.symmetric(
+            horizontal: 12.wClamp,
+            vertical: 8.hClamp,
+          ),
           //그리드 뷰
           child: GridView.builder(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
+              crossAxisSpacing: 10.wClamp,
+              mainAxisSpacing: 10.hClamp,
               childAspectRatio: 0.6,
             ),
             itemCount: filteredItems.length,
@@ -46,66 +47,73 @@ class ShopItemGridview extends StatelessWidget {
 
               return GestureDetector(
                 onTap: () => onItemSelected(item),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    //아이템 컨테이너(테두리)
-                    Container(
-                      height: mediaQuery.size.height * 0.16,
-                      width: mediaQuery.size.width * 0.25,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: MainColors.mainLight),
-                      ),
-                      //아이템 이미지
-                      child: Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: Opacity(
-                          opacity: opacity,
-                          child: item.image.isNotEmpty
-                              ? Center(
-                                  child: Image.network(
-                                    item.image,
-                                    fit: BoxFit.contain,
-                                    loadingBuilder: (ctx, child, progress) {
-                                      if (progress == null) return child;
-                                      return Center(
-                                        child: CircularProgressIndicator(
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    final imageBoxHeight = constraints.maxHeight * 0.72;
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        //아이템 컨테이너(테두리)
+                        Container(
+                          height: imageBoxHeight,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: MainColors.mainLight),
+                          ),
+                          //아이템 이미지
+                          child: Padding(
+                            padding: EdgeInsets.all(8.wClamp),
+                            child: Opacity(
+                              opacity: opacity,
+                              child: item.image.isNotEmpty
+                                  ? Center(
+                                      child: Image.network(
+                                        item.image,
+                                        fit: BoxFit.contain,
+                                        loadingBuilder: (ctx, child, progress) {
+                                          if (progress == null) return child;
+                                          return Center(
+                                            child: CircularProgressIndicator(
+                                              color: MainColors.mainLight,
+                                            ),
+                                          );
+                                        },
+                                        errorBuilder: (ctx, err, st) {
+                                          debugPrint(
+                                            'Image.network error for ${item.name}: $err\n$st',
+                                          );
+                                          return const Center(
+                                            child: Icon(Icons.broken_image),
+                                          );
+                                        },
+                                      ),
+                                    )
+                                  : Center(
+                                      child: Text(
+                                        '이미지 없음',
+                                        style: TextStyle(
                                           color: MainColors.mainLight,
+                                          fontSize: 12.spClamp,
                                         ),
-                                      );
-                                    },
-                                    errorBuilder: (ctx, err, st) {
-                                      print(
-                                        'Image.network error for ${item.name}: $err\n$st',
-                                      );
-
-                                      return const Center(
-                                        child: Icon(Icons.broken_image),
-                                      );
-                                    },
-                                  ),
-                                )
-                              : Center(
-                                  child: Text(
-                                    "이미지 없음",
-                                    style: TextStyle(
-                                      color: MainColors.mainLight,
+                                      ),
                                     ),
-                                  ),
-                                ),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      item.name,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: MainColors.mainDark,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
+                        SizedBox(height: 4.hClamp),
+                        Text(
+                          item.name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 14.spClamp,
+                            color: MainColors.mainDark,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    );
+                  },
                 ),
               );
             },

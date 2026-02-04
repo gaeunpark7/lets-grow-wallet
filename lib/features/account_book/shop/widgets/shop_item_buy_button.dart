@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
+import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 
 class ShopItemBuyButton extends StatelessWidget {
   final bool isPurchased;
@@ -14,8 +15,8 @@ class ShopItemBuyButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height * 0.06,
+      width: double.infinity,
+      height: 50.hClamp,
       child: FilledButton(
         style: FilledButton.styleFrom(
           side: BorderSide.none,
@@ -26,7 +27,7 @@ class ShopItemBuyButton extends StatelessWidget {
         onPressed: isPurchased ? null : onPressed,
         child: Text(
           isPurchased ? "구매 완료" : "구매",
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 18.spClamp, fontWeight: FontWeight.bold),
         ),
       ),
     );

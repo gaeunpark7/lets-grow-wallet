@@ -26,6 +26,7 @@ class UserCharacterService {
             stage,
             characters (
               name,
+              background_url,
               character_images (
                 character_id,
                 stage,

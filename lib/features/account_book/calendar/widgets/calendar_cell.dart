@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lets_grow_wallet/features/account_book/model/daily_stat_model.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
+import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 
 class CalendarCell extends StatelessWidget {
   final DateTime day;
@@ -29,8 +31,8 @@ class CalendarCell extends StatelessWidget {
     return GestureDetector(
       onTap: isOutside ? null : onTap,
       child: SizedBox(
-        height: 110,
-        width: 110,
+        height: 110.hClamp,
+        width: 110.wClamp,
         child: Container(
           decoration: BoxDecoration(
             color: isSelected
@@ -41,7 +43,10 @@ class CalendarCell extends StatelessWidget {
             borderRadius: BorderRadius.zero,
             border: Border.all(color: Color(0xFFE8EAF6)),
           ),
-          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
+          padding: EdgeInsets.symmetric(
+            vertical: 4.hClamp,
+            horizontal: 2.wClamp,
+          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -49,7 +54,7 @@ class CalendarCell extends StatelessWidget {
               Text(
                 '${day.day}',
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 16.spClamp,
                   fontWeight: FontWeight.bold,
                   color: textColor,
                 ),
@@ -59,8 +64,8 @@ class CalendarCell extends StatelessWidget {
               if (emotion != null)
                 Image.asset(
                   'assets/emotions/$emotion.png',
-                  width: 25,
-                  height: 25,
+                  width: 25.wClamp,
+                  height: 25.hClamp,
                   errorBuilder: (context, error, stackTrace) {
                     return SizedBox.shrink();
                   },
@@ -69,8 +74,8 @@ class CalendarCell extends StatelessWidget {
                 if (stat!.totalExpense != 0)
                   Text(
                     '-${stat!.totalExpense}',
-                    style: const TextStyle(
-                      fontSize: 11,
+                    style: TextStyle(
+                      fontSize: 11.spClamp,
                       color: Colors.red,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -78,8 +83,8 @@ class CalendarCell extends StatelessWidget {
                 if (stat!.totalIncome != 0)
                   Text(
                     '+${stat!.totalIncome}',
-                    style: const TextStyle(
-                      fontSize: 11,
+                    style: TextStyle(
+                      fontSize: 11.spClamp,
                       color: Color(0xFF7986CB),
                       overflow: TextOverflow.ellipsis,
                     ),

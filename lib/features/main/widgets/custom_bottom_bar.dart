@@ -30,7 +30,7 @@ class CustomBottomBar extends StatelessWidget {
                   index: 0,
                   selectedIndex: selectedIndex,
                   onTap: onTabSelected,
-                  iconSize: 40,
+                  iconSize: 42,
                 ),
                 _BottomIcon(
                   icon: Icons.pie_chart,
@@ -52,11 +52,11 @@ class CustomBottomBar extends StatelessWidget {
                   iconSize: 40,
                 ),
                 _BottomIcon(
-                  icon: Icons.settings,
+                  icon: Icons.account_circle,
                   index: 3,
                   selectedIndex: selectedIndex,
                   onTap: onTabSelected,
-                  iconSize: 40,
+                  iconSize: 42,
                 ),
               ],
             ),

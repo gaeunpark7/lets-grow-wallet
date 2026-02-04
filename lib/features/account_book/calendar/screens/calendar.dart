@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lets_grow_wallet/features/account_book/calendar/widgets/calendar_cell.dart';
 import 'package:lets_grow_wallet/features/account_book/calendar/screens/calendar_detail.dart';
 import 'package:lets_grow_wallet/features/account_book/notifier/calendar_notifier.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:lets_grow_wallet/utils/friendly_error_message.dart';
 import 'package:lets_grow_wallet/utils/kst_time.dart';
+import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class Calendar extends ConsumerStatefulWidget {
@@ -56,7 +58,6 @@ class _CalendarState extends ConsumerState<Calendar> {
                   locale: 'en_US',
                   currentDay: todayKst(),
                   focusedDay: _focusedDay,
-
                   firstDay: DateTime(2025, 1, 1),
                   lastDay: DateTime(2035, 12, 31),
                   selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
@@ -69,12 +70,12 @@ class _CalendarState extends ConsumerState<Calendar> {
                   onPageChanged: _onPageChanged,
                   calendarFormat: CalendarFormat.month,
                   availableCalendarFormats: const {CalendarFormat.month: '월'},
-                  rowHeight: 110,
+                  rowHeight: 110.hClamp,
                   headerStyle: HeaderStyle(
                     formatButtonVisible: false,
                     titleCentered: true,
-                    titleTextStyle: const TextStyle(
-                      fontSize: 23,
+                    titleTextStyle: TextStyle(
+                      fontSize: 23.spClamp,
                       fontWeight: FontWeight.bold,
                       color: MainColors.mainDark,
                     ),
@@ -88,16 +89,16 @@ class _CalendarState extends ConsumerState<Calendar> {
                       color: MainColors.mainDark,
                     ),
                   ),
-                  daysOfWeekHeight: 50,
+                  daysOfWeekHeight: 50.hClamp,
                   daysOfWeekStyle: DaysOfWeekStyle(
-                    weekdayStyle: const TextStyle(
-                      fontSize: 15,
+                    weekdayStyle: TextStyle(
+                      fontSize: 15.spClamp,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                       letterSpacing: 1.2,
                     ),
-                    weekendStyle: const TextStyle(
-                      fontSize: 15,
+                    weekendStyle: TextStyle(
+                      fontSize: 15.spClamp,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                       letterSpacing: 1.2,

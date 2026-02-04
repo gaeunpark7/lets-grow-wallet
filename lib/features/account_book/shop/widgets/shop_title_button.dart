@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 
 class ShopTitleButton extends StatelessWidget {
   final String text;
@@ -22,14 +23,14 @@ class ShopTitleButton extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             color: backColor,
-            borderRadius: BorderRadius.circular(5),
+            borderRadius: BorderRadius.circular(5.rClamp),
           ),
-          height: 50,
+          height: 50.hClamp,
           child: Center(
             child: Text(
               text,
               style: TextStyle(
-                fontSize: 18,
+                fontSize: 18.spClamp,
                 fontWeight: FontWeight.bold,
                 color: textColor,
               ),
