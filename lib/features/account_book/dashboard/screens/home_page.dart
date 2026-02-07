@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:lets_grow_wallet/features/account_book/notifier/month_selection_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/notifier/transaction_notifier.dart';
@@ -269,7 +268,7 @@ class _homePageState extends ConsumerState<HomePage> {
                 },
               ),
 
-              SizedBox(height: 5),
+              SizedBox(height: 5.hClamp),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -296,7 +295,7 @@ class _homePageState extends ConsumerState<HomePage> {
                   ),
                 ],
               ),
-              const SizedBox(height: 50),
+              SizedBox(height: 50.hClamp),
             ],
           ),
         ),

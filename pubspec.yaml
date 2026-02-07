@@ -76,6 +76,7 @@ flutter:
     - assets/emotions/
     - assets/icons/
     - assets/ad/
+    - assets/premium/
     - .env
 
   # An image asset can refer to one or more resolution-specific "variants", see

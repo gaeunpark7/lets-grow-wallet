@@ -60,7 +60,7 @@ class CalendarCell extends StatelessWidget {
                 ),
               ),
 
-              SizedBox(height: 5),
+              SizedBox(height: 5.hClamp),
               if (emotion != null)
                 Image.asset(
                   'assets/emotions/$emotion.png',
@@ -70,6 +70,7 @@ class CalendarCell extends StatelessWidget {
                     return SizedBox.shrink();
                   },
                 ),
+              SizedBox(height: 5.hClamp),
               if (stat != null) ...[
                 if (stat!.totalExpense != 0)
                   Text(

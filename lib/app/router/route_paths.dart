@@ -21,4 +21,5 @@ class Routes {
 
   static const privacyPolicy = '/privacy-policy';
   static const deleteUser = '/delete-user';
+  static const myPageUserSetting = 'user-setting';
 }

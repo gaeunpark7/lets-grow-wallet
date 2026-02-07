@@ -133,7 +133,7 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
                         text: "지출",
                       ),
                     ),
-                    SizedBox(width: 12.w),
+                    SizedBox(width: 12.wClamp),
                     Expanded(
                       child: GestureDetector(
                         onTap: () =>
@@ -191,7 +191,7 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
                           isDense: true,
                           contentPadding: EdgeInsets.symmetric(
                             vertical: 10,
-                            horizontal: 12.wClamp,
+                            horizontal: 12,
                           ),
                         ),
                         maxLength: 8,
@@ -210,7 +210,7 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
                     });
                   },
                 ),
-                SizedBox(height: 8.hClamp),
+                SizedBox(height: 10.hClamp),
                 // 결제수단 + 금액 입력
                 PaymentAmountRow(
                   selectedPayType: selectedPayType,
@@ -223,7 +223,7 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
                   formatAmount: formatAmount,
                 ),
 
-                SizedBox(height: 18.h),
+                SizedBox(height: 18.hClamp),
                 TextField(
                   controller: memoController,
                   style: TextStyle(color: MainColors.mainDark),
@@ -255,10 +255,10 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
                     ),
                   ),
                 ),
-                SizedBox(height: 10.h),
+                SizedBox(height: 10.hClamp),
                 SizedBox(
                   width: double.infinity,
-                  height: 48.h,
+                  height: 48,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: MainColors.mainLight,
@@ -334,11 +334,11 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
                     },
                     child: Text(
                       "지출 추가",
-                      style: TextStyle(color: Colors.white, fontSize: 18.sp),
+                      style: TextStyle(color: Colors.white, fontSize: 18),
                     ),
                   ),
                 ),
-                SizedBox(height: 24.h),
+                SizedBox(height: 24.hClamp),
               ],
             ),
           ),

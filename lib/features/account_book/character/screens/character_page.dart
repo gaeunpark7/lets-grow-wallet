@@ -186,27 +186,44 @@ class _CharacterPageState extends ConsumerState<CharacterPage> {
             backgroundColor: Colors.white,
             body: activeCharacter == null
                 ? NotCharacter()
-                : Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(height: 20.hClamp),
-                        CharacterPageLevel(
-                          level: "Lv.${levelProgress.level}",
-                          characterName: activeCharacter.characterName,
-                          progress: levelProgress.progress,
-                          currentExp: levelProgress.currentExp.toDouble(),
-                          maxExp: levelProgress.maxExp.toDouble(),
+                : LayoutBuilder(
+                    builder: (context, constraints) {
+                      return SingleChildScrollView(
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            minHeight: constraints.maxHeight,
+                          ),
+                          child: IntrinsicHeight(
+                            child: Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SizedBox(height: 40.hClamp),
+                                  CharacterPageLevel(
+                                    level: "Lv.${levelProgress.level}",
+                                    characterName:
+                                        activeCharacter.characterName,
+                                    progress: levelProgress.progress,
+                                    currentExp: levelProgress.currentExp
+                                        .toDouble(),
+                                    maxExp: levelProgress.maxExp.toDouble(),
+                                  ),
+                                  SizedBox(height: 60.hClamp),
+                                  CharacterPageCharacter(
+                                    imageUrl: imageUrl,
+                                    backgroundUrl: backgroundUrl,
+                                    characterName:
+                                        activeCharacter.characterName,
+                                    isEggStage:
+                                        activeCharacter.stage == Stage.egg,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         ),
-                        SizedBox(height: 70.hClamp),
-                        CharacterPageCharacter(
-                          imageUrl: imageUrl,
-                          backgroundUrl: backgroundUrl,
-                          characterName: activeCharacter.characterName,
-                          isEggStage: activeCharacter.stage == Stage.egg,
-                        ),
-                      ],
-                    ),
+                      );
+                    },
                   ),
             floatingActionButton: FloatingActionButton(
               onPressed: () =>

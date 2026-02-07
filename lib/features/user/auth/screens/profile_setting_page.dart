@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:lets_grow_wallet/app/router/route_paths.dart';
 import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
+import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ProfileSettingPage extends StatefulWidget {
@@ -58,34 +59,37 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
         backgroundColor: Colors.white,
         body: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: EdgeInsets.symmetric(horizontal: 16.wClamp),
             child: Form(
               key: _formKey,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const SizedBox(height: 24),
-                  const Text(
+                  SizedBox(height: 24.hClamp),
+                  Text(
                     "닉네임 설정",
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 24.spClamp,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                  const SizedBox(height: 5),
-                  const Text(
+                  SizedBox(height: 5.hClamp),
+                  Text(
                     "나중에 언제든지 변경할 수 있습니다.",
-                    style: TextStyle(fontSize: 16, color: Colors.grey),
+                    style: TextStyle(fontSize: 16.spClamp, color: Colors.grey),
                   ),
-                  const SizedBox(height: 12),
-                  const Icon(
+                  SizedBox(height: 12.hClamp),
+                  Icon(
                     Icons.account_circle,
-                    size: 120,
+                    size: 120.hClamp,
                     color: MainColors.mainLight,
                   ),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12.hClamp),
                   _buildNicknameField(),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12.hClamp),
                   _buildConfirmButton(context),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12.hClamp),
                 ],
               ),
             ),
@@ -109,7 +113,10 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
           borderSide: BorderSide(color: MainColors.mainDark, width: 2),
         ),
         hintText: '닉네임을 입력해주세요.',
-        hintStyle: TextStyle(color: MainColors.mainDark.withOpacity(0.5)),
+        hintStyle: TextStyle(
+          fontSize: 16.spClamp,
+          color: MainColors.mainDark.withOpacity(0.5),
+        ),
       ),
 
       maxLength: 7,
@@ -131,7 +138,7 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
   Widget _buildConfirmButton(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: 55,
+      height: 55.hClamp,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
@@ -145,10 +152,10 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
             _saveUserProfile();
           }
         },
-        child: const Text(
+        child: Text(
           "확인",
           style: TextStyle(
-            fontSize: 18,
+            fontSize: 18.spClamp,
             color: Colors.white,
             fontWeight: FontWeight.bold,
           ),

@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
@@ -89,7 +87,6 @@ class _ItemShopPageState extends ConsumerState<ItemShopPage> {
                           .selectItem(item);
                     },
                   ),
-
                   SizedBox(height: 12.hClamp),
                   selectedItem == null
                       ? const Center(child: CircularProgressIndicator())

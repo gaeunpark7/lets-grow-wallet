@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:lets_grow_wallet/app/router/route_paths.dart';
@@ -16,6 +17,7 @@ import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:lets_grow_wallet/utils/friendly_error_message.dart';
 import 'package:lets_grow_wallet/utils/kst_time.dart';
 import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
+import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 import '../../model/transaction_model.dart';
@@ -116,11 +118,11 @@ class _AddIncomePageState extends ConsumerState<AddIncomePage> {
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: EdgeInsets.symmetric(horizontal: 16.wClamp),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 18),
+                SizedBox(height: 18.hClamp),
                 // 지출/수입 선택 (지출만 파란색)
                 Row(
                   children: [
@@ -136,7 +138,7 @@ class _AddIncomePageState extends ConsumerState<AddIncomePage> {
                         ),
                       ),
                     ),
-                    SizedBox(width: 12),
+                    SizedBox(width: 12.wClamp),
                     Expanded(
                       child: TitleButton(
                         color: MainColors.mainLight,
@@ -145,7 +147,7 @@ class _AddIncomePageState extends ConsumerState<AddIncomePage> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 18),
+                SizedBox(height: 18.hClamp),
                 // 날짜 선택
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -158,7 +160,7 @@ class _AddIncomePageState extends ConsumerState<AddIncomePage> {
                         onTap: () => _selectDate(context),
                       ),
                     ),
-                    SizedBox(width: 12),
+                    SizedBox(width: 12.wClamp),
                     // 제목 입력
                     Expanded(
                       child: TextField(
@@ -198,7 +200,7 @@ class _AddIncomePageState extends ConsumerState<AddIncomePage> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: 10.hClamp),
                 // 카테고리 선택
                 CategorySelector(
                   categories: categories,
@@ -209,7 +211,7 @@ class _AddIncomePageState extends ConsumerState<AddIncomePage> {
                     });
                   },
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: 10.hClamp),
                 // 결제수단 + 금액 입력
                 PaymentAmountRow(
                   selectedPayType: selectedPayType,
@@ -222,7 +224,7 @@ class _AddIncomePageState extends ConsumerState<AddIncomePage> {
                   formatAmount: formatAmount,
                 ),
 
-                const SizedBox(height: 18),
+                SizedBox(height: 18.hClamp),
                 TextField(
                   controller: memoController,
                   style: TextStyle(color: MainColors.mainDark),
@@ -250,7 +252,7 @@ class _AddIncomePageState extends ConsumerState<AddIncomePage> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: 10.hClamp),
                 SizedBox(
                   width: double.infinity,
                   height: 48,
@@ -262,7 +264,7 @@ class _AddIncomePageState extends ConsumerState<AddIncomePage> {
                         borderRadius: BorderRadius.circular(5),
                       ),
                       elevation: 0,
-                      textStyle: const TextStyle(
+                      textStyle: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
@@ -324,7 +326,7 @@ class _AddIncomePageState extends ConsumerState<AddIncomePage> {
                     child: const Text("수입 추가"),
                   ),
                 ),
-                const SizedBox(height: 24),
+                SizedBox(height: 24.hClamp),
               ],
             ),
           ),

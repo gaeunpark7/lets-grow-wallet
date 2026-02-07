@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/single_button.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
+import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 
 class PaymentAmountRow extends StatelessWidget {
   final int selectedPayType;
@@ -26,17 +27,17 @@ class PaymentAmountRow extends StatelessWidget {
           selected: selectedPayType == 0,
           onTap: () => onPayTypeChanged(0),
         ),
-        SizedBox(width: 5.w),
+        SizedBox(width: 5.wClamp),
         SingleButton(
           text: "현금",
           selected: selectedPayType == 1,
           onTap: () => onPayTypeChanged(1),
         ),
-        SizedBox(width: 10.w),
+        SizedBox(width: 10.wClamp),
         Expanded(
           flex: 2,
           child: SizedBox(
-            height: 38.h,
+            height: 38,
             child: TextFormField(
               style: TextStyle(color: MainColors.mainDark),
               controller: amountController,
@@ -51,8 +52,8 @@ class PaymentAmountRow extends StatelessWidget {
                 isDense: true,
                 counterText: "",
                 contentPadding: EdgeInsets.symmetric(
-                  vertical: 8.h,
-                  horizontal: 12.w,
+                  vertical: 8,
+                  horizontal: 12.wClamp,
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.zero,

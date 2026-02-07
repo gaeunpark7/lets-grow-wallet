@@ -5,6 +5,7 @@ import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
 import 'package:lets_grow_wallet/features/account_book/model/daily_quest_model.dart';
 import 'package:lets_grow_wallet/features/account_book/notifier/quest_reward_controller.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
+import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 
 class QuestList extends ConsumerStatefulWidget {
   const QuestList({
@@ -43,59 +44,66 @@ class _QuestListState extends ConsumerState<QuestList> {
           return Dialog(
             backgroundColor: Colors.white,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.rClamp),
             ),
-            child: Padding(
-              padding: const EdgeInsets.all(14.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    '보상 획득',
-                    style: TextStyle(
-                      color: MainColors.mainDark,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Divider(color: MainColors.mainLight, height: 0, thickness: 1),
-                  const SizedBox(height: 12),
-                  _buildDialogTile('EXP', '15'),
-                  Divider(
-                    color: MainColors.mainLight,
-                    thickness: 1 / MediaQuery.of(context).devicePixelRatio,
-                    height: 0,
-                  ),
-                  const SizedBox(height: 8),
-                  _buildDialogTile('Coin', '15'),
-                  Divider(
-                    color: MainColors.mainLight,
-                    thickness: 1 / MediaQuery.of(context).devicePixelRatio,
-                    height: 0,
-                  ),
-                  const SizedBox(height: 14),
-                  FilledButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: MainColors.mainLight,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      minimumSize: const Size(double.infinity, 45),
-                    ),
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: const Text(
-                      '확인',
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width * 0.75,
+              child: Padding(
+                padding: EdgeInsets.all(14.0.rClamp),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '보상 획득',
                       style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
+                        color: MainColors.mainDark,
+                        fontSize: 18.sp,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ),
-                ],
+                    SizedBox(height: 8.hClamp),
+                    Divider(
+                      color: MainColors.mainLight,
+                      height: 0,
+                      thickness: 1,
+                    ),
+                    SizedBox(height: 12.hClamp),
+                    _buildDialogTile('EXP', '15'),
+                    Divider(
+                      color: MainColors.mainLight,
+                      thickness: 1 / MediaQuery.of(context).devicePixelRatio,
+                      height: 0,
+                    ),
+                    SizedBox(height: 8.hClamp),
+                    _buildDialogTile('Coin', '15'),
+                    Divider(
+                      color: MainColors.mainLight,
+                      thickness: 1 / MediaQuery.of(context).devicePixelRatio,
+                      height: 0,
+                    ),
+                    SizedBox(height: 14.hClamp),
+                    FilledButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: MainColors.mainLight,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5.rClamp),
+                        ),
+                        minimumSize: Size(double.infinity, 45.hClamp),
+                      ),
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: Text(
+                        '확인',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16.spClamp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           );
@@ -118,8 +126,14 @@ class _QuestListState extends ConsumerState<QuestList> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(title, style: TextStyle(fontSize: 14, color: MainColors.mainDark)),
-        Text(value, style: TextStyle(fontSize: 14, color: MainColors.mainDark)),
+        Text(
+          title,
+          style: TextStyle(fontSize: 14.sp, color: MainColors.mainDark),
+        ),
+        Text(
+          value,
+          style: TextStyle(fontSize: 14.sp, color: MainColors.mainDark),
+        ),
       ],
     );
   }
@@ -160,19 +174,19 @@ class _QuestListState extends ConsumerState<QuestList> {
             subtitle,
             style: TextStyle(fontSize: 18.sp, color: MainColors.mainDark),
           ),
-          SizedBox(height: 12.h),
+          SizedBox(height: 12.hClamp),
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
             child: LinearProgressIndicator(
               value: progress,
-              minHeight: 14.h,
+              minHeight: 14.hClamp,
               backgroundColor: MainColors.main,
               valueColor: AlwaysStoppedAnimation(
                 progress > 0.0 ? MainColors.mainLight : MainColors.main,
               ),
             ),
           ),
-          SizedBox(height: 8.h),
+          SizedBox(height: 8.hClamp),
           Row(
             mainAxisAlignment: canClaimReward
                 ? MainAxisAlignment.spaceBetween
@@ -183,15 +197,15 @@ class _QuestListState extends ConsumerState<QuestList> {
                 style: TextStyle(fontSize: 14.sp, color: MainColors.mainLight),
               ),
               if (canClaimReward) ...[
-                SizedBox(width: 12.w),
+                SizedBox(width: 12.wClamp),
                 ElevatedButton(
                   onPressed: _claimingReward ? null : _claimReward,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: MainColors.mainLight,
                     foregroundColor: Colors.white,
                     padding: EdgeInsets.symmetric(
-                      horizontal: 12.w,
-                      vertical: 8.h,
+                      horizontal: 12.wClamp,
+                      vertical: 8.hClamp,
                     ),
                     minimumSize: Size(0, 32.h),
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,

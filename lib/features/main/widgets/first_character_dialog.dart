@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
+import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 
 class FirstCharacterDialog extends StatelessWidget {
   const FirstCharacterDialog({super.key});
@@ -9,53 +10,59 @@ class FirstCharacterDialog extends StatelessWidget {
     return Dialog(
       backgroundColor: Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Align(
-              alignment: Alignment.topLeft,
-              child: Text(
-                "캐릭터 획득",
-                style: TextStyle(
-                  fontSize: 18,
-                  color: MainColors.mainDark,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            SizedBox(height: 5),
-            Divider(color: MainColors.mainLight, thickness: 1.5, height: 0),
-            SizedBox(height: 12),
-
-            Image.asset(
-              'assets/ad/flower_dog1_happy.png',
-              fit: BoxFit.contain,
-              width: 120,
-            ),
-            SizedBox(height: 12),
-            SizedBox(
-              width: double.infinity,
-              child: FilledButton(
-                style: FilledButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  backgroundColor: MainColors.mainLight,
-                  foregroundColor: Colors.white,
-                  minimumSize: const Size.fromHeight(45),
-                ),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width * 0.75,
+        child: Padding(
+          padding: EdgeInsets.all(12.wClamp),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Align(
+                alignment: Alignment.topLeft,
                 child: Text(
-                  "확인",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  "캐릭터 획득",
+                  style: TextStyle(
+                    fontSize: 18.spClamp,
+                    color: MainColors.mainDark,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-            ),
-          ],
+              SizedBox(height: 5.hClamp),
+              Divider(color: MainColors.mainLight, thickness: 1.5, height: 0),
+              SizedBox(height: 12.hClamp),
+
+              Image.asset(
+                'assets/ad/flower_dog1_happy.png',
+                fit: BoxFit.contain,
+                width: 120.wClamp,
+              ),
+              SizedBox(height: 12.hClamp),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton(
+                  style: FilledButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    backgroundColor: MainColors.mainLight,
+                    foregroundColor: Colors.white,
+                    minimumSize: Size.fromHeight(45.hClamp),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    "확인",
+                    style: TextStyle(
+                      fontSize: 16.spClamp,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:lets_grow_wallet/features/account_book/calendar/widgets/calendar_detail_emotion.dart';
 import 'package:lets_grow_wallet/features/account_book/model/daily_category_stat_model.dart';
@@ -51,7 +50,7 @@ class _CalendartDetailState extends State<CalendartDetail> {
         height: dialogHeight,
         width: dialogWidth,
         child: Padding(
-          padding: const EdgeInsets.all(12),
+          padding: EdgeInsets.all(12.rClamp),
           child: Column(
             children: [
               //헤더
@@ -61,12 +60,12 @@ class _CalendartDetailState extends State<CalendartDetail> {
                   Text(
                     DateFormat('dd').format(_date),
                     style: TextStyle(
-                      fontSize: 24,
+                      fontSize: 24.spClamp,
                       color: MainColors.mainDark,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(width: 5),
+                  SizedBox(width: 5.wClamp),
                   Text(
                     "${_getWeekday(_date)}요일",
                     style: TextStyle(
@@ -80,7 +79,7 @@ class _CalendartDetailState extends State<CalendartDetail> {
                 ],
               ),
               Divider(color: MainColors.mainLight, thickness: 2),
-              SizedBox(height: 12),
+              SizedBox(height: 12.hClamp),
               Expanded(
                 child: FutureBuilder<List<DailyCategoryStatModel>>(
                   future: _dailyStatsFuture,
@@ -136,7 +135,7 @@ class _CalendartDetailState extends State<CalendartDetail> {
                           ),
                         ),
                       );
-                      children.add(SizedBox(height: 8));
+                      children.add(SizedBox(height: 8.hClamp));
                       children.addAll(
                         incomeStats.map(
                           (stat) => _buildCategoryRow(

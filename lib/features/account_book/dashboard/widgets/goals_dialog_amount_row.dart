@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
@@ -45,9 +44,10 @@ class GoalsDialogAmountRow extends StatelessWidget {
             style: TextStyle(fontSize: 16.spClamp, fontWeight: FontWeight.bold),
           ),
         ),
-        SizedBox(width: 10.w),
+        SizedBox(width: 10.wClamp),
         Expanded(
           child: SizedBox(
+            height: 45,
             child: TextField(
               controller: textController,
               enabled: enabled && isSelected,
@@ -63,9 +63,9 @@ class GoalsDialogAmountRow extends StatelessWidget {
                 border: const OutlineInputBorder(
                   borderRadius: BorderRadius.zero,
                 ),
-                contentPadding: const EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: 12,
+                contentPadding: EdgeInsets.symmetric(
+                  vertical: 8.hClamp,
+                  horizontal: 12.wClamp,
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: MainColors.mainLight, width: 2),

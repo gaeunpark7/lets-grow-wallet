@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lets_grow_wallet/features/account_book/model/category_model.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
+import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 
 class CategorySelector extends StatelessWidget {
   final List<Category> categories;
@@ -51,7 +52,7 @@ class CategorySelector extends StatelessWidget {
                   size: 28,
                 ),
               ),
-              const SizedBox(height: 6),
+              SizedBox(height: 6.hClamp),
               Text(
                 category.label,
                 style: TextStyle(

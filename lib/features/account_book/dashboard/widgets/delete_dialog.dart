@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
+import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 
 class DeleteDialog extends StatelessWidget {
   VoidCallback onTap;
@@ -10,60 +11,72 @@ class DeleteDialog extends StatelessWidget {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       backgroundColor: Colors.white,
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(height: 30),
-            Text(
-              "정말로 이 내역을 삭제하시겠습니까?",
-              style: TextStyle(
-                fontSize: 16,
-                color: MainColors.mainDark,
-                fontWeight: FontWeight.bold,
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width * 0.75,
+        child: Padding(
+          padding: EdgeInsets.all(12.wClamp),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(height: 30.hClamp),
+              Text(
+                "정말로 이 내역을 삭제하시겠습니까?",
+                style: TextStyle(
+                  fontSize: 16.spClamp,
+                  color: const Color.fromARGB(255, 82, 98, 128),
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            SizedBox(height: 30),
+              SizedBox(height: 30.hClamp),
 
-            Row(
-              children: [
-                Expanded(
-                  child: TextButton(
-                    style: TextButton.styleFrom(
-                      foregroundColor: MainColors.mainDark,
-                      backgroundColor: MainColors.main,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextButton(
+                      style: TextButton.styleFrom(
+                        foregroundColor: MainColors.mainDark,
+                        backgroundColor: MainColors.main,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                      ),
+                      onPressed: () => Navigator.pop(context),
+                      child: Text(
+                        "취소",
+                        style: TextStyle(
+                          fontSize: 16.spClamp,
+                          color: MainColors.mainDark,
+                        ),
                       ),
                     ),
-                    onPressed: () => Navigator.pop(context),
-                    child: Text(
-                      "취소",
-                      style: TextStyle(color: MainColors.mainDark),
-                    ),
                   ),
-                ),
-                SizedBox(width: 10),
-                Expanded(
-                  child: TextButton(
-                    style: TextButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor: MainColors.mainLight,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5),
+                  SizedBox(width: 10.wClamp),
+                  Expanded(
+                    child: TextButton(
+                      style: TextButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: MainColors.mainLight,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                      ),
+                      onPressed: () {
+                        onTap();
+                      },
+                      child: Text(
+                        "삭제",
+                        style: TextStyle(
+                          fontSize: 16.spClamp,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
-                    onPressed: () {
-                      onTap();
-                    },
-                    child: Text("삭제"),
                   ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

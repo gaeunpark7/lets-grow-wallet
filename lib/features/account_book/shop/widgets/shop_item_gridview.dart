@@ -22,23 +22,20 @@ class ShopItemGridview extends StatelessWidget {
         .toList();
 
     return Expanded(
-      flex: 7,
+      flex: 6,
       child: Container(
         decoration: BoxDecoration(
           border: Border.all(color: MainColors.mainLight),
         ),
         child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: 12.wClamp,
-            vertical: 8.hClamp,
-          ),
+          padding: EdgeInsets.symmetric(horizontal: 12.wClamp),
           //그리드 뷰
           child: GridView.builder(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3,
               crossAxisSpacing: 10.wClamp,
               mainAxisSpacing: 10.hClamp,
-              childAspectRatio: 0.6,
+              childAspectRatio: 0.65,
             ),
             itemCount: filteredItems.length,
             itemBuilder: (context, index) {

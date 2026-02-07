@@ -18,8 +18,15 @@ class CharacterPageCharacter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //반햄 일때(알 x) 약간 왼쪽을 이동
     final isBanHam = characterName.trim() == '반햄';
     final shouldShift = isBanHam && !isEggStage;
+
+    //꽃개 일때(알 x) 크기 키우기, 너무 내려가 보일 수 있어서, 살짝 덜 내림
+    final isFlowerDog = characterName.trim() == '꽃개';
+    final shouldScaleUpFlowerDog = isFlowerDog && !isEggStage;
+    final double characterWidth = (shouldScaleUpFlowerDog ? 200 : 160).wClamp;
+    final double translateY = (shouldScaleUpFlowerDog ? 58 : 70).rClamp;
 
     return Center(
       child: Stack(
@@ -39,10 +46,10 @@ class CharacterPageCharacter extends StatelessWidget {
           Align(
             alignment: Alignment.bottomCenter,
             child: Transform.translate(
-              offset: Offset(shouldShift ? -5.wClamp : 0, 70.rClamp),
+              offset: Offset(shouldShift ? -5.wClamp : 0, translateY),
               child: Image.network(
                 imageUrl,
-                width: 160,
+                width: characterWidth,
                 fit: BoxFit.contain,
                 gaplessPlayback: true,
                 loadingBuilder: (context, child, loadingProgress) {

@@ -82,7 +82,7 @@ class CategoryStatList extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: 12.wClamp),
                 // 아이콘/이모지
                 // Text(
                 //   _emojiForCategory(e.name),
@@ -94,7 +94,7 @@ class CategoryStatList extends StatelessWidget {
                   child: Text(
                     e.name,
                     style: TextStyle(
-                      fontSize: 16.sp,
+                      fontSize: 16.spClamp,
                       color: MainColors.mainDark,
                       // fontWeight: FontWeight.w600,
                     ),
@@ -103,7 +103,10 @@ class CategoryStatList extends StatelessWidget {
                 // 금액
                 Text(
                   "${f.format(e.amount)}원",
-                  style: TextStyle(color: MainColors.mainDark, fontSize: 16.sp),
+                  style: TextStyle(
+                    color: MainColors.mainDark,
+                    fontSize: 16.spClamp,
+                  ),
                 ),
               ],
             ),

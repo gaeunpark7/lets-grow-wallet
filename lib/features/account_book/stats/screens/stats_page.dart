@@ -110,14 +110,14 @@ class _StatsPageState extends State<StatsPage>
             ? Colors.white
             : MainColors.mainDark,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-        minimumSize: Size(MediaQuery.of(context).size.width * 0.4, 45),
+        minimumSize: Size(MediaQuery.of(context).size.width * 0.4, 45.hClamp),
         elevation: 0,
         shadowColor: Colors.transparent,
       ),
       onPressed: () {
         setState(() => _tabController.index = index);
       },
-      child: Text(text, style: const TextStyle(fontSize: 16)),
+      child: Text(text, style: TextStyle(fontSize: 16.spClamp)),
     );
   }
 }

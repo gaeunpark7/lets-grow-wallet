@@ -10,6 +10,7 @@ import 'package:lets_grow_wallet/features/account_book/quest/widgets/quest_title
 import 'package:lets_grow_wallet/features/account_book/shop/widgets/shop_appbar.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:lets_grow_wallet/utils/friendly_error_message.dart';
+import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 
 class CharacterBookPage extends ConsumerWidget {
   const CharacterBookPage({super.key});
@@ -29,14 +30,18 @@ class CharacterBookPage extends ConsumerWidget {
           iconTheme: IconThemeData(color: MainColors.mainDark),
         ),
         body: Padding(
-          padding: const EdgeInsets.only(left: 24, right: 24, bottom: 24),
+          padding: EdgeInsets.only(
+            left: 24.wClamp,
+            right: 24.wClamp,
+            bottom: 24.hClamp,
+          ),
           child: Column(
             children: [
               QuestTitle(title: "도감"),
-              SizedBox(height: 12.h),
+              SizedBox(height: 12.hClamp),
               Expanded(
                 child: Container(
-                  padding: EdgeInsets.all(12),
+                  padding: EdgeInsets.all(12.wClamp),
                   width: MediaQuery.of(context).size.width * 1,
                   decoration: BoxDecoration(
                     border: Border.all(color: MainColors.mainLight),
@@ -122,7 +127,7 @@ class CharacterBookPage extends ConsumerWidget {
                           height: 50.h,
                           decoration: BoxDecoration(
                             color: bgColor,
-                            borderRadius: BorderRadius.circular(8),
+                            // borderRadius: BorderRadius.circular(8),
                           ),
                           child: Center(
                             child: state.isSaving

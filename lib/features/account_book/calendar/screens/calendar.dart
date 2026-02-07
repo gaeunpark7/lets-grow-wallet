@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lets_grow_wallet/features/account_book/calendar/widgets/calendar_cell.dart';
 import 'package:lets_grow_wallet/features/account_book/calendar/screens/calendar_detail.dart';
 import 'package:lets_grow_wallet/features/account_book/notifier/calendar_notifier.dart';

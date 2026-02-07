@@ -46,7 +46,7 @@ class _MyPageUserProfileState extends ConsumerState<MyPageUserProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+      margin: EdgeInsets.symmetric(horizontal: 16.wClamp, vertical: 16.hClamp),
       padding: EdgeInsets.all(16.h),
       color: MainColors.main,
       child: Stack(
@@ -62,9 +62,9 @@ class _MyPageUserProfileState extends ConsumerState<MyPageUserProfilePage> {
                 );
               },
               child: CircleAvatar(
-                radius: 15.h,
+                radius: 15.rClamp,
                 backgroundColor: MainColors.mainLight,
-                child: const Icon(Icons.edit, color: Colors.white, size: 16),
+                child: Icon(Icons.edit, color: Colors.white, size: 16),
               ),
             ),
           ),
@@ -75,11 +75,15 @@ class _MyPageUserProfileState extends ConsumerState<MyPageUserProfilePage> {
                 children: [
                   //프로필 이미
                   CircleAvatar(
-                    radius: 40.h,
+                    radius: 40.rClamp,
                     backgroundColor: MainColors.mainLight,
-                    child: Icon(Icons.person, size: 60.h, color: Colors.white),
+                    child: Icon(
+                      Icons.person,
+                      size: 60.hClamp,
+                      color: Colors.white,
+                    ),
                   ),
-                  SizedBox(width: 15.w),
+                  SizedBox(width: 15.wClamp),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,21 +91,21 @@ class _MyPageUserProfileState extends ConsumerState<MyPageUserProfilePage> {
                         Text(
                           widget.userProfile.nickname,
                           style: TextStyle(
-                            fontSize: 22.sp,
+                            fontSize: 22.spClamp,
                             // fontWeight: FontWeight.bold,
                             color: MainColors.mainDark,
                           ),
                         ),
-                        SizedBox(height: 8.h),
+                        SizedBox(height: 8.hClamp),
                         Container(
                           width: double.infinity,
-                          padding: EdgeInsets.all(8.h),
+                          padding: EdgeInsets.all(8.hClamp),
                           color: Colors.white,
                           child: Center(
                             child: Text(
                               widget.userProfile.email,
                               style: TextStyle(
-                                fontSize: 16.sp,
+                                fontSize: 16.spClamp,
                                 color: MainColors.mainDark,
                               ),
                             ),
@@ -125,11 +129,13 @@ class _MyPageUserProfileState extends ConsumerState<MyPageUserProfilePage> {
 
     return Dialog(
       backgroundColor: Colors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.rClamp),
+      ),
       child: SizedBox(
         width: dialogWidth,
         child: Padding(
-          padding: const EdgeInsets.all(12),
+          padding: EdgeInsets.all(12.rClamp),
           child: Form(
             key: formKey,
             child: Column(
@@ -143,7 +149,7 @@ class _MyPageUserProfileState extends ConsumerState<MyPageUserProfilePage> {
                     color: MainColors.mainDark,
                   ),
                 ),
-                SizedBox(height: 16.h),
+                SizedBox(height: 16.hClamp),
                 TextFormField(
                   controller: nicknameController,
                   style: TextStyle(
@@ -243,7 +249,7 @@ class _buildButton extends StatelessWidget {
         ),
         backgroundColor: backColor,
         foregroundColor: textColor,
-        fixedSize: Size(MediaQuery.of(context).size.width * 0.3, 20.h),
+        fixedSize: Size(MediaQuery.of(context).size.width * 0.3, 20.hClamp),
         elevation: 0,
       ),
       onPressed: ontap,

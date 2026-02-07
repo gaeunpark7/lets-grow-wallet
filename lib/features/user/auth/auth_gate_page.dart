@@ -6,6 +6,7 @@ import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
 import 'package:lets_grow_wallet/features/account_book/services/admob_service.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:lets_grow_wallet/utils/friendly_error_message.dart';
+import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthGatePage extends StatefulWidget {
@@ -22,8 +23,7 @@ class _AuthGatePageState extends State<AuthGatePage> {
   @override
   void initState() {
     super.initState();
-
-    // _createBannerAd();
+    _createBannerAd();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkProfile();
     });
@@ -92,38 +92,38 @@ class _AuthGatePageState extends State<AuthGatePage> {
       child: Scaffold(
         backgroundColor: MainColors.mainLight,
         body: Padding(
-          padding: const EdgeInsets.all(12),
+          padding: EdgeInsets.all(12.wClamp),
           child: Column(
             // mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Spacer(),
-              SizedBox(height: 20),
+              SizedBox(height: 20.hClamp),
               Image.asset(
                 'assets/icons/app_icon2.png',
-                width: 120,
-                height: 120,
+                width: 120.wClamp,
+                height: 120.hClamp,
               ),
-              const SizedBox(height: 8),
-              const Text(
+              SizedBox(height: 8.hClamp),
+              Text(
                 "레츠고 가계부",
                 style: TextStyle(
-                  fontSize: 26,
+                  fontSize: 26.spClamp,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24.hClamp),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 80),
+                padding: EdgeInsets.symmetric(horizontal: 80.wClamp),
                 child: Visibility(
                   visible: _isLoading,
                   maintainSize: true,
                   maintainAnimation: true,
                   maintainState: true,
                   child: LinearProgressIndicator(
-                    minHeight: 12,
+                    minHeight: 10.hClamp,
                     backgroundColor: Colors.white.withOpacity(0.25),
                     valueColor: const AlwaysStoppedAnimation<Color>(
                       Colors.white,
@@ -132,14 +132,6 @@ class _AuthGatePageState extends State<AuthGatePage> {
                   ),
                 ),
               ),
-
-              // SizedBox(
-              //   height: 200, //배너 사이즈 수정 필요.
-              //   width: double.infinity,
-              //   child: _bannerAd != null
-              //       ? AdWidget(ad: _bannerAd!)
-              //       : const SizedBox.shrink(),
-              // ),
               Spacer(),
               Spacer(),
             ],

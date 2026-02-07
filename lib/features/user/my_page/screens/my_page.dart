@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -90,7 +88,7 @@ class _MyPageState extends ConsumerState<MyPage> {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(30.h),
+          preferredSize: Size.fromHeight(30.hClamp),
           child: AppBar(
             backgroundColor: MainColors.mainLight,
             automaticallyImplyLeading: false,
@@ -98,13 +96,12 @@ class _MyPageState extends ConsumerState<MyPage> {
         ),
         body: Column(
           children: [
-            if (_isLoggingOut) const LinearProgressIndicator(minHeight: 2),
+            if (_isLoggingOut) LinearProgressIndicator(minHeight: 2.hClamp),
             Expanded(
               child: AbsorbPointer(
                 absorbing: _isLoggingOut,
                 child: userProfileAsync.when(
-                  loading: () =>
-                      const Center(child: CircularProgressIndicator()),
+                  loading: () => Center(child: CircularProgressIndicator()),
                   error: (e, _) {
                     //로그아웃 중 > 토근 완료로 인한 에러 발생시 에러뷰 대신
                     if (_isLoggingOut || _redirectedToLogin) {
@@ -127,11 +124,11 @@ class _MyPageState extends ConsumerState<MyPage> {
                     return ListView(
                       padding: EdgeInsets.zero,
                       children: [
-                        SizedBox(height: 32.h),
+                        SizedBox(height: 32.hClamp),
                         MyPageUserProfilePage(userProfile: userProfile),
-                        SizedBox(height: 32.h),
+                        SizedBox(height: 32.hClamp),
                         Divider(color: MainColors.mainDark, thickness: 0.5),
-                        _buildListTile(
+                        buildListTile(
                           icon: Icons.workspace_premium_outlined,
                           text: "프리미엄",
                           onTap: () async {
@@ -142,35 +139,37 @@ class _MyPageState extends ConsumerState<MyPage> {
                           },
                         ),
                         Divider(color: MainColors.mainDark, thickness: 0.5),
-                        _buildListTile(
+                        buildListTile(
                           icon: Icons.privacy_tip_outlined,
-                          text: "개인정보 처리방침",
+                          text: "개인정보",
                           onTap: () {
-                            context.push(Routes.privacyPolicy);
+                            context.push(
+                              '${Routes.mypage}/${Routes.myPageUserSetting}',
+                            );
                           },
                         ),
                         Divider(color: MainColors.mainDark, thickness: 0.5),
-                        _buildListTile(
+                        buildListTile(
                           icon: Icons.feedback_outlined,
                           text: "오류문의",
                         ),
                         Divider(color: MainColors.mainDark, thickness: 0.5),
-                        _buildListTile(
+                        buildListTile(
                           icon: Icons.logout,
                           text: _isLoggingOut ? "로그아웃 중..." : "로그아웃",
                           onTap: _isLoggingOut ? null : _logout,
                         ),
                         Divider(color: MainColors.mainDark, thickness: 0.5),
-                        _buildListTile(
-                          icon: Icons.delete_forever_outlined,
-                          text: "회원탈퇴",
-                          onTap: _isLoggingOut
-                              ? null
-                              : () {
-                                  context.push(Routes.deleteUser);
-                                },
-                        ),
-                        Divider(color: MainColors.mainDark, thickness: 0.5),
+                        // buildListTile(
+                        //   icon: Icons.delete_forever_outlined,
+                        //   text: "회원탈퇴",
+                        //   onTap: _isLoggingOut
+                        //       ? null
+                        //       : () {
+                        //           context.push(Routes.deleteUser);
+                        //         },
+                        // ),
+                        // Divider(color: MainColors.mainDark, thickness: 0.5),
                       ],
                     );
                   },
@@ -192,12 +191,17 @@ class _MyPageState extends ConsumerState<MyPage> {
   }
 }
 
-class _buildListTile extends StatelessWidget {
+class buildListTile extends StatelessWidget {
   final IconData icon;
   final String text;
   final void Function()? onTap;
 
-  const _buildListTile({required this.icon, required this.text, this.onTap});
+  const buildListTile({
+    super.key,
+    required this.icon,
+    required this.text,
+    this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -205,8 +209,8 @@ class _buildListTile extends StatelessWidget {
       dense: true,
       visualDensity: const VisualDensity(vertical: -4),
       minVerticalPadding: 0,
-      contentPadding: EdgeInsets.symmetric(horizontal: 16.w),
-      leading: Icon(icon, color: MainColors.point, size: 28.h),
+      contentPadding: EdgeInsets.symmetric(horizontal: 16.wClamp, vertical: 8),
+      leading: Icon(icon, color: MainColors.point, size: 28.hClamp),
       trailing: Text(
         text,
         style: TextStyle(color: MainColors.mainDark, fontSize: 16.spClamp),

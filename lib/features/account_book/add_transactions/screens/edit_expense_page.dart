@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/screens/add_expense_page.dart';
@@ -13,6 +14,7 @@ import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
 import 'package:lets_grow_wallet/app/router/route_paths.dart';
 import 'package:lets_grow_wallet/utils/kst_time.dart';
+import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../model/transaction_model.dart';
 import '../../model/category_model.dart';
@@ -125,41 +127,39 @@ class _EditExpensePageState extends ConsumerState<EditExpensePage> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
+          scrolledUnderElevation: 0,
           backgroundColor: MainColors.mainLight,
           iconTheme: IconThemeData(color: Colors.white),
-          title: const Text(
+          title: Text(
             '지출 수정',
             style: TextStyle(
-              fontSize: 24,
+              fontSize: 24.spClamp,
               color: Colors.white,
               fontWeight: FontWeight.bold,
             ),
           ),
-
           centerTitle: true,
-
-          // automaticallyImplyLeading: false,
         ),
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: EdgeInsets.symmetric(horizontal: 16.wClamp),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 18),
+                SizedBox(height: 18.hClamp),
                 // 날짜 선택
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(
-                      width: 150,
+                      width: 150.wClamp,
                       child: DateSelector(
                         selectedDate: selectedDate,
                         onTap: () => _selectDate(context),
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    SizedBox(width: 12.wClamp),
                     // 제목 입력
                     Expanded(
                       child: TextField(
@@ -176,7 +176,7 @@ class _EditExpensePageState extends ConsumerState<EditExpensePage> {
                           isDense: true,
                           contentPadding: EdgeInsets.symmetric(
                             vertical: 10,
-                            horizontal: 12,
+                            horizontal: 12.wClamp,
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.zero,
@@ -199,7 +199,7 @@ class _EditExpensePageState extends ConsumerState<EditExpensePage> {
                   ],
                 ),
 
-                const SizedBox(height: 10),
+                SizedBox(height: 10.hClamp),
                 // 카테고리 선택
                 CategorySelector(
                   categories: categories,
@@ -210,7 +210,7 @@ class _EditExpensePageState extends ConsumerState<EditExpensePage> {
                     });
                   },
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: 8.hClamp),
                 // 결제수단 + 금액 입력
                 PaymentAmountRow(
                   selectedPayType: selectedPayType,
@@ -253,7 +253,7 @@ class _EditExpensePageState extends ConsumerState<EditExpensePage> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 18),
+                SizedBox(height: 18.hClamp),
                 SizedBox(
                   width: double.infinity,
                   height: 48,
@@ -326,7 +326,7 @@ class _EditExpensePageState extends ConsumerState<EditExpensePage> {
                     child: const Text("지출 수정"),
                   ),
                 ),
-                const SizedBox(height: 24),
+                SizedBox(height: 24.hClamp),
               ],
             ),
           ),

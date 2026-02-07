@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 
 //지출/수입 타이틀 버튼
@@ -26,7 +27,7 @@ class TitleButton extends StatelessWidget {
           style: TextStyle(
             color: textColor,
             fontWeight: FontWeight.bold,
-            fontSize: 18.spClamp,
+            fontSize: 18.sp,
           ),
         ),
       ),

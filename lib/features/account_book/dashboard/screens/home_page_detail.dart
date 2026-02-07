@@ -120,11 +120,18 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                         PopupMenuItem(
                           value: 'edit',
                           height: 32.hClamp,
-                          child: Text(
-                            '수정',
-                            style: TextStyle(
-                              color: MainColors.mainDark,
-                              fontSize: 14.spClamp,
+                          padding: EdgeInsets.symmetric(horizontal: 8.wClamp),
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: Center(
+                              child: Text(
+                                '수정',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: MainColors.mainDark,
+                                  fontSize: 14.spClamp,
+                                ),
+                              ),
                             ),
                           ),
                         ),
@@ -132,11 +139,18 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                         PopupMenuItem(
                           value: 'delete',
                           height: 32.hClamp,
-                          child: Text(
-                            '삭제',
-                            style: TextStyle(
-                              color: MainColors.mainDark,
-                              fontSize: 14.spClamp,
+                          padding: EdgeInsets.symmetric(horizontal: 8.wClamp),
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: Center(
+                              child: Text(
+                                '삭제',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: MainColors.mainDark,
+                                  fontSize: 14.spClamp,
+                                ),
+                              ),
                             ),
                           ),
                         ),

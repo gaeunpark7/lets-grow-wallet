@@ -4,6 +4,7 @@ import 'package:lets_grow_wallet/features/account_book/notifier/stats_notifier.d
 import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/month_picker_dialog.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:lets_grow_wallet/utils/kst_time.dart';
+import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 
 class MonthHeader extends ConsumerWidget {
   final ValueChanged<StatsKind> onKindChanged;
@@ -61,8 +62,8 @@ class MonthHeader extends ConsumerWidget {
           },
           child: Text(
             label,
-            style: const TextStyle(
-              fontSize: 18,
+            style: TextStyle(
+              fontSize: 18.spClamp,
               color: MainColors.mainDark,
               fontWeight: FontWeight.bold,
             ),

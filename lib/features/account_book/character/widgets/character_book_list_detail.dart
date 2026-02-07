@@ -16,8 +16,8 @@ class CharacterBookListDetail extends StatelessWidget {
   }) {
     return ClipOval(
       child: Container(
-        width: 70.wClamp,
-        height: 70.hClamp,
+        width: 70,
+        height: 70,
         color: MainColors.main,
         child: Center(
           child: isUnlocked

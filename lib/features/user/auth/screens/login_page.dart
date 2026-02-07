@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:lets_grow_wallet/app/router/route_paths.dart';
 import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
+import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LoginPage extends StatefulWidget {
@@ -67,46 +68,46 @@ class _LoginPageState extends State<LoginPage> {
         backgroundColor: Colors.white,
         body: Center(
           child: Padding(
-            padding: const EdgeInsets.all(18),
+            padding: EdgeInsets.all(18.wClamp),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image.asset(
                   'assets/icons/app_icon2.png',
                   color: MainColors.mainLight,
-                  width: 120,
-                  height: 130,
+                  width: 120.wClamp,
+                  height: 130.hClamp,
                 ),
 
-                SizedBox(height: 10),
-                const Text(
+                SizedBox(height: 10.hClamp),
+                Text(
                   "레츠고 가계부",
                   style: TextStyle(
                     color: MainColors.mainDark,
-                    fontSize: 30,
+                    fontSize: 30.spClamp,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: 30),
+                SizedBox(height: 30.hClamp),
                 LoginButton(
                   backcolor: Color(0xFF7da8ff),
                   text: "구글 계정으로 로그인",
                   onPressed: _signInWithGoogle,
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: 10.hClamp),
                 LoginButton(
                   backcolor: Color(0xFFf6e762),
                   text: "카카오톡 계정으로 로그인",
                   onPressed: _signInWithKakao,
                 ),
-                SizedBox(height: 5),
+                SizedBox(height: 5.hClamp),
                 GestureDetector(
                   onTap: () {
                     context.push(Routes.privacyPolicy);
                   },
                   child: Text(
                     "개인정보 처리방침",
-                    style: TextStyle(color: Colors.grey, fontSize: 12),
+                    style: TextStyle(color: Colors.grey, fontSize: 12.spClamp),
                   ),
                 ),
               ],
@@ -133,19 +134,21 @@ class LoginButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 55,
+      height: 55.hClamp,
       width: MediaQuery.of(context).size.width,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           backgroundColor: backcolor,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5.rClamp),
+          ),
           shadowColor: Colors.transparent,
         ),
         onPressed: onPressed,
         child: Text(
           text,
-          style: const TextStyle(
-            fontSize: 16,
+          style: TextStyle(
+            fontSize: 16.spClamp,
             color: Colors.white,
             fontWeight: FontWeight.bold,
           ),

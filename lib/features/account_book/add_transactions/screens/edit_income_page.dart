@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/screens/add_expense_page.dart';
@@ -13,6 +14,7 @@ import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
 import 'package:lets_grow_wallet/app/router/route_paths.dart';
 import 'package:lets_grow_wallet/utils/kst_time.dart';
+import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../model/transaction_model.dart';
 import '../../model/category_model.dart';
@@ -121,12 +123,13 @@ class _EditIncomePageState extends ConsumerState<EditIncomePage> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
+          scrolledUnderElevation: 0,
           backgroundColor: MainColors.mainLight,
           iconTheme: IconThemeData(color: Colors.white),
-          title: const Text(
+          title: Text(
             '수입 수정',
             style: TextStyle(
-              fontSize: 24,
+              fontSize: 24.sp,
               color: Colors.white,
               fontWeight: FontWeight.bold,
             ),
@@ -136,11 +139,11 @@ class _EditIncomePageState extends ConsumerState<EditIncomePage> {
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: EdgeInsets.symmetric(horizontal: 16.wClamp),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 18),
+                SizedBox(height: 18.hClamp),
                 // 날짜 선택
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -153,7 +156,7 @@ class _EditIncomePageState extends ConsumerState<EditIncomePage> {
                         onTap: () => _selectDate(context),
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    SizedBox(width: 12.wClamp),
                     // 제목 입력
                     Expanded(
                       child: TextField(
@@ -171,7 +174,7 @@ class _EditIncomePageState extends ConsumerState<EditIncomePage> {
                           isDense: true,
                           contentPadding: EdgeInsets.symmetric(
                             vertical: 10,
-                            horizontal: 12,
+                            horizontal: 12.wClamp,
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.zero,
@@ -193,7 +196,7 @@ class _EditIncomePageState extends ConsumerState<EditIncomePage> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 18),
+                SizedBox(height: 18.hClamp),
                 // 카테고리 선택
                 CategorySelector(
                   categories: categories,
@@ -204,7 +207,7 @@ class _EditIncomePageState extends ConsumerState<EditIncomePage> {
                     });
                   },
                 ),
-                const SizedBox(height: 18),
+                SizedBox(height: 18.hClamp),
                 // 결제수단 + 금액 입력
                 PaymentAmountRow(
                   selectedPayType: selectedPayType,
@@ -217,7 +220,7 @@ class _EditIncomePageState extends ConsumerState<EditIncomePage> {
                   formatAmount: formatAmount,
                 ),
 
-                const SizedBox(height: 24),
+                SizedBox(height: 24.hClamp),
                 TextField(
                   controller: memoController,
                   style: const TextStyle(color: MainColors.mainDark),
@@ -247,7 +250,7 @@ class _EditIncomePageState extends ConsumerState<EditIncomePage> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 18),
+                SizedBox(height: 18.hClamp),
                 SizedBox(
                   width: double.infinity,
                   height: 48,
@@ -320,7 +323,7 @@ class _EditIncomePageState extends ConsumerState<EditIncomePage> {
                     child: const Text("수입 수정"),
                   ),
                 ),
-                const SizedBox(height: 24),
+                SizedBox(height: 24.hClamp),
               ],
             ),
           ),

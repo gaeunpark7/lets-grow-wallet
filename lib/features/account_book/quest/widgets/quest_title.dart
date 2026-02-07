@@ -10,10 +10,10 @@ class QuestTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 45.h,
+      height: 45.hClamp,
       decoration: BoxDecoration(
         color: MainColors.main,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12.rClamp),
       ),
       child: Center(
         child: Text(
