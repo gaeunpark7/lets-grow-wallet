@@ -8,6 +8,7 @@ import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
 import 'package:lets_grow_wallet/features/account_book/notifier/user_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/services/admob_service.dart';
 import 'package:lets_grow_wallet/features/account_book/shop/widgets/shop_appbar_premium_dialog.dart';
+
 import 'package:lets_grow_wallet/features/user/widgets/my_page_error.dart';
 import 'package:lets_grow_wallet/features/user/widgets/my_page_userprofile.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
@@ -170,6 +171,15 @@ class _MyPageState extends ConsumerState<MyPage> {
                         //         },
                         // ),
                         // Divider(color: MainColors.mainDark, thickness: 0.5),
+                        // ElevatedButton(
+                        //   onPressed: () {
+                        //     showDialog(
+                        //       context: context,
+                        //       builder: (ctx) => MonthlyAllClearDialog(),
+                        //     );
+                        //   },
+                        //   child: Text('테스트 다이얼로그'),
+                        // ),
                       ],
                     );
                   },

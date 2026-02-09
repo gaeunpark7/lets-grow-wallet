@@ -71,7 +71,7 @@ class GoalService {
           .select('*')
           .eq('user_id', userId)
           .eq('month', month);
-      final List data = resp ?? [];
+      final List data = (resp as List?) ?? [];
       return data
           .map((e) => GoalModel.fromJson(Map<String, dynamic>.from(e)))
           .toList();

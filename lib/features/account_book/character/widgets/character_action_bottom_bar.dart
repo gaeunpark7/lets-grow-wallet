@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lets_grow_wallet/utils/character_interation_enum.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
+import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 
 class CharacterActionBottomBar extends StatefulWidget {
   final ValueChanged<InteractionType>? onInteraction;
@@ -15,6 +16,7 @@ class CharacterActionBottomBar extends StatefulWidget {
 class _CharacterActionBottomBarState extends State<CharacterActionBottomBar> {
   bool _showActions = false;
   OverlayEntry? _actionsOverlay;
+  final LayerLink _actionLink = LayerLink();
 
   @override
   void dispose() {
@@ -42,11 +44,24 @@ class _CharacterActionBottomBarState extends State<CharacterActionBottomBar> {
 
     _actionsOverlay = OverlayEntry(
       builder: (context) {
+        final mainButtonSize = 80.rClamp;
+        final buttonSize = 55.rClamp;
+
+        final gapX = 10.wClamp;
+        final gapY = 10.hClamp;
+
+        final outerDx = buttonSize + gapX; // 좌/우 끝 버튼
+        final innerDx = (buttonSize / 2) + (gapX / 2); // 위쪽 버튼
+        final lowDy = (buttonSize / 2) + gapY; // 아래쪽 버튼 높이
+        final highDy = buttonSize + (gapY * 2); // 위쪽 버튼 높이
+
+        final clusterWidth = (outerDx * 2) + buttonSize;
+        final clusterHeight = highDy + buttonSize;
+
         return Material(
           color: Colors.transparent,
           child: Stack(
             children: [
-              // 바깥을 누르면 닫기
               Positioned.fill(
                 child: GestureDetector(
                   behavior: HitTestBehavior.translucent,
@@ -54,37 +69,52 @@ class _CharacterActionBottomBarState extends State<CharacterActionBottomBar> {
                   child: const SizedBox.expand(),
                 ),
               ),
-
-              Positioned(
-                left: 90,
-                bottom: 70 + 10,
-                child: _actionButton(
-                  "먹이주기",
-                  () => widget.onInteraction?.call(InteractionType.feed),
+              CompositedTransformFollower(
+                link: _actionLink,
+                showWhenUnlinked: false,
+                offset: Offset(
+                  (mainButtonSize / 2) - (clusterWidth / 2),
+                  -(clusterHeight + 10.hClamp),
                 ),
-              ),
-              Positioned(
-                left: 145,
-                bottom: 70 + 50,
-                child: _actionButton(
-                  "놀아주기",
-                  () => widget.onInteraction?.call(InteractionType.play),
-                ),
-              ),
-              Positioned(
-                right: 145,
-                bottom: 70 + 50,
-                child: _actionButton(
-                  "쓰다듬기",
-                  () => widget.onInteraction?.call(InteractionType.pet),
-                ),
-              ),
-              Positioned(
-                right: 90,
-                bottom: 70 + 10,
-                child: _actionButton(
-                  "혼자두기",
-                  () => widget.onInteraction?.call(InteractionType.idle),
+                child: SizedBox(
+                  width: clusterWidth,
+                  height: clusterHeight,
+                  child: Stack(
+                    alignment: Alignment.bottomCenter,
+                    children: [
+                      Transform.translate(
+                        offset: Offset(-outerDx, -lowDy),
+                        child: _actionButton(
+                          "먹이주기",
+                          () =>
+                              widget.onInteraction?.call(InteractionType.feed),
+                        ),
+                      ),
+                      Transform.translate(
+                        offset: Offset(-innerDx, -highDy),
+                        child: _actionButton(
+                          "놀아주기",
+                          () =>
+                              widget.onInteraction?.call(InteractionType.play),
+                        ),
+                      ),
+                      Transform.translate(
+                        offset: Offset(innerDx, -highDy),
+                        child: _actionButton(
+                          "쓰다듬기",
+                          () => widget.onInteraction?.call(InteractionType.pet),
+                        ),
+                      ),
+                      Transform.translate(
+                        offset: Offset(outerDx, -lowDy),
+                        child: _actionButton(
+                          "혼자두기",
+                          () =>
+                              widget.onInteraction?.call(InteractionType.idle),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -108,27 +138,35 @@ class _CharacterActionBottomBarState extends State<CharacterActionBottomBar> {
 
   @override
   Widget build(BuildContext context) {
+    final mainButtonSize = 80.rClamp;
     return Stack(
       clipBehavior: Clip.none,
       alignment: Alignment.bottomCenter,
       children: [
         // 바텀
-        Container(height: 70, color: MainColors.mainLight),
+        Container(height: 70.hClamp, color: MainColors.mainLight),
 
         // 메인 버튼
         Positioned(
-          bottom: 30,
+          bottom: 30.hClamp,
           child: GestureDetector(
             onTap: _toggleActions,
-            child: Container(
-              width: 80,
-              height: 80,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: MainColors.main,
-              ),
-              child: const Center(
-                child: Icon(Icons.pets, color: MainColors.mainLight, size: 40),
+            child: CompositedTransformTarget(
+              link: _actionLink,
+              child: Container(
+                width: mainButtonSize,
+                height: mainButtonSize,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: MainColors.main,
+                ),
+                child: const Center(
+                  child: Icon(
+                    Icons.pets,
+                    color: MainColors.mainLight,
+                    size: 40,
+                  ),
+                ),
               ),
             ),
           ),
@@ -138,14 +176,15 @@ class _CharacterActionBottomBarState extends State<CharacterActionBottomBar> {
   }
 
   Widget _actionButton(String text, VoidCallback onTap) {
+    final size = 55.rClamp;
     return GestureDetector(
       onTap: () {
         onTap();
         _hideActions();
       },
       child: Container(
-        width: 55,
-        height: 55,
+        width: size,
+        height: size,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           border: Border.all(color: MainColors.mainLight, width: 1.2),
@@ -153,7 +192,7 @@ class _CharacterActionBottomBarState extends State<CharacterActionBottomBar> {
         child: Center(
           child: Text(
             text,
-            style: const TextStyle(fontSize: 12, color: MainColors.mainDark),
+            style: TextStyle(fontSize: 12.spClamp, color: MainColors.mainDark),
           ),
         ),
       ),

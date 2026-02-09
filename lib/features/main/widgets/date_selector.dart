@@ -21,8 +21,6 @@ class DateSelector extends StatelessWidget {
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
         decoration: BoxDecoration(
-          // color: Colors.grey[100],
-          // borderRadius: BorderRadius.circular(8),
           border: Border.all(color: MainColors.mainDark, width: 0.5),
         ),
         child: Center(

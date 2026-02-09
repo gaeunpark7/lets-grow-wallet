@@ -91,218 +91,215 @@ class _homePageState extends ConsumerState<HomePage> {
       });
     });
 
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(30.hClamp),
-          child: AppBar(
-            scrolledUnderElevation: 0,
-            automaticallyImplyLeading: false,
-            backgroundColor: MainColors.mainLight,
-            titleSpacing: 0,
-          ),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(30.hClamp),
+        child: AppBar(
+          scrolledUnderElevation: 0,
+          automaticallyImplyLeading: false,
+          backgroundColor: MainColors.mainLight,
+          titleSpacing: 0,
         ),
-        //메인 목표
-        body: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 15.wClamp),
-          child: Column(
-            children: [
-              SizedBox(height: 10.hClamp),
-              MonthlyHeader(month: selectedMonth),
-              //년도, 월
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  InkWell(
-                    onTap: _pickMonth,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        vertical: 6.hClamp,
-                        horizontal: 4.wClamp,
-                      ),
-                      child: Text(
-                        "$year년  $month월",
-                        style: TextStyle(
-                          fontSize: 15.spClamp,
-                          color: MainColors.mainDark,
-                          fontWeight: FontWeight.bold,
-                        ),
+      ),
+      //메인 목표
+      body: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 15.wClamp),
+        child: Column(
+          children: [
+            SizedBox(height: 10.hClamp),
+            MonthlyHeader(month: selectedMonth),
+            //년도, 월
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                InkWell(
+                  onTap: _pickMonth,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: 6.hClamp,
+                      horizontal: 4.wClamp,
+                    ),
+                    child: Text(
+                      "$year년  $month월",
+                      style: TextStyle(
+                        fontSize: 15.spClamp,
+                        color: MainColors.mainDark,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ),
-                ],
-              ),
-              // 고정된 테이블 헤더
-              TableHeader(),
-              //테이블 리스트
-              Expanded(
-                child: ref
-                    .watch(transactionNotifierProvider)
-                    .when(
-                      data: (transactions) => TableList(
-                        key: ValueKey('table-$year-$month'),
-                        transactions: transactions,
-                      ),
-                      loading: () =>
-                          const Center(child: CircularProgressIndicator()),
-                      error: (err, stack) => Center(child: Text('오류: $err')),
-                    ),
-              ),
-              //여백
-              Container(
-                height: 5.hClamp,
-                decoration: BoxDecoration(
-                  border: Border(
-                    top: BorderSide(color: MainColors.point, width: 1),
                   ),
                 ),
+              ],
+            ),
+            // 고정된 테이블 헤더
+            TableHeader(),
+            //테이블 리스트
+            Expanded(
+              child: ref
+                  .watch(transactionNotifierProvider)
+                  .when(
+                    data: (transactions) => TableList(
+                      key: ValueKey('table-$year-$month'),
+                      transactions: transactions,
+                    ),
+                    loading: () =>
+                        const Center(child: CircularProgressIndicator()),
+                    error: (err, stack) => Center(child: Text('오류: $err')),
+                  ),
+            ),
+            //여백
+            Container(
+              height: 5.hClamp,
+              decoration: BoxDecoration(
+                border: Border(
+                  top: BorderSide(color: MainColors.point, width: 1),
+                ),
               ),
-              //결과
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: BuildTotal(
-                      text: "카드",
-                      textColor: MainColors.mainDark,
-                      topBorder: 1,
-                      rightBorder: 1,
-                    ),
+            ),
+            //결과
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: BuildTotal(
+                    text: "카드",
+                    textColor: MainColors.mainDark,
+                    topBorder: 1,
+                    rightBorder: 1,
                   ),
-                  Expanded(
-                    flex: 2,
-                    child: StatFutureBuilder(
-                      future: _statFuture,
-                      valueBuilder: (stat) =>
-                          NumberFormat('#,###').format(stat.cardBalance),
-                      textColor: MainColors.mainDark,
-                      topBorder: 1,
-                      rightBorder: 1,
-                    ),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: StatFutureBuilder(
+                    future: _statFuture,
+                    valueBuilder: (stat) =>
+                        NumberFormat('#,###').format(stat.cardBalance),
+                    textColor: MainColors.mainDark,
+                    topBorder: 1,
+                    rightBorder: 1,
                   ),
-                  Expanded(
-                    flex: 1,
-                    child: BuildTotal(
-                      text: "현금",
-                      textColor: MainColors.mainDark,
-                      topBorder: 1,
-                      rightBorder: 1,
-                    ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: BuildTotal(
+                    text: "현금",
+                    textColor: MainColors.mainDark,
+                    topBorder: 1,
+                    rightBorder: 1,
                   ),
-                  Expanded(
-                    flex: 2,
-                    child: StatFutureBuilder(
-                      future: _statFuture,
-                      valueBuilder: (stat) =>
-                          NumberFormat('#,###').format(stat.cashBalance),
-                      textColor: MainColors.mainDark,
-                      topBorder: 1,
-                    ),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: StatFutureBuilder(
+                    future: _statFuture,
+                    valueBuilder: (stat) =>
+                        NumberFormat('#,###').format(stat.cashBalance),
+                    textColor: MainColors.mainDark,
+                    topBorder: 1,
                   ),
-                ],
-              ),
-              // 결과
-              FutureBuilder<MonthlyStat?>(
-                future: _statFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    // 에러 상태
-                    return const Padding(
-                      padding: EdgeInsets.all(16.0),
-                      child: Text("데이터를 불러오는 중 오류가 발생했습니다."),
-                    );
-                  }
-
-                  if (snapshot.connectionState == ConnectionState.waiting ||
-                      snapshot.connectionState == ConnectionState.active) {
-                    return const Padding(
-                      padding: EdgeInsets.all(16.0),
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-
-                  final stat = snapshot.data;
-                  final totalIncome = stat?.totalIncome ?? 0;
-                  final totalExpense = stat?.totalExpense ?? 0;
-
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: BuildTotal(
-                          text: "수익",
-                          textColor: MainColors.income,
-                          rightBorder: 1,
-                        ),
-                      ),
-
-                      Expanded(
-                        flex: 2,
-                        child: BuildTotal(
-                          text: "+${NumberFormat('#,###').format(totalIncome)}",
-                          textColor: MainColors.income,
-                          rightBorder: 1,
-                        ),
-                      ),
-                      Expanded(
-                        flex: 1,
-                        child: BuildTotal(
-                          text: "지출",
-                          textColor: MainColors.expense,
-                          rightBorder: 1,
-                        ),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: BuildTotal(
-                          text:
-                              "-${NumberFormat('#,###').format(totalExpense)}",
-                          textColor: MainColors.expense,
-                        ),
-                      ),
-                    ],
+                ),
+              ],
+            ),
+            // 결과
+            FutureBuilder<MonthlyStat?>(
+              future: _statFuture,
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  // 에러 상태
+                  return const Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Text("데이터를 불러오는 중 오류가 발생했습니다."),
                   );
-                },
-              ),
+                }
 
-              SizedBox(height: 5.hClamp),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: BuildTotal(
-                      text: "잔액",
-                      textColor: const Color.fromARGB(255, 119, 98, 169),
-                      topBorder: 1,
-                      rightBorder: 1,
+                if (snapshot.connectionState == ConnectionState.waiting ||
+                    snapshot.connectionState == ConnectionState.active) {
+                  return const Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: CircularProgressIndicator(),
+                  );
+                }
+
+                final stat = snapshot.data;
+                final totalIncome = stat?.totalIncome ?? 0;
+                final totalExpense = stat?.totalExpense ?? 0;
+
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: BuildTotal(
+                        text: "수익",
+                        textColor: MainColors.income,
+                        rightBorder: 1,
+                      ),
                     ),
-                  ),
-                  Expanded(
-                    flex: 5,
-                    child: StatFutureBuilder(
-                      future: _statFuture,
-                      valueBuilder: (stat) {
-                        final totalSum = stat.totalIncome - stat.totalExpense;
-                        return NumberFormat('#,###').format(totalSum);
-                      },
-                      textColor: const Color.fromARGB(255, 119, 98, 169),
-                      topBorder: 1,
+
+                    Expanded(
+                      flex: 2,
+                      child: BuildTotal(
+                        text: "+${NumberFormat('#,###').format(totalIncome)}",
+                        textColor: MainColors.income,
+                        rightBorder: 1,
+                      ),
                     ),
+                    Expanded(
+                      flex: 1,
+                      child: BuildTotal(
+                        text: "지출",
+                        textColor: MainColors.expense,
+                        rightBorder: 1,
+                      ),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: BuildTotal(
+                        text: "-${NumberFormat('#,###').format(totalExpense)}",
+                        textColor: MainColors.expense,
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+
+            SizedBox(height: 5.hClamp),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: BuildTotal(
+                    text: "잔액",
+                    textColor: const Color.fromARGB(255, 119, 98, 169),
+                    topBorder: 1,
+                    rightBorder: 1,
                   ),
-                ],
-              ),
-              SizedBox(height: 50.hClamp),
-            ],
-          ),
+                ),
+                Expanded(
+                  flex: 5,
+                  child: StatFutureBuilder(
+                    future: _statFuture,
+                    valueBuilder: (stat) {
+                      final totalSum = stat.totalIncome - stat.totalExpense;
+                      return NumberFormat('#,###').format(totalSum);
+                    },
+                    textColor: const Color.fromARGB(255, 119, 98, 169),
+                    topBorder: 1,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 50.hClamp),
+          ],
         ),
-
-        // fab버튼
-        floatingActionButton: FloatingMenuButton(),
       ),
+
+      // fab버튼
+      floatingActionButton: FloatingMenuButton(),
     );
   }
 }

@@ -3,8 +3,8 @@ import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 
 class DeleteDialog extends StatelessWidget {
-  VoidCallback onTap;
-  DeleteDialog({super.key, required this.onTap});
+  final VoidCallback onTap;
+  const DeleteDialog({super.key, required this.onTap});
 
   @override
   Widget build(BuildContext context) {

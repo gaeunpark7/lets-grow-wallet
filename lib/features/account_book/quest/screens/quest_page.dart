@@ -2,17 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
 import 'package:lets_grow_wallet/features/account_book/model/daily_quest_model.dart';
-import 'package:lets_grow_wallet/features/account_book/model/goal_model.dart';
 import 'package:lets_grow_wallet/features/account_book/quest/widgets/quest_list.dart';
 import 'package:lets_grow_wallet/features/account_book/quest/widgets/quest_star.dart';
 import 'package:lets_grow_wallet/features/account_book/quest/widgets/quest_title.dart';
 import 'package:lets_grow_wallet/features/account_book/services/admob_service.dart';
 import 'package:lets_grow_wallet/features/account_book/services/daily_quest_service.dart';
-import 'package:lets_grow_wallet/features/account_book/services/goal_service.dart';
 import 'package:lets_grow_wallet/features/account_book/shop/widgets/shop_appbar.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class QuestPage extends StatefulWidget {
   const QuestPage({super.key});
@@ -22,9 +19,6 @@ class QuestPage extends StatefulWidget {
 }
 
 class _QuestPageState extends State<QuestPage> {
-  final GoalService _goalService = GoalService(Supabase.instance.client);
-  final List<GoalModel> _monthlyGoals = [];
-  final bool _loadingMonthly = true;
   BannerAd? _bannerAd;
   final DailyQuestService _questService = DailyQuestService();
   List<DailyQuest> _todayQuests = [];

@@ -81,9 +81,9 @@ class ShopAppbarPremiumDialog extends StatelessWidget {
 }
 
 class _buildTile extends StatelessWidget {
-  String title;
-  String subtitle;
-  _buildTile({super.key, required this.title, required this.subtitle});
+  final String title;
+  final String subtitle;
+  const _buildTile({required this.title, required this.subtitle});
 
   @override
   Widget build(BuildContext context) {

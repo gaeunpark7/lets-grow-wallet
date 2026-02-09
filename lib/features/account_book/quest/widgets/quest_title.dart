@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 
 class QuestTitle extends StatelessWidget {
-  String title;
-  QuestTitle({super.key, required this.title});
+  final String title;
+  const QuestTitle({super.key, required this.title});
 
   @override
   Widget build(BuildContext context) {

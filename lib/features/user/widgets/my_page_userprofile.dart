@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
+import 'package:lets_grow_wallet/features/account_book/notifier/active_character_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/notifier/user_notifier.dart';
 import 'package:lets_grow_wallet/features/user/model/user_profile_model.dart';
+import 'package:lets_grow_wallet/utils/character_interation_enum.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:lets_grow_wallet/utils/friendly_error_message.dart';
 import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
@@ -21,6 +23,22 @@ class MyPageUserProfilePage extends ConsumerStatefulWidget {
 class _MyPageUserProfileState extends ConsumerState<MyPageUserProfilePage> {
   final nicknameController = TextEditingController();
   final formKey = GlobalKey<FormState>();
+
+  Widget _buildProfileAvatarContainer({required Widget child}) {
+    final size = 80.rClamp;
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.white),
+      child: Center(child: child),
+    );
+  }
+
+  Widget _buildProfileAvatarFallbackIcon() {
+    return _buildProfileAvatarContainer(
+      child: Icon(Icons.person, size: 52.rClamp, color: MainColors.mainLight),
+    );
+  }
 
   @override
   void dispose() {
@@ -45,6 +63,8 @@ class _MyPageUserProfileState extends ConsumerState<MyPageUserProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    final activeCharacterAsync = ref.watch(activeCharacterNotifierProvider);
+
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 16.wClamp, vertical: 16.hClamp),
       padding: EdgeInsets.all(16.h),
@@ -73,15 +93,71 @@ class _MyPageUserProfileState extends ConsumerState<MyPageUserProfilePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  //프로필 이미
-                  CircleAvatar(
-                    radius: 40.rClamp,
-                    backgroundColor: MainColors.mainLight,
-                    child: Icon(
-                      Icons.person,
-                      size: 60.hClamp,
-                      color: Colors.white,
+                  activeCharacterAsync.when(
+                    loading: () => _buildProfileAvatarContainer(
+                      child: SizedBox(
+                        width: 20.rClamp,
+                        height: 20.rClamp,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: MainColors.mainLight,
+                        ),
+                      ),
                     ),
+                    error: (_, __) => _buildProfileAvatarFallbackIcon(),
+                    data: (activeCharacter) {
+                      final imageUrl =
+                          activeCharacter?.imageUrlForEmotion(Emotion.basic) ??
+                          '';
+
+                      final isBanHam =
+                          (activeCharacter?.characterName.trim() ?? '') == '반햄';
+                      final shouldShift =
+                          isBanHam && (activeCharacter?.stage != Stage.egg);
+
+                      if (imageUrl.isEmpty)
+                        return _buildProfileAvatarFallbackIcon();
+
+                      final image = Image.network(
+                        imageUrl,
+                        width: 80.rClamp,
+                        height: 80.rClamp,
+                        fit: BoxFit.contain,
+                        gaplessPlayback: true,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Icon(
+                            Icons.person,
+                            size: 52.rClamp,
+                            color: MainColors.mainLight,
+                          );
+                        },
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return SizedBox(
+                            width: 20.rClamp,
+                            height: 20.rClamp,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: MainColors.mainLight,
+                            ),
+                          );
+                        },
+                      );
+
+                      return _buildProfileAvatarContainer(
+                        child: ClipOval(
+                          child: Padding(
+                            padding: EdgeInsets.all(6.rClamp),
+                            child: shouldShift
+                                ? Transform.translate(
+                                    offset: Offset(-2.wClamp, 0),
+                                    child: image,
+                                  )
+                                : image,
+                          ),
+                        ),
+                      );
+                    },
                   ),
                   SizedBox(width: 15.wClamp),
                   Expanded(
@@ -92,7 +168,6 @@ class _MyPageUserProfileState extends ConsumerState<MyPageUserProfilePage> {
                           widget.userProfile.nickname,
                           style: TextStyle(
                             fontSize: 22.spClamp,
-                            // fontWeight: FontWeight.bold,
                             color: MainColors.mainDark,
                           ),
                         ),
@@ -152,11 +227,11 @@ class _MyPageUserProfileState extends ConsumerState<MyPageUserProfilePage> {
                 SizedBox(height: 16.hClamp),
                 TextFormField(
                   controller: nicknameController,
-                  style: TextStyle(
-                    color: const Color.fromARGB(255, 70, 81, 100),
+                  style: const TextStyle(
+                    color: Color.fromARGB(255, 70, 81, 100),
                   ),
                   decoration: InputDecoration(
-                    border: OutlineInputBorder(
+                    border: const OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.grey, width: 0.1),
                     ),
                     hintText: "새로운 닉네임을 입력하세요.",
@@ -164,7 +239,7 @@ class _MyPageUserProfileState extends ConsumerState<MyPageUserProfilePage> {
                       color: MainColors.mainDark.withOpacity(0.5),
                     ),
                     filled: true,
-                    fillColor: Color.fromARGB(255, 251, 251, 251),
+                    fillColor: const Color.fromARGB(255, 251, 251, 251),
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(
                         color: MainColors.mainDark,

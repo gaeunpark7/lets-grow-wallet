@@ -1,4 +1,3 @@
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
@@ -23,11 +22,6 @@ class CategoryStatList extends StatelessWidget {
     Color(0xFFFFE4B5),
     Color.fromARGB(255, 255, 238, 238),
   ];
-
-  Color _colorFor(String id) {
-    final h = id.codeUnits.fold<int>(0, (p, c) => p + c);
-    return _palette[h % _palette.length];
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -114,14 +108,5 @@ class CategoryStatList extends StatelessWidget {
         },
       ),
     );
-  }
-
-  // 카테고리 이모지
-  String _emojiForCategory(String name) {
-    if (name.contains("카페")) return "☕";
-    if (name.contains("교육")) return "📚";
-    if (name.contains("문화")) return "🖼️";
-    // 기본값
-    return "💸";
   }
 }

@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 
 class ShopThemeDetail extends StatefulWidget {
-  String image;
-  String name;
-  String price;
-  String description;
-  ShopThemeDetail({
+  final String image;
+  final String name;
+  final String price;
+  final String description;
+  const ShopThemeDetail({
     super.key,
     required this.image,
     required this.name,

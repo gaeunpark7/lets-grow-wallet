@@ -36,7 +36,10 @@ class GoalsDialogAmountRow extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(5),
             ),
-            fixedSize: Size(MediaQuery.of(context).size.width * 0.19, 45),
+            fixedSize: Size(
+              MediaQuery.of(context).size.width * 0.20,
+              45.hClamp,
+            ),
           ),
           onPressed: enabled ? onPressed : null,
           child: Text(

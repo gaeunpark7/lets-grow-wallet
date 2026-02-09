@@ -123,7 +123,6 @@ class _CellWidget extends StatelessWidget {
   final MainAxisAlignment alignment;
 
   const _CellWidget({
-    super.key,
     required this.text,
     this.icon,
     this.alignment = MainAxisAlignment.center,
@@ -169,7 +168,7 @@ class _CellWidget extends StatelessWidget {
 class _PaymentCellWidget extends StatelessWidget {
   final IconData? icon;
 
-  const _PaymentCellWidget({super.key, this.icon});
+  const _PaymentCellWidget({this.icon});
 
   @override
   Widget build(BuildContext context) {

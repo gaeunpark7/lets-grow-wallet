@@ -17,8 +17,6 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
   final TextEditingController _nicknameController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  static const _mainColor = Color.fromARGB(255, 201, 138, 223);
-
   @override
   void dispose() {
     _nicknameController.dispose();

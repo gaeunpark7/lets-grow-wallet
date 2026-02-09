@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lets_grow_wallet/app/router/route_paths.dart';
 import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
-import 'package:lets_grow_wallet/features/account_book/services/admob_service.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:lets_grow_wallet/utils/friendly_error_message.dart';
 import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
@@ -17,26 +15,14 @@ class AuthGatePage extends StatefulWidget {
 }
 
 class _AuthGatePageState extends State<AuthGatePage> {
-  BannerAd? _bannerAd;
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _createBannerAd();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkProfile();
     });
-  }
-
-  // 광고 배너
-  void _createBannerAd() {
-    _bannerAd = BannerAd(
-      adUnitId: AdmobService.BannerAdUnitId!,
-      request: const AdRequest(),
-      size: AdSize.fullBanner,
-      listener: AdmobService.bannerAdListener,
-    )..load();
   }
 
   //프로필 확인

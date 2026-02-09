@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lets_grow_wallet/features/account_book/notifier/stats_notifier.dart';
@@ -12,13 +10,15 @@ class StatsExpenseView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final month = ref.watch(selectedMonthProvider);
+    ref.watch(selectedMonthProvider);
     final asyncValue = ref.watch(monthlyCategoryStatsNotifierProvider);
-    final error = FriendlyErrorMessage.resolve(e);
 
     return asyncValue.when(
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, st) => Center(child: Text(error.message)),
+      error: (e, st) {
+        final error = FriendlyErrorMessage.resolve(e);
+        return Center(child: Text(error.message));
+      },
       data: (list) {
         final data = pickAmounts(list, StatsKind.expense);
         return Container(
@@ -27,7 +27,7 @@ class StatsExpenseView extends ConsumerWidget {
             child: Column(
               children: [
                 CategoryChartWidget(data: data),
-                Divider(),
+                const Divider(),
                 CategoryStatList(data: data),
               ],
             ),
