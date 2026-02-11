@@ -147,7 +147,6 @@ class _EditIncomePageState extends ConsumerState<EditIncomePage> {
                 // 날짜 선택
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
-
                   children: [
                     SizedBox(
                       width: 150,
@@ -196,7 +195,7 @@ class _EditIncomePageState extends ConsumerState<EditIncomePage> {
                     ),
                   ],
                 ),
-                SizedBox(height: 18.hClamp),
+                SizedBox(height: 10.hClamp),
                 // 카테고리 선택
                 CategorySelector(
                   categories: categories,
@@ -207,7 +206,7 @@ class _EditIncomePageState extends ConsumerState<EditIncomePage> {
                     });
                   },
                 ),
-                SizedBox(height: 18.hClamp),
+                // SizedBox(height: 18.hClamp),
                 // 결제수단 + 금액 입력
                 PaymentAmountRow(
                   selectedPayType: selectedPayType,
@@ -238,7 +237,7 @@ class _EditIncomePageState extends ConsumerState<EditIncomePage> {
                       borderRadius: BorderRadius.zero,
                       borderSide: BorderSide(
                         color: MainColors.mainDark,
-                        width: 1,
+                        width: 0.5,
                       ),
                     ),
                     focusedBorder: OutlineInputBorder(

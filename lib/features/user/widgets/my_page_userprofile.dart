@@ -7,8 +7,8 @@ import 'package:lets_grow_wallet/features/account_book/notifier/user_notifier.da
 import 'package:lets_grow_wallet/features/user/model/user_profile_model.dart';
 import 'package:lets_grow_wallet/utils/character_interation_enum.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
-import 'package:lets_grow_wallet/utils/friendly_error_message.dart';
 import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MyPageUserProfilePage extends ConsumerStatefulWidget {
   const MyPageUserProfilePage({super.key, required this.userProfile});
@@ -52,11 +52,27 @@ class _MyPageUserProfileState extends ConsumerState<MyPageUserProfilePage> {
           .read(userProfileNotifierProvider.notifier)
           .updateNickname(nicknameController.text);
       if (!mounted) return;
-      Navigator.of(dialogContext).pop();
+      // 다이얼로그가 사용자가 먼저 닫은 경우 dialogContext는 비활성화(deactivated)될 수 있음
+      if (dialogContext.mounted && Navigator.of(dialogContext).canPop()) {
+        Navigator.of(dialogContext).pop();
+      }
       showAppSnackBar('닉네임이 변경되었습니다.');
+    } on PostgrestException catch (e) {
+      if (!mounted) return;
+
+      final parts = <String>[];
+      if (e.message.isNotEmpty) parts.add(e.message);
+      final details = e.details?.toString().trim();
+      if (details != null && details.isNotEmpty) parts.add(details);
+      final hint = e.hint?.toString().trim();
+      if (hint != null && hint.isNotEmpty) parts.add(hint);
+
+      // Supabase/DB에서 내려준 문구 최대한 그대로 표시
+      showAppSnackBar(parts.isEmpty ? e.toString() : parts.join('\n'));
+      print('닉네임 저장 오류(Postgrest): ${parts.join(' | ')}');
     } catch (e) {
       if (!mounted) return;
-      showAppSnackBar(FriendlyErrorMessage.of(e));
+      showAppSnackBar('닉네임 저장 오류가 발생했습니다.');
       print('닉네임 저장 오류: $e');
     }
   }
@@ -256,7 +272,7 @@ class _MyPageUserProfileState extends ConsumerState<MyPageUserProfilePage> {
                     } else if (value.length > 7) {
                       return "닉네임은 7자 이하이어야 합니다.";
                     } else if (!RegExp(r'^[a-zA-Z0-9가-힣]+$').hasMatch(value)) {
-                      return "닉네임은 한글, 영어, 숫자만 사용할 수 있습니다.";
+                      return "닉네임은 한글, 영어, 숫자만 가능합니다.";
                     }
 
                     return null;

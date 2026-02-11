@@ -28,14 +28,17 @@ class ShopItemGridview extends StatelessWidget {
           border: Border.all(color: MainColors.mainLight),
         ),
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 12.wClamp),
+          padding: EdgeInsets.symmetric(
+            horizontal: 12.wClamp,
+            vertical: 12.hClamp,
+          ),
           //그리드 뷰
           child: GridView.builder(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3,
               crossAxisSpacing: 10.wClamp,
               mainAxisSpacing: 10.hClamp,
-              childAspectRatio: 0.65,
+              childAspectRatio: 0.58,
             ),
             itemCount: filteredItems.length,
             itemBuilder: (context, index) {
@@ -46,7 +49,7 @@ class ShopItemGridview extends StatelessWidget {
                 onTap: () => onItemSelected(item),
                 child: LayoutBuilder(
                   builder: (context, constraints) {
-                    final imageBoxHeight = constraints.maxHeight * 0.72;
+                    final imageBoxHeight = constraints.maxHeight * 0.86;
                     return Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -97,7 +100,7 @@ class ShopItemGridview extends StatelessWidget {
                             ),
                           ),
                         ),
-                        SizedBox(height: 4.hClamp),
+                        SizedBox(height: 2.hClamp),
                         Text(
                           item.name,
                           maxLines: 1,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lets_grow_wallet/features/account_book/model/category_model.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
@@ -25,7 +26,7 @@ class CategorySelector extends StatelessWidget {
         crossAxisCount: 4,
         // mainAxisSpacing: 12,
         crossAxisSpacing: 12,
-        // childAspectRatio: 0.85,
+        childAspectRatio: 0.85,
       ),
       itemBuilder: (context, idx) {
         final category = categories[idx];
@@ -59,7 +60,7 @@ class CategorySelector extends StatelessWidget {
                   color: MainColors.mainDark,
                   // color: isSelected ? MainColors.mainDark : Colors.black87,
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                  fontSize: 13,
+                  fontSize: 13.spClamp,
                 ),
                 textAlign: TextAlign.center,
               ),

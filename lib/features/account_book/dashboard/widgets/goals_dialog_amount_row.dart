@@ -37,7 +37,7 @@ class GoalsDialogAmountRow extends StatelessWidget {
               borderRadius: BorderRadius.circular(5),
             ),
             fixedSize: Size(
-              MediaQuery.of(context).size.width * 0.20,
+              MediaQuery.of(context).size.width * 0.21,
               45.hClamp,
             ),
           ),
@@ -62,7 +62,10 @@ class GoalsDialogAmountRow extends StatelessWidget {
               ],
               decoration: InputDecoration(
                 hintText: hintText,
-                hintStyle: TextStyle(color: MainColors.mainLight),
+                hintStyle: TextStyle(
+                  color: MainColors.mainLight,
+                  fontSize: 14.spClamp,
+                ),
                 border: const OutlineInputBorder(
                   borderRadius: BorderRadius.zero,
                 ),

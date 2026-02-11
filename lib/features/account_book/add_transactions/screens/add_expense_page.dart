@@ -148,13 +148,13 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
                     ),
                   ],
                 ),
-                SizedBox(height: 18.hClamp),
+                SizedBox(height: 20.hClamp),
                 // 날짜 선택
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(
-                      width: 150.wClamp,
+                      width: 150,
                       child: DateSelector(
                         selectedDate: selectedDate,
                         onTap: () => _selectDate(context),
@@ -210,7 +210,7 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
                     });
                   },
                 ),
-                SizedBox(height: 10.hClamp),
+                // SizedBox(height: 10.hClamp),
                 // 결제수단 + 금액 입력
                 PaymentAmountRow(
                   selectedPayType: selectedPayType,

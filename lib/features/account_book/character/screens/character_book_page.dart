@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -18,7 +16,6 @@ class CharacterBookPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final asyncState = ref.watch(characterBookNotifierProvider);
-    final error = FriendlyErrorMessage.resolve(e);
 
     return SafeArea(
       child: Scaffold(
@@ -52,7 +49,10 @@ class CharacterBookPage extends ConsumerWidget {
                         color: MainColors.mainLight,
                       ),
                     ),
-                    error: (e, _) => Center(child: Text(error.message)),
+                    error: (e, _) {
+                      final error = FriendlyErrorMessage.resolve(e);
+                      return Center(child: Text(error.message));
+                    },
                     data: (state) {
                       final items = state.items;
                       final selected = state.selectedItem;

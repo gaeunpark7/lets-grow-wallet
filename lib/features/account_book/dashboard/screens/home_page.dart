@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:lets_grow_wallet/features/account_book/notifier/month_selection_notifier.dart';
@@ -94,7 +95,7 @@ class _homePageState extends ConsumerState<HomePage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(30.hClamp),
+        preferredSize: Size.fromHeight(6.hClamp),
         child: AppBar(
           scrolledUnderElevation: 0,
           automaticallyImplyLeading: false,

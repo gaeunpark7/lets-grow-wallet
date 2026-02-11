@@ -1,4 +1,4 @@
-package com.example.lets_grow_wallet
+package com.ag.letsgrowwallet
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -8,13 +8,13 @@ import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
 import 'package:lets_grow_wallet/features/account_book/notifier/user_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/services/admob_service.dart';
 import 'package:lets_grow_wallet/features/account_book/shop/widgets/shop_appbar_premium_dialog.dart';
-
 import 'package:lets_grow_wallet/features/user/widgets/my_page_error.dart';
 import 'package:lets_grow_wallet/features/user/widgets/my_page_userprofile.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:lets_grow_wallet/utils/friendly_error_message.dart';
 import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MyPage extends ConsumerStatefulWidget {
   const MyPage({super.key});
@@ -27,6 +27,8 @@ class _MyPageState extends ConsumerState<MyPage> {
   BannerAd? _bannerAd;
   bool _isLoggingOut = false;
   bool _redirectedToLogin = false;
+
+  static final Uri _feedbackFormUri = Uri.parse('https://naver.me/Fz8de8YM');
 
   @override
   void initState() {
@@ -69,6 +71,21 @@ class _MyPageState extends ConsumerState<MyPage> {
     }
   }
 
+  Future<void> _openFeedbackForm() async {
+    try {
+      final ok = await launchUrl(
+        _feedbackFormUri,
+        mode: LaunchMode.externalApplication,
+      );
+      if (!ok) {
+        showAppSnackBar('링크를 열 수 없습니다.');
+      }
+    } catch (e) {
+      showAppSnackBar('링크를 여는 중 오류가 발생했습니다.');
+      debugPrint('오류문의 폼 열기 실패: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final userProfileAsync = ref.watch(userProfileNotifierProvider);
@@ -85,117 +102,116 @@ class _MyPageState extends ConsumerState<MyPage> {
       });
     });
 
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(30.hClamp),
-          child: AppBar(
-            backgroundColor: MainColors.mainLight,
-            automaticallyImplyLeading: false,
-          ),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(6.hClamp),
+        child: AppBar(
+          backgroundColor: MainColors.mainLight,
+          automaticallyImplyLeading: false,
         ),
-        body: Column(
-          children: [
-            if (_isLoggingOut) LinearProgressIndicator(minHeight: 2.hClamp),
-            Expanded(
-              child: AbsorbPointer(
-                absorbing: _isLoggingOut,
-                child: userProfileAsync.when(
-                  loading: () => Center(child: CircularProgressIndicator()),
-                  error: (e, _) {
-                    //로그아웃 중 > 토근 완료로 인한 에러 발생시 에러뷰 대신
-                    if (_isLoggingOut || _redirectedToLogin) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-                    return MyPageErrorView(
-                      message: FriendlyErrorMessage.of(e),
-                      onRetry: () => ref
-                          .read(userProfileNotifierProvider.notifier)
-                          .refresh(),
-                      onLogout: _logout,
-                    );
-                  },
-                  data: (userProfile) {
-                    if (userProfile == null) {
-                      // 로그인 정보가 없거나 아직 provider가 갱신 중인 상태
-                      return const Center(child: CircularProgressIndicator());
-                    }
+      ),
+      body: Column(
+        children: [
+          if (_isLoggingOut) LinearProgressIndicator(minHeight: 2.hClamp),
+          Expanded(
+            child: AbsorbPointer(
+              absorbing: _isLoggingOut,
+              child: userProfileAsync.when(
+                loading: () => Center(child: CircularProgressIndicator()),
+                error: (e, _) {
+                  //로그아웃 중 > 토근 완료로 인한 에러 발생시 에러뷰 대신
+                  if (_isLoggingOut || _redirectedToLogin) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  return MyPageErrorView(
+                    message: FriendlyErrorMessage.of(e),
+                    onRetry: () => ref
+                        .read(userProfileNotifierProvider.notifier)
+                        .refresh(),
+                    onLogout: _logout,
+                  );
+                },
+                data: (userProfile) {
+                  if (userProfile == null) {
+                    // 로그인 정보가 없거나 아직 provider가 갱신 중인 상태
+                    return const Center(child: CircularProgressIndicator());
+                  }
 
-                    return ListView(
-                      padding: EdgeInsets.zero,
-                      children: [
-                        SizedBox(height: 32.hClamp),
-                        MyPageUserProfilePage(userProfile: userProfile),
-                        SizedBox(height: 32.hClamp),
-                        Divider(color: MainColors.mainDark, thickness: 0.5),
-                        buildListTile(
-                          icon: Icons.workspace_premium_outlined,
-                          text: "프리미엄",
-                          onTap: () async {
-                            await showDialog(
-                              context: context,
-                              builder: (ctx) => ShopAppbarPremiumDialog(),
-                            );
-                          },
-                        ),
-                        Divider(color: MainColors.mainDark, thickness: 0.5),
-                        buildListTile(
-                          icon: Icons.privacy_tip_outlined,
-                          text: "개인정보",
-                          onTap: () {
-                            context.push(
-                              '${Routes.mypage}/${Routes.myPageUserSetting}',
-                            );
-                          },
-                        ),
-                        Divider(color: MainColors.mainDark, thickness: 0.5),
-                        buildListTile(
-                          icon: Icons.feedback_outlined,
-                          text: "오류문의",
-                        ),
-                        Divider(color: MainColors.mainDark, thickness: 0.5),
-                        buildListTile(
-                          icon: Icons.logout,
-                          text: _isLoggingOut ? "로그아웃 중..." : "로그아웃",
-                          onTap: _isLoggingOut ? null : _logout,
-                        ),
-                        Divider(color: MainColors.mainDark, thickness: 0.5),
-                        // buildListTile(
-                        //   icon: Icons.delete_forever_outlined,
-                        //   text: "회원탈퇴",
-                        //   onTap: _isLoggingOut
-                        //       ? null
-                        //       : () {
-                        //           context.push(Routes.deleteUser);
-                        //         },
-                        // ),
-                        // Divider(color: MainColors.mainDark, thickness: 0.5),
-                        // ElevatedButton(
-                        //   onPressed: () {
-                        //     showDialog(
-                        //       context: context,
-                        //       builder: (ctx) => MonthlyAllClearDialog(),
-                        //     );
-                        //   },
-                        //   child: Text('테스트 다이얼로그'),
-                        // ),
-                      ],
-                    );
-                  },
-                ),
+                  return ListView(
+                    padding: EdgeInsets.zero,
+                    children: [
+                      SizedBox(height: 32.hClamp),
+                      MyPageUserProfilePage(userProfile: userProfile),
+                      SizedBox(height: 32.hClamp),
+                      Divider(color: MainColors.mainDark, thickness: 0.5),
+                      buildListTile(
+                        icon: Icons.workspace_premium_outlined,
+                        text: "프리미엄",
+                        onTap: () async {
+                          await showDialog(
+                            context: context,
+                            builder: (ctx) => ShopAppbarPremiumDialog(),
+                          );
+                        },
+                      ),
+                      Divider(color: MainColors.mainDark, thickness: 0.5),
+                      buildListTile(
+                        icon: Icons.privacy_tip_outlined,
+                        text: "개인정보",
+                        onTap: () {
+                          context.push(
+                            '${Routes.mypage}/${Routes.myPageUserSetting}',
+                          );
+                        },
+                      ),
+                      Divider(color: MainColors.mainDark, thickness: 0.5),
+                      buildListTile(
+                        icon: Icons.feedback_outlined,
+                        text: "오류문의",
+                        onTap: _openFeedbackForm,
+                      ),
+                      Divider(color: MainColors.mainDark, thickness: 0.5),
+                      buildListTile(
+                        icon: Icons.logout,
+                        text: _isLoggingOut ? "로그아웃 중..." : "로그아웃",
+                        onTap: _isLoggingOut ? null : _logout,
+                      ),
+                      Divider(color: MainColors.mainDark, thickness: 0.5),
+                      // buildListTile(
+                      //   icon: Icons.delete_forever_outlined,
+                      //   text: "회원탈퇴",
+                      //   onTap: _isLoggingOut
+                      //       ? null
+                      //       : () {
+                      //           context.push(Routes.deleteUser);
+                      //         },
+                      // ),
+                      // Divider(color: MainColors.mainDark, thickness: 0.5),
+                      // ElevatedButton(
+                      //   onPressed: () {
+                      //     showDialog(
+                      //       context: context,
+                      //       builder: (ctx) => MonthlyAllClearDialog(),
+                      //     );
+                      //   },
+                      //   child: Text('테스트 다이얼로그'),
+                      // ),
+                    ],
+                  );
+                },
               ),
             ),
-          ],
-        ),
-        bottomNavigationBar: Container(
-          width: double.infinity,
-          height: 60.h,
-          alignment: Alignment.center,
-          child: _bannerAd != null
-              ? AdWidget(ad: _bannerAd!)
-              : const SizedBox.shrink(),
-        ),
+          ),
+        ],
+      ),
+      bottomNavigationBar: Container(
+        width: double.infinity,
+        height: 60.h,
+        alignment: Alignment.center,
+        child: _bannerAd != null
+            ? AdWidget(ad: _bannerAd!)
+            : const SizedBox.shrink(),
       ),
     );
   }

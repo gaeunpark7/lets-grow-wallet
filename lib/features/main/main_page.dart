@@ -178,6 +178,7 @@ class _MainPageState extends State<MainPage> {
               width: 72,
               height: 72,
               child: FloatingActionButton(
+                heroTag: 'main-add-fab',
                 backgroundColor: Colors.white,
                 foregroundColor: MainColors.mainLight,
                 elevation: 0,

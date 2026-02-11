@@ -152,7 +152,7 @@ class _EditExpensePageState extends ConsumerState<EditExpensePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(
-                      width: 150.wClamp,
+                      width: 150,
                       child: DateSelector(
                         selectedDate: selectedDate,
                         onTap: () => _selectDate(context),
@@ -209,7 +209,7 @@ class _EditExpensePageState extends ConsumerState<EditExpensePage> {
                     });
                   },
                 ),
-                SizedBox(height: 8.hClamp),
+                // SizedBox(height: 8.hClamp),
                 // 결제수단 + 금액 입력
                 PaymentAmountRow(
                   selectedPayType: selectedPayType,

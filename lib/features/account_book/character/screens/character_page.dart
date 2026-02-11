@@ -181,62 +181,59 @@ class _CharacterPageState extends ConsumerState<CharacterPage> {
             activeCharacter?.imageUrlForEmotion(_currentEmotion) ?? '';
         final backgroundUrl = activeCharacter?.characterBackground ?? '';
 
-        return SafeArea(
-          child: Scaffold(
-            backgroundColor: Colors.white,
-            body: activeCharacter == null
-                ? NotCharacter()
-                : LayoutBuilder(
-                    builder: (context, constraints) {
-                      return SingleChildScrollView(
-                        child: ConstrainedBox(
-                          constraints: BoxConstraints(
-                            minHeight: constraints.maxHeight,
-                          ),
-                          child: IntrinsicHeight(
-                            child: Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SizedBox(height: 40.hClamp),
-                                  CharacterPageLevel(
-                                    level: "Lv.${levelProgress.level}",
-                                    characterName:
-                                        activeCharacter.characterName,
-                                    progress: levelProgress.progress,
-                                    currentExp: levelProgress.currentExp
-                                        .toDouble(),
-                                    maxExp: levelProgress.maxExp.toDouble(),
-                                  ),
-                                  SizedBox(height: 60.hClamp),
-                                  CharacterPageCharacter(
-                                    imageUrl: imageUrl,
-                                    backgroundUrl: backgroundUrl,
-                                    characterName:
-                                        activeCharacter.characterName,
-                                    isEggStage:
-                                        activeCharacter.stage == Stage.egg,
-                                  ),
-                                ],
-                              ),
+        return Scaffold(
+          backgroundColor: Colors.white,
+          body: activeCharacter == null
+              ? NotCharacter()
+              : LayoutBuilder(
+                  builder: (context, constraints) {
+                    return SingleChildScrollView(
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          minHeight: constraints.maxHeight,
+                        ),
+                        child: IntrinsicHeight(
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(height: 40.hClamp),
+                                CharacterPageLevel(
+                                  level: "Lv.${levelProgress.level}",
+                                  characterName: activeCharacter.characterName,
+                                  progress: levelProgress.progress,
+                                  currentExp: levelProgress.currentExp
+                                      .toDouble(),
+                                  maxExp: levelProgress.maxExp.toDouble(),
+                                ),
+                                SizedBox(height: 60.hClamp),
+                                CharacterPageCharacter(
+                                  imageUrl: imageUrl,
+                                  backgroundUrl: backgroundUrl,
+                                  characterName: activeCharacter.characterName,
+                                  isEggStage:
+                                      activeCharacter.stage == Stage.egg,
+                                ),
+                              ],
                             ),
                           ),
                         ),
-                      );
-                    },
-                  ),
-            floatingActionButton: FloatingActionButton(
-              onPressed: () =>
-                  context.push('${Routes.character}/${Routes.characterDetail}'),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(50),
-              ),
-              backgroundColor: MainColors.mainLight,
-              child: Icon(Icons.pets, color: Colors.white),
+                      ),
+                    );
+                  },
+                ),
+          floatingActionButton: FloatingActionButton(
+            heroTag: 'character-detail-fab',
+            onPressed: () =>
+                context.push('${Routes.character}/${Routes.characterDetail}'),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(50),
             ),
-            bottomNavigationBar: CharacterActionBottomBar(
-              onInteraction: onInteraction,
-            ),
+            backgroundColor: MainColors.mainLight,
+            child: Icon(Icons.pets, color: Colors.white),
+          ),
+          bottomNavigationBar: CharacterActionBottomBar(
+            onInteraction: onInteraction,
           ),
         );
       },

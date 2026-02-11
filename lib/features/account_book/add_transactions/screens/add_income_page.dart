@@ -146,11 +146,10 @@ class _AddIncomePageState extends ConsumerState<AddIncomePage> {
                     ),
                   ],
                 ),
-                SizedBox(height: 18.hClamp),
+                SizedBox(height: 20.hClamp),
                 // 날짜 선택
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
-
                   children: [
                     SizedBox(
                       width: 150,

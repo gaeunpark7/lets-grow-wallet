@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lets_grow_wallet/app/router/app_router.dart';
@@ -12,7 +11,6 @@ import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   MobileAds.instance.initialize(); //광고 초기화
-  // await SystemChrome.setEnabledSystemUIMode();
 
   await dotenv.load(fileName: ".env");
 
@@ -20,7 +18,6 @@ void main() async {
   final supabaseAnonKey = dotenv.env['SUPABASE_ANON_KEY']!;
 
   await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
-
   runApp(ProviderScope(child: const MyApp()));
 }
 

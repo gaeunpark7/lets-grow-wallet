@@ -37,6 +37,7 @@ class _GoalDialogState extends State<GoalDialog> {
   bool _loadingExisting = true;
   bool _goalAlreadySet = false;
   String? _titleErrorText;
+  bool _isSaving = false;
 
   Future<bool> _showConfirmDialog() async {
     if (!mounted) return false;
@@ -150,6 +151,16 @@ class _GoalDialogState extends State<GoalDialog> {
         "${nowKst().year}-${nowKst().month.toString().padLeft(2, '0')}";
     final userId = supabase.auth.currentUser?.id;
 
+    final navigator = Navigator.maybeOf(context);
+    final route = ModalRoute.of(context);
+
+    if (_isSaving) return;
+    if (mounted) {
+      setState(() {
+        _isSaving = true;
+      });
+    }
+
     try {
       final title = widget.goalController.text.trim();
       final expenseAmount = _parseAmount(widget.expenseController.text);
@@ -229,127 +240,150 @@ class _GoalDialogState extends State<GoalDialog> {
       }
       showAppSnackBar('이번달의 목표가 저장되었습니다.');
       if (!mounted) return;
-      Navigator.of(context).pop(); // 다이얼로그 닫기
+      if (route?.isActive == true && navigator != null && navigator.canPop()) {
+        navigator.pop();
+      }
+    } on PostgrestException catch (e) {
+      final parts = <String>[];
+      if (e.message.isNotEmpty) parts.add(e.message);
+      final details = e.details?.toString().trim();
+      if (details != null && details.isNotEmpty) parts.add(details);
+      final hint = e.hint?.toString().trim();
+      if (hint != null && hint.isNotEmpty) parts.add(hint);
+      showAppSnackBar(parts.isEmpty ? e.toString() : parts.join('\n'));
     } catch (e) {
       showAppSnackBar('저장 중 오류가 발생했습니다.');
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSaving = false;
+        });
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      backgroundColor: Colors.white,
-      child: SizedBox(
-        width: MediaQuery.of(context).size.width * 0.75,
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (_loadingExisting) ...[
-                SizedBox(height: 8.hClamp),
-                Center(
-                  child: CircularProgressIndicator(color: MainColors.mainLight),
+    return PopScope(
+      canPop: !_isSaving,
+      child: Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        backgroundColor: Colors.white,
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width * 0.8,
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (_loadingExisting) ...[
+                  SizedBox(height: 8.hClamp),
+                  Center(
+                    child: CircularProgressIndicator(
+                      color: MainColors.mainLight,
+                    ),
+                  ),
+                  SizedBox(height: 12.hClamp),
+                ],
+                TextField(
+                  controller: widget.goalController,
+                  enabled: !_goalAlreadySet,
+                  onChanged: (value) {
+                    if (_titleErrorText == null) return;
+                    if (value.trim().isNotEmpty) {
+                      setState(() {
+                        _titleErrorText = null;
+                      });
+                    }
+                  },
+                  decoration: InputDecoration(
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: MainColors.mainLight,
+                        width: 2,
+                      ),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: MainColors.mainLight,
+                        width: 2,
+                      ),
+                    ),
+                    labelText: "이번달의 목표는?",
+                    labelStyle: TextStyle(
+                      color: MainColors.mainDark,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18.spClamp,
+                    ),
+                    errorText: _goalAlreadySet ? null : _titleErrorText,
+                    suffixIcon: Icon(
+                      Icons.edit,
+                      color: MainColors.mainLight,
+                      size: 30.hClamp,
+                    ),
+                    contentPadding: EdgeInsets.only(bottom: 4),
+                    counterText: '',
+                  ),
+                  maxLength: 10,
                 ),
                 SizedBox(height: 12.hClamp),
-              ],
-              TextField(
-                controller: widget.goalController,
-                enabled: !_goalAlreadySet,
-                onChanged: (value) {
-                  if (_titleErrorText == null) return;
-                  if (value.trim().isNotEmpty) {
+                GoalsDialogAmountRow(
+                  textController: widget.expenseController,
+                  text: "지출",
+                  hintText: "목표 금액을 입력하세요.",
+                  isSelected: selectedButton == 1,
+                  enabled: !_goalAlreadySet,
+                  onPressed: () {
                     setState(() {
-                      _titleErrorText = null;
+                      selectedButton = 1;
+                      widget.onButtonSelected(1);
                     });
-                  }
-                },
-                decoration: InputDecoration(
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                      color: MainColors.mainLight,
-                      width: 2,
+                  },
+                ),
+                SizedBox(height: 12.hClamp),
+                GoalsDialogAmountRow(
+                  textController: widget.incomeController,
+                  text: "수입",
+                  hintText: "목표 금액을 입력하세요.",
+                  isSelected: selectedButton == 0,
+                  enabled: !_goalAlreadySet,
+                  onPressed: () {
+                    setState(() {
+                      selectedButton = 0;
+                      widget.onButtonSelected(0);
+                    });
+                  },
+                ),
+                SizedBox(height: 12.hClamp),
+                FilledButton(
+                  style: FilledButton.styleFrom(
+                    backgroundColor: MainColors.mainLight,
+                    foregroundColor: Colors.white,
+                    disabledBackgroundColor: MainColors.mainLight,
+                    disabledForegroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    fixedSize: Size(
+                      MediaQuery.of(context).size.width * 1,
+                      50.hClamp,
                     ),
                   ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                      color: MainColors.mainLight,
-                      width: 2,
+                  onPressed: (_goalAlreadySet || _isSaving)
+                      ? null
+                      : _saveGoal, // Supabase로 데이터 저장
+                  child: Text(
+                    _isSaving
+                        ? '저장 중...'
+                        : (_goalAlreadySet ? "목표 설정 완료" : "목표 설정"),
+                    style: TextStyle(
+                      fontSize: 16.spClamp,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  labelText: "이번달의 목표는?",
-                  labelStyle: TextStyle(
-                    color: MainColors.mainDark,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18.spClamp,
-                  ),
-                  errorText: _goalAlreadySet ? null : _titleErrorText,
-                  suffixIcon: Icon(
-                    Icons.edit,
-                    color: MainColors.mainLight,
-                    size: 30.hClamp,
-                  ),
-                  contentPadding: EdgeInsets.only(bottom: 4),
-                  counterText: '',
                 ),
-                maxLength: 10,
-              ),
-              SizedBox(height: 12.hClamp),
-              GoalsDialogAmountRow(
-                textController: widget.expenseController,
-                text: "지출",
-                hintText: "목표 금액을 입력하세요.",
-                isSelected: selectedButton == 1,
-                enabled: !_goalAlreadySet,
-                onPressed: () {
-                  setState(() {
-                    selectedButton = 1;
-                    widget.onButtonSelected(1);
-                  });
-                },
-              ),
-              SizedBox(height: 12.hClamp),
-              GoalsDialogAmountRow(
-                textController: widget.incomeController,
-                text: "수입",
-                hintText: "목표 금액을 입력하세요.",
-                isSelected: selectedButton == 0,
-                enabled: !_goalAlreadySet,
-                onPressed: () {
-                  setState(() {
-                    selectedButton = 0;
-                    widget.onButtonSelected(0);
-                  });
-                },
-              ),
-              SizedBox(height: 12.hClamp),
-              FilledButton(
-                style: FilledButton.styleFrom(
-                  backgroundColor: MainColors.mainLight,
-                  foregroundColor: Colors.white,
-                  disabledBackgroundColor: MainColors.mainLight,
-                  disabledForegroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  fixedSize: Size(
-                    MediaQuery.of(context).size.width * 1,
-                    50.hClamp,
-                  ),
-                ),
-                onPressed: _goalAlreadySet
-                    ? null
-                    : _saveGoal, // Supabase로 데이터 저장
-                child: Text(
-                  _goalAlreadySet ? "목표 설정 완료" : "목표 설정",
-                  style: TextStyle(
-                    fontSize: 16.spClamp,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

@@ -44,19 +44,20 @@ class _CharacterActionBottomBarState extends State<CharacterActionBottomBar> {
 
     _actionsOverlay = OverlayEntry(
       builder: (context) {
-        final mainButtonSize = 80.rClamp;
-        final buttonSize = 55.rClamp;
-
+        final actionButtonSize = 60.rClamp;
         final gapX = 10.wClamp;
         final gapY = 10.hClamp;
+        final outerExtraDx = 14.wClamp; // 먹이주기/혼자두기 좌우 더 벌리기
+        final outerExtraDownDy = 12.hClamp; // 먹이주기/혼자두기만 더 아래로
+        final overlayGapToMainButton = 60.hClamp; //버튼 클릭시 오버레이와 메인 버튼 사이 간격
 
-        final outerDx = buttonSize + gapX; // 좌/우 끝 버튼
-        final innerDx = (buttonSize / 2) + (gapX / 2); // 위쪽 버튼
-        final lowDy = (buttonSize / 2) + gapY; // 아래쪽 버튼 높이
-        final highDy = buttonSize + (gapY * 2); // 위쪽 버튼 높이
+        final outerDx = actionButtonSize + gapX + outerExtraDx; // 좌/우 끝 버튼
+        final innerDx = (actionButtonSize / 2) + (gapX / 2); // 위쪽 버튼
+        final lowDy = (actionButtonSize / 2) + gapY; // 아래쪽 버튼 높이
+        final highDy = actionButtonSize + (gapY * 2); // 위쪽 버튼 높이
 
-        final clusterWidth = (outerDx * 2) + buttonSize;
-        final clusterHeight = highDy + buttonSize;
+        final clusterWidth = (outerDx * 2) + actionButtonSize;
+        final clusterHeight = highDy + actionButtonSize;
 
         return Material(
           color: Colors.transparent,
@@ -72,10 +73,9 @@ class _CharacterActionBottomBarState extends State<CharacterActionBottomBar> {
               CompositedTransformFollower(
                 link: _actionLink,
                 showWhenUnlinked: false,
-                offset: Offset(
-                  (mainButtonSize / 2) - (clusterWidth / 2),
-                  -(clusterHeight + 10.hClamp),
-                ),
+                targetAnchor: Alignment.topCenter,
+                followerAnchor: Alignment.bottomCenter,
+                offset: Offset(0, overlayGapToMainButton),
                 child: SizedBox(
                   width: clusterWidth,
                   height: clusterHeight,
@@ -83,11 +83,12 @@ class _CharacterActionBottomBarState extends State<CharacterActionBottomBar> {
                     alignment: Alignment.bottomCenter,
                     children: [
                       Transform.translate(
-                        offset: Offset(-outerDx, -lowDy),
+                        offset: Offset(-outerDx, -lowDy + outerExtraDownDy),
                         child: _actionButton(
                           "먹이주기",
                           () =>
                               widget.onInteraction?.call(InteractionType.feed),
+                          size: actionButtonSize,
                         ),
                       ),
                       Transform.translate(
@@ -96,6 +97,7 @@ class _CharacterActionBottomBarState extends State<CharacterActionBottomBar> {
                           "놀아주기",
                           () =>
                               widget.onInteraction?.call(InteractionType.play),
+                          size: actionButtonSize,
                         ),
                       ),
                       Transform.translate(
@@ -103,14 +105,16 @@ class _CharacterActionBottomBarState extends State<CharacterActionBottomBar> {
                         child: _actionButton(
                           "쓰다듬기",
                           () => widget.onInteraction?.call(InteractionType.pet),
+                          size: actionButtonSize,
                         ),
                       ),
                       Transform.translate(
-                        offset: Offset(outerDx, -lowDy),
+                        offset: Offset(outerDx, -lowDy + outerExtraDownDy),
                         child: _actionButton(
                           "혼자두기",
                           () =>
                               widget.onInteraction?.call(InteractionType.idle),
+                          size: actionButtonSize,
                         ),
                       ),
                     ],
@@ -175,16 +179,16 @@ class _CharacterActionBottomBarState extends State<CharacterActionBottomBar> {
     );
   }
 
-  Widget _actionButton(String text, VoidCallback onTap) {
-    final size = 55.rClamp;
+  Widget _actionButton(String text, VoidCallback onTap, {double? size}) {
+    final effectiveSize = size ?? 55.rClamp;
     return GestureDetector(
       onTap: () {
         onTap();
         _hideActions();
       },
       child: Container(
-        width: size,
-        height: size,
+        width: effectiveSize,
+        height: effectiveSize,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           border: Border.all(color: MainColors.mainLight, width: 1.2),
@@ -192,7 +196,7 @@ class _CharacterActionBottomBarState extends State<CharacterActionBottomBar> {
         child: Center(
           child: Text(
             text,
-            style: TextStyle(fontSize: 12.spClamp, color: MainColors.mainDark),
+            style: TextStyle(fontSize: 13.spClamp, color: MainColors.mainDark),
           ),
         ),
       ),

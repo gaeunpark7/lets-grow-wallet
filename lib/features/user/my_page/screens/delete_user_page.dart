@@ -72,55 +72,57 @@ class _DeleteUserPageState extends State<DeleteUserPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        scrolledUnderElevation: 0,
-        centerTitle: true,
+    return SafeArea(
+      child: Scaffold(
         backgroundColor: Colors.white,
-        title: Text(
-          '회원탈퇴',
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-            fontSize: 18.spClampBetween(min: 16, max: 18),
+        appBar: AppBar(
+          scrolledUnderElevation: 0,
+          centerTitle: true,
+          backgroundColor: Colors.white,
+          title: Text(
+            '회원탈퇴',
+            style: TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+              fontSize: 18.spClampBetween(min: 16, max: 18),
+            ),
           ),
         ),
-      ),
-      body: Column(
-        children: [
-          if (_isDeleting) const LinearProgressIndicator(minHeight: 2),
-          Expanded(
-            child: AbsorbPointer(
-              absorbing: _isDeleting,
-              child: SingleChildScrollView(
-                child: const Padding(
-                  padding: EdgeInsets.fromLTRB(12, 12, 12, 180),
-                  child: DeleteUserPageText(),
-                ),
-              ),
-            ),
-          ),
-          SafeArea(
-            top: false,
-            child: Container(
-              padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
-              // decoration: const BoxDecoration(
-              //   color: Colors.white,
-              //   border: Border(top: BorderSide(color: Color(0xFFE0E0E0))),
-              // ),
+        body: Column(
+          children: [
+            if (_isDeleting) const LinearProgressIndicator(minHeight: 2),
+            Expanded(
               child: AbsorbPointer(
                 absorbing: _isDeleting,
-                child: _DeleteUserFooter(
-                  agreed: _agreedToDelete,
-                  onAgreeChanged: _toggleAgree,
-                  onCancel: () => Navigator.pop(context, false),
-                  onDelete: _confirmDelete,
+                child: SingleChildScrollView(
+                  child: const Padding(
+                    padding: EdgeInsets.fromLTRB(12, 12, 12, 180),
+                    child: DeleteUserPageText(),
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+            SafeArea(
+              top: false,
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
+                // decoration: const BoxDecoration(
+                //   color: Colors.white,
+                //   border: Border(top: BorderSide(color: Color(0xFFE0E0E0))),
+                // ),
+                child: AbsorbPointer(
+                  absorbing: _isDeleting,
+                  child: _DeleteUserFooter(
+                    agreed: _agreedToDelete,
+                    onAgreeChanged: _toggleAgree,
+                    onCancel: () => Navigator.pop(context, false),
+                    onDelete: _confirmDelete,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

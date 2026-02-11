@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lets_grow_wallet/features/account_book/notifier/character_book_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/model/character_model.dart';
 import 'package:lets_grow_wallet/features/account_book/services/character_service.dart';
+import 'package:lets_grow_wallet/features/account_book/notifier/user_notifier.dart';
 import 'package:lets_grow_wallet/features/user/services/user_profile_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -38,13 +40,6 @@ class CharacterShopState {
     );
   }
 }
-
-final authUserIdProvider = StreamProvider<String?>((ref) async* {
-  yield Supabase.instance.client.auth.currentUser?.id;
-  await for (final event in Supabase.instance.client.auth.onAuthStateChange) {
-    yield event.session?.user.id;
-  }
-});
 
 final coinNotifierProvider = AsyncNotifierProvider<CoinNotifier, int>(() {
   return CoinNotifier();
@@ -118,6 +113,8 @@ class CharacterShopNotifier extends AsyncNotifier<CharacterShopState> {
       await _service.purchaseCharacter(selected);
       await refresh();
       ref.invalidate(coinNotifierProvider);
+      // 구매 후 도감에서도 바로 반영되도록 갱신
+      ref.invalidate(characterBookNotifierProvider);
     } finally {
       final after = state.valueOrNull;
       if (after != null) {

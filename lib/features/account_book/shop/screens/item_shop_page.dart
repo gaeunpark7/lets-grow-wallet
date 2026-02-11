@@ -116,7 +116,7 @@ class _ItemShopPageState extends ConsumerState<ItemShopPage> {
             },
           ),
         ),
-        // 구매 버튼 아래(화면 하단)에 배너 광고 표시
+        // 구매 버튼 하단 광고
         bottomNavigationBar: SafeArea(
           top: false,
           child: Container(

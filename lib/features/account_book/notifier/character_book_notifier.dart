@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lets_grow_wallet/features/account_book/model/character_book_item_model.dart';
 import 'package:lets_grow_wallet/features/account_book/character/services/character_book_service.dart';
 import 'package:lets_grow_wallet/features/account_book/notifier/active_character_notifier.dart';
+import 'package:lets_grow_wallet/features/account_book/notifier/user_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/services/user_character_service.dart';
 
 class CharacterBookState {
@@ -43,6 +44,9 @@ class CharacterBookNotifier extends AsyncNotifier<CharacterBookState> {
 
   @override
   Future<CharacterBookState> build() async {
+    // 로그인/로그아웃/계정 변경 시 자동 갱신
+    ref.watch(authUserIdProvider);
+
     final previous = state.valueOrNull;
     final items = await _service.fetchCharacterBookItems();
 

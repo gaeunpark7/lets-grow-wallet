@@ -89,7 +89,7 @@ class _MonthlyHeaderState extends State<MonthlyHeader> {
     final hasGoalTitle = (goalTitle?.trim().isNotEmpty ?? false);
 
     return SizedBox(
-      height: 120.hClamp,
+      height: 100.hClamp,
       child: Stack(
         alignment: Alignment.center,
         children: [

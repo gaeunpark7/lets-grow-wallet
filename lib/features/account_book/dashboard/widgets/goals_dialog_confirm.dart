@@ -25,7 +25,7 @@ class GoalsDialogConfirm extends StatelessWidget {
                 "목표는 월 1회 지정할수 있으며,\n수정이 불가능합니다. 저장하시겠습니까?",
                 style: TextStyle(
                   fontSize: 16.spClamp,
-                  color: const Color.fromARGB(255, 82, 98, 128),
+                  color: MainColors.mainDark,
                   fontWeight: FontWeight.bold,
                 ),
               ),
