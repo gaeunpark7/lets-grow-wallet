@@ -16,7 +16,7 @@ class UserProfileService {
     final response = await supabase
         .from('user')
         .select(
-          '''id, nickname, email, user_characters!inner(is_active, characters(character_images(image_url)))''',
+          '''id, nickname, email, is_premium, premium_purchased_at, user_characters!inner(is_active, characters(character_images(image_url)))''',
         )
         .eq('id', userId)
         .eq('user_characters.is_active', true)

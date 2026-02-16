@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lets_grow_wallet/features/account_book/notifier/stats_notifier.dart';
+import 'package:lets_grow_wallet/features/account_book/notifier/user_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/services/admob_service.dart';
 import 'package:lets_grow_wallet/features/account_book/stats/screens/stats_expense_view.dart';
 import 'package:lets_grow_wallet/features/account_book/stats/screens/stats_income_view.dart';
@@ -8,35 +10,62 @@ import 'package:lets_grow_wallet/features/account_book/stats/widgets/montly_head
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 
-class StatsPage extends StatefulWidget {
+class StatsPage extends ConsumerStatefulWidget {
   const StatsPage({super.key});
 
   @override
-  State<StatsPage> createState() => _StatsPageState();
+  ConsumerState<StatsPage> createState() => _StatsPageState();
 }
 
-class _StatsPageState extends State<StatsPage>
+class _StatsPageState extends ConsumerState<StatsPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   BannerAd? _bannerAd;
+  ProviderSubscription<bool>? _premiumSubscription;
 
   @override
   void initState() {
     super.initState();
-    _createBannerAd();
+
+    _premiumSubscription = ref.listenManual<bool>(isPremiumProvider, (
+      prev,
+      next,
+    ) {
+      if (!mounted) return;
+
+      if (next) {
+        setState(() {
+          _bannerAd?.dispose();
+          _bannerAd = null;
+        });
+        return;
+      }
+
+      if (_bannerAd == null) {
+        setState(_createBannerAd);
+      }
+    });
+
+    if (!ref.read(isPremiumProvider)) {
+      _createBannerAd();
+    }
     _tabController = TabController(length: 2, vsync: this);
   }
 
   @override
   void dispose() {
+    _premiumSubscription?.close();
     _tabController.dispose();
     _bannerAd?.dispose();
     super.dispose();
   }
 
   void _createBannerAd() {
+    final adUnitId = AdmobService.BannerAdUnitId;
+    if (adUnitId == null) return;
+
     _bannerAd = BannerAd(
-      adUnitId: AdmobService.BannerAdUnitId!,
+      adUnitId: adUnitId,
       request: const AdRequest(),
       size: AdSize.fullBanner,
       listener: AdmobService.bannerAdListener,
@@ -45,6 +74,7 @@ class _StatsPageState extends State<StatsPage>
 
   @override
   Widget build(BuildContext context) {
+    final isPremium = ref.watch(isPremiumProvider);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -76,25 +106,26 @@ class _StatsPageState extends State<StatsPage>
             ),
           ),
           //광고 배너
-          SafeArea(
-            top: false,
-            child: Container(
-              width: double.infinity,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                border: Border(
-                  top: BorderSide(color: MainColors.point, width: 1),
+          if (!isPremium)
+            SafeArea(
+              top: false,
+              child: Container(
+                width: double.infinity,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  border: Border(
+                    top: BorderSide(color: MainColors.point, width: 1),
+                  ),
+                ),
+                child: SizedBox(
+                  height: 56.hClamp,
+                  width: _bannerAd?.size.width.toDouble() ?? 0,
+                  child: _bannerAd != null
+                      ? AdWidget(ad: _bannerAd!)
+                      : const SizedBox.shrink(),
                 ),
               ),
-              child: SizedBox(
-                height: 56.hClamp,
-                width: _bannerAd?.size.width.toDouble() ?? 0,
-                child: _bannerAd != null
-                    ? AdWidget(ad: _bannerAd!)
-                    : const SizedBox.shrink(),
-              ),
             ),
-          ),
         ],
       ),
     );

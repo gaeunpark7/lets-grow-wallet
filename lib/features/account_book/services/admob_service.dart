@@ -13,14 +13,14 @@ class AdmobService {
   }
 
   //네이티브 광고
-  static String? get NativeAdUnitId {
-    if (Platform.isAndroid) {
-      return 'ca-app-pub-3940256099942544/2247696110';
-    } else if (Platform.isIOS) {
-      return 'ca-app-pub-3940256099942544/3986624511';
-    }
-    return null;
-  }
+  // static String? get NativeAdUnitId {
+  //   if (Platform.isAndroid) {
+  //     return 'ca-app-pub-3940256099942544/2247696110';
+  //   } else if (Platform.isIOS) {
+  //     return 'ca-app-pub-3940256099942544/3986624511';
+  //   }
+  //   return null;
+  // }
 
   //배너 광고
   static String? get BannerAdUnitId {

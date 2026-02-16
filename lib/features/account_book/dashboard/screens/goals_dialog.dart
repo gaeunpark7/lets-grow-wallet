@@ -155,11 +155,6 @@ class _GoalDialogState extends State<GoalDialog> {
     final route = ModalRoute.of(context);
 
     if (_isSaving) return;
-    if (mounted) {
-      setState(() {
-        _isSaving = true;
-      });
-    }
 
     try {
       final title = widget.goalController.text.trim();
@@ -215,6 +210,11 @@ class _GoalDialogState extends State<GoalDialog> {
       final confirmed = await _showConfirmDialog();
       if (!confirmed) return;
 
+      if (!mounted) return;
+      setState(() {
+        _isSaving = true;
+      });
+
       // 소비 데이터 삽입
       if (expenseAmount != null) {
         await supabase.from('goals').insert({
@@ -238,11 +238,13 @@ class _GoalDialogState extends State<GoalDialog> {
           'created_at': DateTime.now().toIso8601String(),
         });
       }
-      showAppSnackBar('이번달의 목표가 저장되었습니다.');
+
       if (!mounted) return;
       if (route?.isActive == true && navigator != null && navigator.canPop()) {
         navigator.pop();
       }
+
+      showAppSnackBar('목표가 저장되었습니다.');
     } on PostgrestException catch (e) {
       final parts = <String>[];
       if (e.message.isNotEmpty) parts.add(e.message);

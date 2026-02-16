@@ -148,7 +148,9 @@ class _CharacterActionBottomBarState extends State<CharacterActionBottomBar> {
       alignment: Alignment.bottomCenter,
       children: [
         // 바텀
-        Container(height: 70.hClamp, color: MainColors.mainLight),
+        SafeArea(
+          child: Container(height: 70.hClamp, color: MainColors.mainLight),
+        ),
 
         // 메인 버튼
         Positioned(

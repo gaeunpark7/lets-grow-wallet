@@ -3,6 +3,11 @@ import 'package:lets_grow_wallet/features/user/model/user_profile_model.dart';
 import 'package:lets_grow_wallet/features/user/services/user_profile_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+final isPremiumProvider = Provider<bool>((ref) {
+  final profile = ref.watch(userProfileNotifierProvider).valueOrNull;
+  return profile?.isPremium ?? false;
+});
+
 final authUserIdProvider = StreamProvider<String?>((ref) async* {
   yield Supabase.instance.client.auth.currentUser?.id;
   await for (final event in Supabase.instance.client.auth.onAuthStateChange) {
@@ -51,5 +56,13 @@ class UserProfileNotifier extends AsyncNotifier<UserProfileModel?> {
       state = AsyncValue.data(previous);
       Error.throwWithStackTrace(e, st);
     }
+  }
+
+  void setPremiumLocal({required DateTime purchasedAt}) {
+    final current = state.valueOrNull;
+    if (current == null) return;
+    state = AsyncValue.data(
+      current.copyWith(isPremium: true, premiumPurchasedAt: purchasedAt),
+    );
   }
 }

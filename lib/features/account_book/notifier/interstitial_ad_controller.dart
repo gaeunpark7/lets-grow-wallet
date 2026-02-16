@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:lets_grow_wallet/features/account_book/notifier/user_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/services/admob_service.dart';
 
 final interstitialAdControllerProvider =
@@ -16,6 +17,12 @@ class InterstitialAdController extends Notifier<int> {
 
   @override
   int build() {
+    final isPremium = ref.watch(isPremiumProvider);
+    if (isPremium) {
+      _preloaded?.dispose();
+      _preloaded = null;
+    }
+
     ref.onDispose(() {
       _preloaded?.dispose();
       _preloaded = null;
@@ -26,6 +33,8 @@ class InterstitialAdController extends Notifier<int> {
   /// 거래(지출/수입) 추가 성공 시 호출.
   /// 3번째마다 전면 광고를 표시하고, 광고가 닫힐 때까지기다림.
   Future<void> onTransactionAdded() async {
+    if (ref.read(isPremiumProvider)) return;
+
     state = state + 1;
 
     // 3번마다 노출
@@ -41,6 +50,7 @@ class InterstitialAdController extends Notifier<int> {
   }
 
   Future<void> _preload() async {
+    if (ref.read(isPremiumProvider)) return;
     if (_preloaded != null) return;
     if (_isLoading) return;
     if (_isShowing) return;
@@ -61,6 +71,7 @@ class InterstitialAdController extends Notifier<int> {
   }
 
   Future<void> _showInterstitial() async {
+    if (ref.read(isPremiumProvider)) return;
     if (_isShowing) return;
 
     final unitId = AdmobService.InterstitialAdUnitId;

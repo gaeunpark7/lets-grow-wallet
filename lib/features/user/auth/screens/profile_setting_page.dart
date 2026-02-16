@@ -36,7 +36,10 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
     try {
       await supabase
           .from('user')
-          .update({'nickname': _nicknameController.text})
+          .update({
+            'nickname': _nicknameController.text,
+            'updated_at': DateTime.now().toIso8601String(),
+          })
           .eq('id', user.id);
 
       if (mounted) {

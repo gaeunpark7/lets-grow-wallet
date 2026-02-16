@@ -68,11 +68,17 @@ class CategoryStatList extends StatelessWidget {
                     color: color,
                     borderRadius: BorderRadius.circular(6),
                   ),
-                  child: Text(
-                    "$percent%",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      "$percent%",
+                      maxLines: 1,
+                      softWrap: false,
+                      overflow: TextOverflow.visible,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),

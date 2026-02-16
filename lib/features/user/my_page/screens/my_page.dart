@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lets_grow_wallet/app/router/route_paths.dart';
@@ -25,6 +24,7 @@ class MyPage extends ConsumerStatefulWidget {
 
 class _MyPageState extends ConsumerState<MyPage> {
   BannerAd? _bannerAd;
+  ProviderSubscription<bool>? _premiumSubscription;
   bool _isLoggingOut = false;
   bool _redirectedToLogin = false;
 
@@ -33,12 +33,44 @@ class _MyPageState extends ConsumerState<MyPage> {
   @override
   void initState() {
     super.initState();
-    _createBannerAd();
+
+    _premiumSubscription = ref.listenManual<bool>(isPremiumProvider, (
+      prev,
+      next,
+    ) {
+      if (!mounted) return;
+
+      if (next) {
+        setState(() {
+          _bannerAd?.dispose();
+          _bannerAd = null;
+        });
+        return;
+      }
+
+      if (_bannerAd == null) {
+        setState(_createBannerAd);
+      }
+    });
+
+    if (!ref.read(isPremiumProvider)) {
+      _createBannerAd();
+    }
+  }
+
+  @override
+  void dispose() {
+    _premiumSubscription?.close();
+    _bannerAd?.dispose();
+    super.dispose();
   }
 
   void _createBannerAd() {
+    final adUnitId = AdmobService.BannerAdUnitId;
+    if (adUnitId == null) return;
+
     _bannerAd = BannerAd(
-      adUnitId: AdmobService.BannerAdUnitId!,
+      adUnitId: adUnitId,
       request: const AdRequest(),
       size: AdSize.fullBanner,
       listener: AdmobService.bannerAdListener,
@@ -90,6 +122,7 @@ class _MyPageState extends ConsumerState<MyPage> {
   Widget build(BuildContext context) {
     final userProfileAsync = ref.watch(userProfileNotifierProvider);
     final authUserIdAsync = ref.watch(authUserIdProvider);
+    final isPremium = ref.watch(isPremiumProvider);
 
     // 로그아웃 상태면(혹은 로그아웃 완료 직후) 에러 UI 대신 로그인으로 이동
     authUserIdAsync.whenData((userId) {
@@ -203,15 +236,20 @@ class _MyPageState extends ConsumerState<MyPage> {
               ),
             ),
           ),
+
+          if (!isPremium)
+            SafeArea(
+              top: false,
+              child: Container(
+                width: double.infinity,
+                height: 60.hClamp,
+                alignment: Alignment.center,
+                child: _bannerAd != null
+                    ? AdWidget(ad: _bannerAd!)
+                    : const SizedBox.shrink(),
+              ),
+            ),
         ],
-      ),
-      bottomNavigationBar: Container(
-        width: double.infinity,
-        height: 60.h,
-        alignment: Alignment.center,
-        child: _bannerAd != null
-            ? AdWidget(ad: _bannerAd!)
-            : const SizedBox.shrink(),
       ),
     );
   }

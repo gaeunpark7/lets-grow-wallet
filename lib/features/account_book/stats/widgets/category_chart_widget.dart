@@ -54,6 +54,8 @@ class CategoryChartWidget extends StatelessWidget {
     final pieRadius = 120.0.hClamp;
     final center = Offset(chartSize / 2, chartSize / 2);
     final labelRadius = pieRadius + 24; // 라벨 위치 반지름
+    final labelWidth = 48.0.wClamp;
+    final labelHeight = 28.0.hClamp;
 
     // 파이 섹션 데이터
     final sections = List.generate(sorted.length, (i) {
@@ -80,6 +82,7 @@ class CategoryChartWidget extends StatelessWidget {
       height: chartSize,
       width: chartSize,
       child: Stack(
+        clipBehavior: Clip.none,
         alignment: Alignment.center,
         children: [
           PieChart(
@@ -99,11 +102,18 @@ class CategoryChartWidget extends StatelessWidget {
             final angle = midAngles[i];
             final dx = center.dx + labelRadius * cos(angle);
             final dy = center.dy + labelRadius * sin(angle);
+
+            final rawLeft = dx - (labelWidth / 2);
+            final rawTop = dy - 14;
+
+            final left = rawLeft.clamp(0.0, chartSize - labelWidth).toDouble();
+            final top = rawTop.clamp(0.0, chartSize - labelHeight).toDouble();
+
             return Positioned(
-              left: dx - 24, // 가운데 정렬 (텍스트 폭의 절반만큼 빼줌)
-              top: dy - 14,
+              left: left,
+              top: top,
               child: SizedBox(
-                width: 48.wClamp,
+                width: labelWidth,
                 child: Text(
                   '${percent.toStringAsFixed(0)}%',
                   textAlign: TextAlign.center,

@@ -98,7 +98,8 @@ class _MonthlyHeaderState extends State<MonthlyHeader> {
             style: TextStyle(
               color: MainColors.mainDark,
               fontSize: screenWidth * 0.06.hClamp, // 반응형 폰트
-              fontWeight: FontWeight.w900,
+              // fontWeight: FontWeight.w900,
+              fontFamily: 'ScoreBold',
             ),
           ),
 

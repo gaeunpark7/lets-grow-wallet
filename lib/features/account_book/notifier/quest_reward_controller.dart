@@ -15,7 +15,6 @@ class QuestRewardController {
   final SupabaseClient _supabase = Supabase.instance.client;
 
   static const int _rewardCoin = 15;
-  static const int _rewardXp = 15;
 
   Future<void> claimDailyQuestReward({required String questId}) async {
     final userId = _supabase.auth.currentUser?.id;
@@ -36,21 +35,9 @@ class QuestRewardController {
         .select('id')
         .maybeSingle();
 
-    // 이미 보상을 받은 경우> 종료(중복 지급 방지)
     if (updatedQuest == null) {
       return;
     }
-
-    //코인 지급
-    final coinRow = await _supabase
-        .from('user')
-        .select('coin')
-        .eq('id', userId)
-        .maybeSingle();
-    final currentCoin = (coinRow?['coin'] as num?)?.toInt() ?? 0;
-    final newCoin = currentCoin + _rewardCoin;
-
-    await _supabase.from('user').update({'coin': newCoin}).eq('id', userId);
 
     // coin_logs기록
     try {
@@ -61,25 +48,29 @@ class QuestRewardController {
       });
     } catch (_) {}
 
-    // 경험치 지급(활성 캐릭터가 있으면)
+    // 경험치/코인 지급은 DB에서 처리
     final active = await _supabase
         .from('user_characters')
-        .select('id, experience')
+        .select('id, experience, stage')
         .eq('user_id', userId)
         .eq('is_active', true)
         .maybeSingle();
 
     if (active != null) {
       final userCharacterId = active['id']?.toString() ?? '';
-      final currentExp = (active['experience'] as num?)?.toInt() ?? 0;
-      final newExp = currentExp + _rewardXp;
-      final stage = newExp < 300 ? 'egg' : (newExp < 1000 ? 'child' : 'adult');
+      final exp = (active['experience'] as num?)?.toInt() ?? 0;
+      final currentStage = active['stage']?.toString();
+      final computedStage = exp < 300
+          ? 'egg'
+          : (exp < 1000 ? 'child' : 'adult');
 
-      await _supabase
-          .from('user_characters')
-          .update({'experience': newExp, 'stage': stage})
-          .eq('id', userCharacterId)
-          .eq('user_id', userId);
+      if (userCharacterId.isNotEmpty && currentStage != computedStage) {
+        await _supabase
+            .from('user_characters')
+            .update({'stage': computedStage})
+            .eq('id', userCharacterId)
+            .eq('user_id', userId);
+      }
     }
 
     // 화면 즉시 반영 provider

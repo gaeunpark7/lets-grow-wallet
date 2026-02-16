@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lets_grow_wallet/features/account_book/notifier/premium_purchase_controller.dart';
+import 'package:lets_grow_wallet/features/account_book/notifier/user_notifier.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 
-class ShopAppbarPremiumDialog extends StatelessWidget {
+class ShopAppbarPremiumDialog extends ConsumerWidget {
   const ShopAppbarPremiumDialog({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final purchaseState = ref.watch(premiumPurchaseControllerProvider);
+    final isPremium = ref.watch(isPremiumProvider);
+    final priceText = purchaseState.product?.price ?? '₩4,900';
+
     return Dialog(
       backgroundColor: Colors.white,
       shape: RoundedRectangleBorder(
@@ -62,9 +69,19 @@ class ShopAppbarPremiumDialog extends StatelessWidget {
                     ),
                     minimumSize: Size.fromHeight(45.hClamp),
                   ),
-                  onPressed: () {},
+                  onPressed: (isPremium || purchaseState.isPurchasing)
+                      ? null
+                      : () async {
+                          await ref
+                              .read(premiumPurchaseControllerProvider.notifier)
+                              .buy();
+                        },
                   child: Text(
-                    "₩3,900 구매하기",
+                    isPremium
+                        ? '구매 완료'
+                        : purchaseState.isPurchasing
+                        ? '구매 처리 중…'
+                        : "$priceText 구매하기",
                     style: TextStyle(
                       fontSize: 16.spClamp,
                       fontWeight: FontWeight.bold,
@@ -72,6 +89,14 @@ class ShopAppbarPremiumDialog extends StatelessWidget {
                   ),
                 ),
               ),
+              if (purchaseState.errorMessage != null &&
+                  purchaseState.errorMessage!.trim().isNotEmpty) ...[
+                SizedBox(height: 10.hClamp),
+                Text(
+                  purchaseState.errorMessage!,
+                  style: TextStyle(color: Colors.red, fontSize: 12.spClamp),
+                ),
+              ],
             ],
           ),
         ),

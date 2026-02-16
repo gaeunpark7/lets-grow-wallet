@@ -1,25 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
 import 'package:lets_grow_wallet/features/account_book/model/daily_quest_model.dart';
 import 'package:lets_grow_wallet/features/account_book/quest/widgets/quest_list.dart';
 import 'package:lets_grow_wallet/features/account_book/quest/widgets/quest_star.dart';
 import 'package:lets_grow_wallet/features/account_book/quest/widgets/quest_title.dart';
+import 'package:lets_grow_wallet/features/account_book/notifier/user_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/services/admob_service.dart';
 import 'package:lets_grow_wallet/features/account_book/services/daily_quest_service.dart';
 import 'package:lets_grow_wallet/features/account_book/shop/widgets/shop_appbar.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 
-class QuestPage extends StatefulWidget {
+class QuestPage extends ConsumerStatefulWidget {
   const QuestPage({super.key});
 
   @override
-  State<QuestPage> createState() => _QuestPageState();
+  ConsumerState<QuestPage> createState() => _QuestPageState();
 }
 
-class _QuestPageState extends State<QuestPage> {
+class _QuestPageState extends ConsumerState<QuestPage> {
   BannerAd? _bannerAd;
+  ProviderSubscription<bool>? _premiumSubscription;
   final DailyQuestService _questService = DailyQuestService();
   List<DailyQuest> _todayQuests = [];
   bool _loading = true;
@@ -27,6 +30,26 @@ class _QuestPageState extends State<QuestPage> {
   @override
   void initState() {
     super.initState();
+
+    _premiumSubscription = ref.listenManual<bool>(isPremiumProvider, (
+      prev,
+      next,
+    ) {
+      if (!mounted) return;
+
+      if (next) {
+        setState(() {
+          _bannerAd?.dispose();
+          _bannerAd = null;
+        });
+        return;
+      }
+
+      if (_bannerAd == null) {
+        setState(_createBannerAd);
+      }
+    });
+
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       try {
         await _questService.createTodayQuestsIfNeeded();
@@ -36,17 +59,31 @@ class _QuestPageState extends State<QuestPage> {
       }
       await _loadQuests();
       // await _loadMonthlyGoals();
-      _createBannerAd();
+
+      if (!ref.read(isPremiumProvider)) {
+        _createBannerAd();
+        if (mounted) setState(() {});
+      }
     });
   }
 
   void _createBannerAd() {
+    final adUnitId = AdmobService.BannerAdUnitId;
+    if (adUnitId == null) return;
+
     _bannerAd = BannerAd(
-      adUnitId: AdmobService.BannerAdUnitId!,
+      adUnitId: adUnitId,
       request: const AdRequest(),
       size: AdSize.fullBanner,
       listener: AdmobService.bannerAdListener,
     )..load();
+  }
+
+  @override
+  void dispose() {
+    _premiumSubscription?.close();
+    _bannerAd?.dispose();
+    super.dispose();
   }
 
   //월별 목표 로드
