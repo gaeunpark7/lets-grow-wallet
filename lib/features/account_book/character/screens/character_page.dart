@@ -216,6 +216,8 @@ class _CharacterPageState extends ConsumerState<CharacterPage> {
                                         activeCharacter.characterName,
                                     isEggStage:
                                         activeCharacter.stage == Stage.egg,
+                                    isAdultStage:
+                                        activeCharacter.stage == Stage.adult,
                                   ),
                                 ],
                               ),

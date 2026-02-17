@@ -7,6 +7,7 @@ class CharacterPageCharacter extends StatelessWidget {
   final String backgroundUrl;
   final String characterName;
   final bool isEggStage;
+  final bool isAdultStage;
 
   const CharacterPageCharacter({
     super.key,
@@ -14,6 +15,7 @@ class CharacterPageCharacter extends StatelessWidget {
     this.backgroundUrl = '',
     this.characterName = '',
     this.isEggStage = false,
+    this.isAdultStage = false,
   });
 
   @override
@@ -23,10 +25,31 @@ class CharacterPageCharacter extends StatelessWidget {
     final shouldShift = isBanHam && !isEggStage;
 
     //꽃개 일때(알 x) 크기 키우기, 너무 내려가 보일 수 있어서, 살짝 덜 내림
+    //멍개 일때 (알 x) 마찬가지
+    //언덕 일때 (adult) 크기 키우기, child 크기 160
+    //멋쟁이 토마토 일때 (알 x) 크기 160
     final isFlowerDog = characterName.trim() == '꽃개';
+    final isMungDog = characterName.trim() == '멍개';
+    final isUnDuck = characterName.trim() == '언덕';
+    final isTomato = characterName.trim() == '멋쟁이 토마토';
+    final shouldShiftMungDog = isMungDog && !isEggStage;
     final shouldScaleUpFlowerDog = isFlowerDog && !isEggStage;
-    final double characterWidth = (shouldScaleUpFlowerDog ? 200 : 160).wClamp;
-    final double translateY = (shouldScaleUpFlowerDog ? 58 : 70).rClamp;
+    final shouldScaleUpUnDuck = isUnDuck && isAdultStage;
+    final shouldScaleDownUnDuckChild = isUnDuck && !isEggStage && !isAdultStage;
+    final shouldTomatoSize = isTomato && !isEggStage;
+
+    final double characterWidth =
+        (shouldTomatoSize || shouldScaleDownUnDuckChild)
+        ? 160
+        : (shouldScaleUpFlowerDog || shouldShiftMungDog
+                  ? 200
+                  : (shouldScaleUpUnDuck ? 210 : 180))
+              .wClamp;
+    final double translateY =
+        (shouldScaleUpFlowerDog || shouldShiftMungDog
+                ? 58
+                : (shouldScaleUpUnDuck ? 64 : 70))
+            .rClamp;
 
     return Center(
       child: Stack(

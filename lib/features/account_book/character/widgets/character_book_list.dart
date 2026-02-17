@@ -39,6 +39,23 @@ class _CharacterBookListState extends State<CharacterBookList> {
           final isBanHam = item.name.trim() == '반햄';
           final shouldShift = isBanHam && item.experience >= 300;
 
+          final isUnduck = item.name.trim() == '언덕';
+          final isAdultStage = item.hasAdultUnlocked;
+          final isNotEggStage = item.hasChildUnlocked;
+
+          final isFlowerDog = item.name.trim() == '꽃개';
+          final isMungDog = item.name.trim() == '멍개';
+
+          final shouldScaleUp = (isFlowerDog || isMungDog) && isNotEggStage;
+          final shouldScaleUpUnDuck = isUnduck && isAdultStage;
+
+          final double imageWidth = shouldScaleUpUnDuck
+              ? 85.wClamp
+              : (shouldScaleUp ? 80.wClamp : 70.wClamp);
+          final double imageHeight = shouldScaleUpUnDuck
+              ? 85.hClamp
+              : (shouldScaleUp ? 80.hClamp : 70.hClamp);
+
           final opacity = item.isOwned ? 1.0 : 0.35;
           return GestureDetector(
             onTap: () {
@@ -60,8 +77,8 @@ class _CharacterBookListState extends State<CharacterBookList> {
                           offset: Offset(shouldShift ? -2.5.wClamp : 0, 0),
                           child: Image.network(
                             item.displayImageUrl,
-                            width: 70.wClamp,
-                            height: 70.hClamp,
+                            width: imageWidth,
+                            height: imageHeight,
                             // fit: BoxFit.cover,
                             errorBuilder: (ctx, err, st) => const Text('?'),
                           ),

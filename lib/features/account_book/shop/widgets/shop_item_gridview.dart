@@ -38,7 +38,7 @@ class ShopItemGridview extends StatelessWidget {
               crossAxisCount: 3,
               crossAxisSpacing: 10.wClamp,
               mainAxisSpacing: 10.hClamp,
-              childAspectRatio: 0.58,
+              childAspectRatio: 0.65,
             ),
             itemCount: filteredItems.length,
             itemBuilder: (context, index) {
@@ -49,7 +49,7 @@ class ShopItemGridview extends StatelessWidget {
                 onTap: () => onItemSelected(item),
                 child: LayoutBuilder(
                   builder: (context, constraints) {
-                    final imageBoxHeight = constraints.maxHeight * 0.86;
+                    final imageBoxHeight = constraints.maxHeight * 0.8;
                     return Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -100,7 +100,7 @@ class ShopItemGridview extends StatelessWidget {
                             ),
                           ),
                         ),
-                        SizedBox(height: 2.hClamp),
+                        SizedBox(height: 4.hClamp),
                         Text(
                           item.name,
                           maxLines: 1,

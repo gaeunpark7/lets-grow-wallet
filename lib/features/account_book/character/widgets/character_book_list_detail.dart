@@ -13,7 +13,21 @@ class CharacterBookListDetail extends StatelessWidget {
     required BuildContext context,
     required String imageUrl,
     required bool isUnlocked,
+    required String stage,
   }) {
+    final name = item.name.trim();
+    final isUnduck = name == '언덕';
+    final isBanHam = name == '반햄';
+    final shouldShift = isBanHam && stage != 'egg';
+    final
+    // 원형 유지, 컨테이너 크기 조절 > 이미지 크기 조절
+    double
+    padding = isUnduck
+        ? (stage == 'adult'
+              ? 4.wClamp
+              : (stage == 'child' ? 12.wClamp : 8.wClamp))
+        : 8.wClamp;
+
     return ClipOval(
       child: Container(
         width: 70,
@@ -23,16 +37,19 @@ class CharacterBookListDetail extends StatelessWidget {
           child: isUnlocked
               ? (imageUrl.isNotEmpty
                     ? Padding(
-                        padding: EdgeInsets.all(8.wClamp),
-                        child: Image.network(
-                          imageUrl,
-                          fit: BoxFit.contain,
-                          errorBuilder: (ctx, err, st) => Text(
-                            //이미지 로드 실패
-                            '?',
-                            style: TextStyle(
-                              color: MainColors.mainLight,
-                              fontSize: 22.spClamp,
+                        padding: EdgeInsets.all(padding),
+                        child: Transform.translate(
+                          offset: Offset(shouldShift ? -1.wClamp : 0, 0),
+                          child: Image.network(
+                            imageUrl,
+                            fit: BoxFit.contain,
+                            errorBuilder: (ctx, err, st) => Text(
+                              //이미지 로드 실패
+                              '?',
+                              style: TextStyle(
+                                color: MainColors.mainLight,
+                                fontSize: 22.spClamp,
+                              ),
                             ),
                           ),
                         ),
@@ -77,18 +94,21 @@ class CharacterBookListDetail extends StatelessWidget {
                 context: context,
                 imageUrl: item.eggImageUrl,
                 isUnlocked: eggUnlocked,
+                stage: 'egg',
               ),
               _buildIntroArrow(),
               _circleImage(
                 context: context,
                 imageUrl: item.childImageUrl,
                 isUnlocked: childUnlocked,
+                stage: 'child',
               ),
               _buildIntroArrow(),
               _circleImage(
                 context: context,
                 imageUrl: item.adultImageUrl,
                 isUnlocked: adultUnlocked,
+                stage: 'adult',
               ),
             ],
           ),

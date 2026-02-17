@@ -146,7 +146,7 @@ const InteractionEmotionOverrides interactionEmotionOverridesByStage = {
       InteractionType.idle: Emotion.sad,
     },
     Stage.adult: {
-      InteractionType.feed: Emotion.good,
+      InteractionType.feed: Emotion.angry,
       InteractionType.play: Emotion.happy,
       InteractionType.pet: Emotion.surprised,
       InteractionType.idle: Emotion.sad,
