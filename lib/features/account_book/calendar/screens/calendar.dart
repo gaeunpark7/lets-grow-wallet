@@ -48,153 +48,245 @@ class _CalendarState extends ConsumerState<Calendar> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: statAsyncValue.when(
-          data: (statMap) {
-            return emotionAsyncValue.when(
-              data: (emotionMap) {
-                return TableCalendar(
-                  locale: 'en_US',
-                  currentDay: todayKst(),
-                  focusedDay: _focusedDay,
-                  firstDay: DateTime(2025, 1, 1),
-                  lastDay: DateTime(2035, 12, 31),
-                  selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-                  onDaySelected: (selectedDay, focusedDay) {
-                    setState(() {
-                      _selectedDay = selectedDay;
-                      _focusedDay = focusedDay;
-                    });
-                  },
-                  onPageChanged: _onPageChanged,
-                  calendarFormat: CalendarFormat.month,
-                  availableCalendarFormats: const {CalendarFormat.month: '월'},
-                  rowHeight: 110.hClamp,
-                  headerStyle: HeaderStyle(
-                    formatButtonVisible: false,
-                    titleCentered: true,
-                    titleTextStyle: TextStyle(
-                      fontSize: 23.spClamp,
-                      fontWeight: FontWeight.bold,
-                      color: MainColors.mainDark,
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          Widget fullHeightCenter(Widget child) {
+            return SizedBox(
+              height: constraints.maxHeight,
+              child: Center(child: child),
+            );
+          }
+
+          //에러 처리
+          Widget fullHeightErrorWithRetry({
+            required Object error,
+            required VoidCallback onRetry,
+          }) {
+            return SizedBox(
+              height: constraints.maxHeight,
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.error_outline,
+                      color: MainColors.point,
+                      size: 40.hClamp,
                     ),
-                    decoration: const BoxDecoration(color: Colors.white),
-                    leftChevronIcon: Icon(
-                      Icons.chevron_left,
-                      color: MainColors.mainDark,
-                    ),
-                    rightChevronIcon: Icon(
-                      Icons.chevron_right,
-                      color: MainColors.mainDark,
-                    ),
-                  ),
-                  daysOfWeekHeight: 50.hClamp,
-                  daysOfWeekStyle: DaysOfWeekStyle(
-                    weekdayStyle: TextStyle(
-                      fontSize: 15.spClamp,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      letterSpacing: 1.2,
-                    ),
-                    weekendStyle: TextStyle(
-                      fontSize: 15.spClamp,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      letterSpacing: 1.2,
-                    ),
-                    decoration: BoxDecoration(
-                      color: MainColors.mainLight,
-                      borderRadius: BorderRadius.zero,
-                    ),
-                  ),
-                  calendarStyle: CalendarStyle(
-                    cellMargin: const EdgeInsets.all(2),
-                    defaultDecoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: const Color(0xFFE8EAF6)),
-                    ),
-                    todayDecoration: BoxDecoration(
-                      color: MainColors.mainLight,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: MainColors.mainLight,
-                        width: 1.5,
+                    SizedBox(height: 12.hClamp),
+                    Text(
+                      FriendlyErrorMessage.of(error),
+                      style: TextStyle(
+                        color: MainColors.mainDark,
+                        fontWeight: FontWeight.bold,
                       ),
+                      textAlign: TextAlign.center,
                     ),
-                    selectedDecoration: BoxDecoration(
-                      color: const Color(0xFF9FA8DA),
-                      borderRadius: BorderRadius.circular(8),
+                    SizedBox(height: 12.hClamp),
+                    FilledButton(
+                      onPressed: onRetry,
+                      style: FilledButton.styleFrom(
+                        backgroundColor: MainColors.mainLight,
+                        foregroundColor: Colors.white,
+                      ),
+                      child: const Text('다시 시도'),
                     ),
-                    outsideDecoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: const Color(0xFFE8EAF6)),
+                  ],
+                ),
+              ),
+            );
+          }
+
+          return SingleChildScrollView(
+            child: statAsyncValue.when(
+              data: (statMap) {
+                return emotionAsyncValue.when(
+                  data: (emotionMap) {
+                    return TableCalendar(
+                      locale: 'en_US',
+                      currentDay: todayKst(),
+                      focusedDay: _focusedDay,
+                      firstDay: DateTime(2026, 1, 1),
+                      lastDay: DateTime(2035, 12, 31),
+                      selectedDayPredicate: (day) =>
+                          isSameDay(_selectedDay, day),
+                      onDaySelected: (selectedDay, focusedDay) {
+                        setState(() {
+                          _selectedDay = selectedDay;
+                          _focusedDay = focusedDay;
+                        });
+                      },
+                      onPageChanged: _onPageChanged,
+                      calendarFormat: CalendarFormat.month,
+                      availableCalendarFormats: const {
+                        CalendarFormat.month: '월',
+                      },
+                      rowHeight: 110.hClamp,
+                      headerStyle: HeaderStyle(
+                        formatButtonVisible: false,
+                        titleCentered: true,
+                        titleTextStyle: TextStyle(
+                          fontSize: 23.spClamp,
+                          fontWeight: FontWeight.bold,
+                          color: MainColors.mainDark,
+                        ),
+                        decoration: const BoxDecoration(color: Colors.white),
+                        leftChevronIcon: Icon(
+                          Icons.chevron_left,
+                          color: MainColors.mainDark,
+                        ),
+                        rightChevronIcon: Icon(
+                          Icons.chevron_right,
+                          color: MainColors.mainDark,
+                        ),
+                      ),
+                      daysOfWeekHeight: 50.hClamp,
+                      daysOfWeekStyle: DaysOfWeekStyle(
+                        weekdayStyle: TextStyle(
+                          fontSize: 15.spClamp,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          letterSpacing: 1.2,
+                        ),
+                        weekendStyle: TextStyle(
+                          fontSize: 15.spClamp,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          letterSpacing: 1.2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: MainColors.mainLight,
+                          borderRadius: BorderRadius.zero,
+                        ),
+                      ),
+                      calendarStyle: CalendarStyle(
+                        cellMargin: const EdgeInsets.all(2),
+                        defaultDecoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: const Color(0xFFE8EAF6)),
+                        ),
+                        todayDecoration: BoxDecoration(
+                          color: MainColors.mainLight,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: MainColors.mainLight,
+                            width: 1.5,
+                          ),
+                        ),
+                        selectedDecoration: BoxDecoration(
+                          color: const Color(0xFF9FA8DA),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        outsideDecoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: const Color(0xFFE8EAF6)),
+                        ),
+                      ),
+                      calendarBuilders: CalendarBuilders(
+                        defaultBuilder: (context, day, focusedDay) {
+                          final stat =
+                              statMap[DateTime(day.year, day.month, day.day)];
+                          final emotion =
+                              emotionMap[DateTime(
+                                day.year,
+                                day.month,
+                                day.day,
+                              )];
+                          return CalendarCell(
+                            day: day,
+                            stat: stat,
+                            emotion: emotion,
+                            onTap: () => _openDetailDialog(day),
+                          );
+                        },
+                        todayBuilder: (context, day, focusedDay) {
+                          final stat =
+                              statMap[DateTime(day.year, day.month, day.day)];
+                          final emotion =
+                              emotionMap[DateTime(
+                                day.year,
+                                day.month,
+                                day.day,
+                              )];
+                          return CalendarCell(
+                            day: day,
+                            stat: stat,
+                            emotion: emotion,
+                            isToday: true,
+                            onTap: () => _openDetailDialog(day),
+                          );
+                        },
+                        selectedBuilder: (context, day, focusedDay) {
+                          final stat =
+                              statMap[DateTime(day.year, day.month, day.day)];
+                          final emotion =
+                              emotionMap[DateTime(
+                                day.year,
+                                day.month,
+                                day.day,
+                              )];
+                          return CalendarCell(
+                            day: day,
+                            stat: stat,
+                            emotion: emotion,
+                            isSelected: true,
+                            onTap: () => _openDetailDialog(day),
+                          );
+                        },
+                        outsideBuilder: (context, day, focusedDay) {
+                          final stat =
+                              statMap[DateTime(day.year, day.month, day.day)];
+                          final emotion =
+                              emotionMap[DateTime(
+                                day.year,
+                                day.month,
+                                day.day,
+                              )];
+                          return CalendarCell(
+                            day: day,
+                            stat: stat,
+                            emotion: emotion,
+                            isOutside: true,
+                          );
+                        },
+                      ),
+                    );
+                  },
+                  loading: () => fullHeightCenter(
+                    const CircularProgressIndicator(
+                      color: MainColors.mainLight,
                     ),
                   ),
-                  calendarBuilders: CalendarBuilders(
-                    defaultBuilder: (context, day, focusedDay) {
-                      final stat =
-                          statMap[DateTime(day.year, day.month, day.day)];
-                      final emotion =
-                          emotionMap[DateTime(day.year, day.month, day.day)];
-                      return CalendarCell(
-                        day: day,
-                        stat: stat,
-                        emotion: emotion,
-                        onTap: () => _openDetailDialog(day),
-                      );
-                    },
-                    todayBuilder: (context, day, focusedDay) {
-                      final stat =
-                          statMap[DateTime(day.year, day.month, day.day)];
-                      final emotion =
-                          emotionMap[DateTime(day.year, day.month, day.day)];
-                      return CalendarCell(
-                        day: day,
-                        stat: stat,
-                        emotion: emotion,
-                        isToday: true,
-                        onTap: () => _openDetailDialog(day),
-                      );
-                    },
-                    selectedBuilder: (context, day, focusedDay) {
-                      final stat =
-                          statMap[DateTime(day.year, day.month, day.day)];
-                      final emotion =
-                          emotionMap[DateTime(day.year, day.month, day.day)];
-                      return CalendarCell(
-                        day: day,
-                        stat: stat,
-                        emotion: emotion,
-                        isSelected: true,
-                        onTap: () => _openDetailDialog(day),
-                      );
-                    },
-                    outsideBuilder: (context, day, focusedDay) {
-                      final stat =
-                          statMap[DateTime(day.year, day.month, day.day)];
-                      final emotion =
-                          emotionMap[DateTime(day.year, day.month, day.day)];
-                      return CalendarCell(
-                        day: day,
-                        stat: stat,
-                        emotion: emotion,
-                        isOutside: true,
-                      );
+                  error: (error, stack) => fullHeightErrorWithRetry(
+                    error: error,
+                    onRetry: () {
+                      ref.invalidate(emotionsByMonthProvider(focusedMonth));
                     },
                   ),
                 );
               },
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (error, stack) =>
-                  Center(child: Text(FriendlyErrorMessage.of(error))),
-            );
-          },
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, stack) =>
-              Center(child: Text(FriendlyErrorMessage.of(error))),
-        ),
+              loading: () => fullHeightCenter(
+                CircularProgressIndicator(color: MainColors.mainLight),
+              ),
+              error: (error, stack) => fullHeightErrorWithRetry(
+                error: error,
+                onRetry: () {
+                  final month = DateTime(
+                    _focusedDay.year,
+                    _focusedDay.month,
+                    1,
+                  );
+                  ref
+                      .read(calendarStatNotifierProvider.notifier)
+                      .changeMonth(month);
+                },
+              ),
+            ),
+          );
+        },
       ),
     );
   }

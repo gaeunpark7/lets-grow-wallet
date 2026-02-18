@@ -7,6 +7,7 @@ import 'package:lets_grow_wallet/features/account_book/character/widgets/charact
 import 'package:lets_grow_wallet/features/account_book/character/widgets/character_page_character.dart';
 import 'package:lets_grow_wallet/features/account_book/character/widgets/character_page_level.dart';
 import 'package:lets_grow_wallet/features/account_book/character/widgets/not_character.dart';
+import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/error_page.dart';
 import 'package:lets_grow_wallet/features/account_book/model/user_character_model.dart';
 import 'package:lets_grow_wallet/features/account_book/notifier/active_character_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/services/user_character_service.dart';
@@ -138,39 +139,10 @@ class _CharacterPageState extends ConsumerState<CharacterPage> {
           ),
         ),
       ),
-      error: (e, _) => SafeArea(
-        child: Scaffold(
-          backgroundColor: Colors.white,
-          body: Center(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 24),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    FriendlyErrorMessage.of(e),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: MainColors.mainDark,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 12.hClamp),
-                  FilledButton(
-                    onPressed: () => ref
-                        .read(activeCharacterNotifierProvider.notifier)
-                        .refresh(),
-                    style: FilledButton.styleFrom(
-                      backgroundColor: MainColors.mainLight,
-                      foregroundColor: Colors.white,
-                    ),
-                    child: const Text('다시 시도'),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
+      error: (e, _) => ErrorPage(
+        errorMessage: FriendlyErrorMessage.of(e),
+        onRetry: () =>
+            ref.read(activeCharacterNotifierProvider.notifier).refresh(),
       ),
       data: (activeCharacter) {
         final levelProgress = characterLevelProgress(

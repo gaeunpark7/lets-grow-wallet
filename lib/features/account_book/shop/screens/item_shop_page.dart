@@ -10,6 +10,7 @@ import 'package:lets_grow_wallet/features/account_book/shop/widgets/shop_appbar.
 import 'package:lets_grow_wallet/features/account_book/shop/widgets/shop_item_buy_button.dart';
 import 'package:lets_grow_wallet/features/account_book/shop/widgets/shop_item_detail.dart';
 import 'package:lets_grow_wallet/features/account_book/shop/widgets/shop_item_gridview.dart';
+import 'package:lets_grow_wallet/features/account_book/stats/widgets/stats_error_page.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:lets_grow_wallet/utils/friendly_error_message.dart';
 import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
@@ -95,7 +96,11 @@ class _ItemShopPageState extends ConsumerState<ItemShopPage> {
             ),
             error: (e, st) {
               final error = FriendlyErrorMessage.resolve(e);
-              return Center(child: Text(error.message));
+              return StatsErrorPage(
+                errorMessage: error.message,
+                onRetry: () =>
+                    ref.read(characterShopNotifierProvider.notifier).refresh(),
+              );
             },
             data: (shop) {
               final items = shop.items;
@@ -115,7 +120,11 @@ class _ItemShopPageState extends ConsumerState<ItemShopPage> {
                   ),
                   SizedBox(height: 12.hClamp),
                   selectedItem == null
-                      ? const Center(child: CircularProgressIndicator())
+                      ? const Center(
+                          child: CircularProgressIndicator(
+                            color: MainColors.mainLight,
+                          ),
+                        )
                       : ShopItemDetail(item: selectedItem),
 
                   SizedBox(height: 12.hClamp),

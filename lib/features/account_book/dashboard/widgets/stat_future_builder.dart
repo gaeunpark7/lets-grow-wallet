@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:lets_grow_wallet/features/account_book/dashboard/widgets/build_total.dart';
 import 'package:lets_grow_wallet/features/account_book/model/monthly_stat_model.dart';
+import 'package:lets_grow_wallet/utils/colors.dart';
 
 class StatFutureBuilder extends StatelessWidget {
   final Future<MonthlyStat?> future;
@@ -27,7 +28,9 @@ class StatFutureBuilder extends StatelessWidget {
         // 네트워크 진행 중 - 로딩 표시
         if (snapshot.connectionState == ConnectionState.waiting ||
             snapshot.connectionState == ConnectionState.active) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(
+            child: CircularProgressIndicator(color: MainColors.mainLight),
+          );
         }
 
         // 에러 발생: 0 or 빈 텍스트

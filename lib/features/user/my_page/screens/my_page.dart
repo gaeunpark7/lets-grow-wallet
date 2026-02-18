@@ -155,7 +155,11 @@ class _MyPageState extends ConsumerState<MyPage> {
                 error: (e, _) {
                   //로그아웃 중 > 토근 완료로 인한 에러 발생시 에러뷰 대신
                   if (_isLoggingOut || _redirectedToLogin) {
-                    return const Center(child: CircularProgressIndicator());
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: MainColors.mainLight,
+                      ),
+                    );
                   }
                   return MyPageErrorView(
                     message: FriendlyErrorMessage.of(e),
@@ -168,7 +172,11 @@ class _MyPageState extends ConsumerState<MyPage> {
                 data: (userProfile) {
                   if (userProfile == null) {
                     // 로그인 정보가 없거나 아직 provider가 갱신 중인 상태
-                    return const Center(child: CircularProgressIndicator());
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: MainColors.mainLight,
+                      ),
+                    );
                   }
 
                   return ListView(

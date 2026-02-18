@@ -6,6 +6,7 @@ import 'package:lets_grow_wallet/features/account_book/character/widgets/charact
 import 'package:lets_grow_wallet/features/account_book/notifier/character_book_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/quest/widgets/quest_title.dart';
 import 'package:lets_grow_wallet/features/account_book/shop/widgets/shop_appbar.dart';
+import 'package:lets_grow_wallet/features/account_book/stats/widgets/stats_error_page.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:lets_grow_wallet/utils/friendly_error_message.dart';
 import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
@@ -51,7 +52,12 @@ class CharacterBookPage extends ConsumerWidget {
                     ),
                     error: (e, _) {
                       final error = FriendlyErrorMessage.resolve(e);
-                      return Center(child: Text(error.message));
+                      return StatsErrorPage(
+                        errorMessage: error.message,
+                        onRetry: () => ref
+                            .read(characterBookNotifierProvider.notifier)
+                            .refresh(),
+                      );
                     },
                     data: (state) {
                       final items = state.items;

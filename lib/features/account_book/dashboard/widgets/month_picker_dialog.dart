@@ -7,7 +7,7 @@ import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 Future<DateTime?> showMonthPickerDialog({
   required BuildContext context,
   required DateTime initialMonth,
-  int firstYear = 2025,
+  int firstYear = 2026,
 }) {
   final now = nowKst();
   final currentYear = now.year;

@@ -69,7 +69,7 @@ class _QuestListState extends ConsumerState<QuestList> {
                       thickness: 1,
                     ),
                     SizedBox(height: 12.hClamp),
-                    _buildDialogTile('EXP', '15'),
+                    _buildDialogTile('XP', '15'),
                     Divider(
                       color: MainColors.mainLight,
                       thickness: 1 / MediaQuery.of(context).devicePixelRatio,

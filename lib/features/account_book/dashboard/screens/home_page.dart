@@ -61,7 +61,7 @@ class _homePageState extends ConsumerState<HomePage> {
     final picked = await showMonthPickerDialog(
       context: context,
       initialMonth: selectedMonth,
-      firstYear: 2025,
+      firstYear: 2026,
     );
 
     if (picked == null) return;
@@ -144,8 +144,11 @@ class _homePageState extends ConsumerState<HomePage> {
                       key: ValueKey('table-$year-$month'),
                       transactions: transactions,
                     ),
-                    loading: () =>
-                        const Center(child: CircularProgressIndicator()),
+                    loading: () => const Center(
+                      child: CircularProgressIndicator(
+                        color: MainColors.mainLight,
+                      ),
+                    ),
                     error: (err, stack) => Center(child: Text('오류: $err')),
                   ),
             ),
@@ -211,7 +214,10 @@ class _homePageState extends ConsumerState<HomePage> {
                   // 에러 상태
                   return const Padding(
                     padding: EdgeInsets.all(16.0),
-                    child: Text("데이터를 불러오는 중 오류가 발생했습니다."),
+                    child: Text(
+                      "데이터를 불러오는 중 오류가 발생했습니다.",
+                      style: TextStyle(color: MainColors.mainDark),
+                    ),
                   );
                 }
 
@@ -219,7 +225,9 @@ class _homePageState extends ConsumerState<HomePage> {
                     snapshot.connectionState == ConnectionState.active) {
                   return const Padding(
                     padding: EdgeInsets.all(16.0),
-                    child: CircularProgressIndicator(),
+                    child: CircularProgressIndicator(
+                      color: MainColors.mainLight,
+                    ),
                   );
                 }
 

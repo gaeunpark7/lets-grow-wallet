@@ -27,7 +27,7 @@ class MonthHeader extends ConsumerWidget {
     final month = ref.watch(selectedMonthProvider);
     final label = '${month.year}년 ${month.month}월';
 
-    final minMonth = DateTime(2025, 1, 1);
+    final minMonth = DateTime(2026, 1, 1);
     final now = nowKst();
     final maxMonth = DateTime(now.year, now.month, 1);
 
@@ -51,7 +51,7 @@ class MonthHeader extends ConsumerWidget {
             final picked = await showMonthPickerDialog(
               context: context,
               initialMonth: month,
-              firstYear: 2025,
+              firstYear: 2026,
             );
 
             if (picked == null) return;
