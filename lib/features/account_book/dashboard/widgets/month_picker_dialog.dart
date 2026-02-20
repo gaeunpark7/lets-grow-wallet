@@ -61,6 +61,7 @@ Future<DateTime?> showMonthPickerDialog({
                             color: MainColors.mainDark,
                             fontSize: 16.spClamp,
                             fontWeight: FontWeight.bold,
+                            fontFamily: 'ScoreMedium',
                           ),
                         ),
                         IconButton(
@@ -117,6 +118,7 @@ Future<DateTime?> showMonthPickerDialog({
                                     : MainColors.mainDark,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 14.spClamp,
+                                fontFamily: 'ScoreMedium',
                               ),
                             ),
                           ),
@@ -132,6 +134,7 @@ Future<DateTime?> showMonthPickerDialog({
                             () => Navigator.pop(context),
                             MainColors.main,
                             MainColors.mainDark,
+
                             '취소',
                           ),
                         ),
@@ -181,7 +184,11 @@ Widget _buildButton(
       ),
       child: Text(
         text,
-        style: TextStyle(fontSize: 16.spClamp, fontWeight: FontWeight.bold),
+        style: TextStyle(
+          fontSize: 16.spClamp,
+          fontWeight: FontWeight.bold,
+          fontFamily: 'ScoreMedium',
+        ),
       ),
     ),
   );

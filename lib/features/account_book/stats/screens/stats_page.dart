@@ -6,7 +6,7 @@ import 'package:lets_grow_wallet/features/account_book/notifier/user_notifier.da
 import 'package:lets_grow_wallet/features/account_book/services/admob_service.dart';
 import 'package:lets_grow_wallet/features/account_book/stats/screens/stats_expense_view.dart';
 import 'package:lets_grow_wallet/features/account_book/stats/screens/stats_income_view.dart';
-import 'package:lets_grow_wallet/features/account_book/stats/widgets/montly_header.dart';
+import 'package:lets_grow_wallet/features/account_book/stats/widgets/month_header.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 
@@ -88,9 +88,9 @@ class _StatsPageState extends ConsumerState<StatsPage>
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _buildSelectButton(context, 0, "수입"),
+                _buildSelectButton(context, 0, "지출"),
                 const SizedBox(width: 12),
-                _buildSelectButton(context, 1, "지출"),
+                _buildSelectButton(context, 1, "수입"),
               ],
             ),
           ),
@@ -102,7 +102,7 @@ class _StatsPageState extends ConsumerState<StatsPage>
             child: TabBarView(
               controller: _tabController,
               physics: const NeverScrollableScrollPhysics(),
-              children: [StatsIncomeView(), StatsExpenseView()],
+              children: [StatsExpenseView(), StatsIncomeView()],
             ),
           ),
           //광고 배너
@@ -148,7 +148,14 @@ class _StatsPageState extends ConsumerState<StatsPage>
       onPressed: () {
         setState(() => _tabController.index = index);
       },
-      child: Text(text, style: TextStyle(fontSize: 16.spClamp)),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 16.spClamp,
+          fontFamily: 'ScoreMedium',
+          fontWeight: FontWeight.bold,
+        ),
+      ),
     );
   }
 }

@@ -12,7 +12,7 @@ class ShopAppbarPremiumDialog extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final purchaseState = ref.watch(premiumPurchaseControllerProvider);
     final isPremium = ref.watch(isPremiumProvider);
-    final priceText = purchaseState.product?.price ?? '₩4,900';
+    final priceText = purchaseState.product?.price ?? '₩3,900';
 
     return Dialog(
       backgroundColor: Colors.white,
@@ -33,6 +33,7 @@ class ShopAppbarPremiumDialog extends ConsumerWidget {
                   fontWeight: FontWeight.bold,
                   color: Color.fromARGB(255, 99, 119, 157),
                   fontSize: 18.spClamp,
+                  fontFamily: 'ScoreMedium',
                 ),
               ),
               Divider(color: MainColors.mainLight),
@@ -85,6 +86,7 @@ class ShopAppbarPremiumDialog extends ConsumerWidget {
                     style: TextStyle(
                       fontSize: 16.spClamp,
                       fontWeight: FontWeight.bold,
+                      fontFamily: 'ScoreMedium',
                     ),
                   ),
                 ),
@@ -117,11 +119,19 @@ class _buildTile extends StatelessWidget {
       children: [
         Text(
           title,
-          style: TextStyle(color: MainColors.mainDark, fontSize: 14.spClamp),
+          style: TextStyle(
+            fontFamily: 'ScoreMedium',
+            color: MainColors.mainDark,
+            fontSize: 14.spClamp,
+          ),
         ),
         Text(
           subtitle,
-          style: TextStyle(color: MainColors.mainDark, fontSize: 14.spClamp),
+          style: TextStyle(
+            fontFamily: 'ScoreMedium',
+            color: MainColors.mainDark,
+            fontSize: 14.spClamp,
+          ),
         ),
       ],
     );

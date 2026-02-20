@@ -22,7 +22,10 @@ class StatsErrorPage extends StatelessWidget {
           SizedBox(height: 12.hClamp),
           Text(
             errorMessage,
-            style: const TextStyle(color: MainColors.mainDark),
+            style: TextStyle(
+              color: MainColors.mainDark,
+              fontFamily: 'ScoreMedium',
+            ),
           ),
           SizedBox(height: 12.hClamp),
           FilledButton(
@@ -31,7 +34,7 @@ class StatsErrorPage extends StatelessWidget {
               backgroundColor: MainColors.mainLight,
               foregroundColor: Colors.white,
             ),
-            child: const Text('다시 시도'),
+            child: Text('다시 시도', style: TextStyle(fontFamily: 'ScoreMedium')),
           ),
         ],
       ),

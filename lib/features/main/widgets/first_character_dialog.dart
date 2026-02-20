@@ -25,6 +25,7 @@ class FirstCharacterDialog extends StatelessWidget {
                     fontSize: 18.spClamp,
                     color: MainColors.mainDark,
                     fontWeight: FontWeight.bold,
+                    fontFamily: 'ScoreMedium',
                   ),
                 ),
               ),
@@ -57,6 +58,7 @@ class FirstCharacterDialog extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 16.spClamp,
                       fontWeight: FontWeight.bold,
+                      fontFamily: 'ScoreMedium',
                     ),
                   ),
                 ),

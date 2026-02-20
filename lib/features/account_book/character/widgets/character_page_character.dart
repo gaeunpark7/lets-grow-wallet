@@ -43,7 +43,7 @@ class CharacterPageCharacter extends StatelessWidget {
         ? 160
         : (shouldScaleUpFlowerDog || shouldShiftMungDog
                   ? 200
-                  : (shouldScaleUpUnDuck ? 210 : 180))
+                  : (shouldScaleUpUnDuck ? 225 : 180))
               .wClamp;
     final double translateY =
         (shouldScaleUpFlowerDog || shouldShiftMungDog

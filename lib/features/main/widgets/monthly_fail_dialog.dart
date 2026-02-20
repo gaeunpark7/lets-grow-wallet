@@ -47,13 +47,18 @@ class MonthlyFailDialog extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 18.spClamp,
                   fontWeight: FontWeight.bold,
+                  fontFamily: 'ScoreMedium',
                   color: MainColors.mainDark,
                 ),
               ),
               Text(
                 goalTitle,
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 14.spClamp, color: Colors.grey[600]),
+                style: TextStyle(
+                  fontSize: 14.spClamp,
+                  fontFamily: 'ScoreMedium',
+                  color: Colors.grey[600],
+                ),
               ),
               SizedBox(height: 8.hClamp),
 
@@ -78,6 +83,7 @@ class MonthlyFailDialog extends StatelessWidget {
                     color: Colors.white,
                     fontSize: 16.spClamp,
                     fontWeight: FontWeight.bold,
+                    fontFamily: 'ScoreMedium',
                   ),
                 ),
               ),
@@ -98,11 +104,19 @@ class MonthlyFailDialog extends StatelessWidget {
       children: [
         Text(
           title,
-          style: TextStyle(fontSize: 14.spClamp, color: MainColors.mainDark),
+          style: TextStyle(
+            fontSize: 14.spClamp,
+            color: MainColors.mainDark,
+            fontFamily: 'ScoreMedium',
+          ),
         ),
         Text(
           value,
-          style: TextStyle(fontSize: 14.spClamp, color: MainColors.mainDark),
+          style: TextStyle(
+            fontSize: 14.spClamp,
+            color: MainColors.mainDark,
+            fontFamily: 'ScoreMedium',
+          ),
         ),
       ],
     );

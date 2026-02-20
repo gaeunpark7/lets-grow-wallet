@@ -7,6 +7,9 @@ import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
 import 'package:lets_grow_wallet/features/account_book/notifier/user_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/services/admob_service.dart';
 import 'package:lets_grow_wallet/features/account_book/shop/widgets/shop_appbar_premium_dialog.dart';
+import 'package:lets_grow_wallet/features/main/widgets/monthly_all_clear_dialog.dart';
+import 'package:lets_grow_wallet/features/main/widgets/monthly_clear_dialog.dart';
+import 'package:lets_grow_wallet/features/main/widgets/monthly_fail_dialog.dart';
 import 'package:lets_grow_wallet/features/user/widgets/my_page_error.dart';
 import 'package:lets_grow_wallet/features/user/widgets/my_page_userprofile.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
@@ -185,17 +188,17 @@ class _MyPageState extends ConsumerState<MyPage> {
                       SizedBox(height: 32.hClamp),
                       MyPageUserProfilePage(userProfile: userProfile),
                       SizedBox(height: 32.hClamp),
-                      Divider(color: MainColors.mainDark, thickness: 0.5),
-                      buildListTile(
-                        icon: Icons.workspace_premium_outlined,
-                        text: "프리미엄",
-                        onTap: () async {
-                          await showDialog(
-                            context: context,
-                            builder: (ctx) => ShopAppbarPremiumDialog(),
-                          );
-                        },
-                      ),
+                      // Divider(color: MainColors.mainDark, thickness: 0.5),
+                      // buildListTile(
+                      //   icon: Icons.workspace_premium_outlined,
+                      //   text: "프리미엄",
+                      //   onTap: () async {
+                      //     await showDialog(
+                      //       context: context,
+                      //       builder: (ctx) => ShopAppbarPremiumDialog(),
+                      //     );
+                      //   },
+                      // ),
                       Divider(color: MainColors.mainDark, thickness: 0.5),
                       buildListTile(
                         icon: Icons.privacy_tip_outlined,
@@ -219,6 +222,7 @@ class _MyPageState extends ConsumerState<MyPage> {
                         onTap: _isLoggingOut ? null : _logout,
                       ),
                       Divider(color: MainColors.mainDark, thickness: 0.5),
+
                       // buildListTile(
                       //   icon: Icons.delete_forever_outlined,
                       //   text: "회원탈퇴",
@@ -229,15 +233,6 @@ class _MyPageState extends ConsumerState<MyPage> {
                       //         },
                       // ),
                       // Divider(color: MainColors.mainDark, thickness: 0.5),
-                      // ElevatedButton(
-                      //   onPressed: () {
-                      //     showDialog(
-                      //       context: context,
-                      //       builder: (ctx) => MonthlyAllClearDialog(),
-                      //     );
-                      //   },
-                      //   child: Text('테스트 다이얼로그'),
-                      // ),
                     ],
                   );
                 },
@@ -285,7 +280,11 @@ class buildListTile extends StatelessWidget {
       leading: Icon(icon, color: MainColors.point, size: 28.hClamp),
       trailing: Text(
         text,
-        style: TextStyle(color: MainColors.mainDark, fontSize: 16.spClamp),
+        style: TextStyle(
+          color: MainColors.mainDark,
+          fontSize: 16.spClamp,
+          fontFamily: 'ScoreMedium',
+        ),
       ),
       onTap: onTap,
     );

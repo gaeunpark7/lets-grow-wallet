@@ -24,8 +24,9 @@ class DeleteDialog extends StatelessWidget {
                 "정말로 이 내역을 삭제하시겠습니까?",
                 style: TextStyle(
                   fontSize: 16.spClamp,
-                  color: const Color.fromARGB(255, 82, 98, 128),
+                  color: MainColors.mainDark,
                   fontWeight: FontWeight.bold,
+                  fontFamily: 'ScoreMedium',
                 ),
               ),
               SizedBox(height: 30.hClamp),
@@ -47,6 +48,7 @@ class DeleteDialog extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 16.spClamp,
                           color: MainColors.mainDark,
+                          fontFamily: 'ScoreMedium',
                         ),
                       ),
                     ),
@@ -69,6 +71,7 @@ class DeleteDialog extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 16.spClamp,
                           color: Colors.white,
+                          fontFamily: 'ScoreMedium',
                         ),
                       ),
                     ),

@@ -152,7 +152,7 @@ class _AddIncomePageState extends ConsumerState<AddIncomePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(
-                      width: 150,
+                      width: 157,
                       child: DateSelector(
                         selectedDate: selectedDate,
                         onTap: () => _selectDate(context),
@@ -163,7 +163,10 @@ class _AddIncomePageState extends ConsumerState<AddIncomePage> {
                     Expanded(
                       child: TextField(
                         controller: titleController,
-                        style: TextStyle(color: MainColors.mainDark),
+                        style: TextStyle(
+                          color: MainColors.mainDark,
+                          fontFamily: 'ScoreMedium',
+                        ),
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.zero,
@@ -184,6 +187,7 @@ class _AddIncomePageState extends ConsumerState<AddIncomePage> {
                           ),
                           hintText: "제목을 입력하세요",
                           hintStyle: TextStyle(
+                            fontFamily: 'ScoreMedium',
                             color: MainColors.mainDark.withOpacity(0.6),
                           ),
                           isDense: true,
@@ -225,7 +229,10 @@ class _AddIncomePageState extends ConsumerState<AddIncomePage> {
                 SizedBox(height: 18.hClamp),
                 TextField(
                   controller: memoController,
-                  style: TextStyle(color: MainColors.mainDark),
+                  style: TextStyle(
+                    color: MainColors.mainDark,
+                    fontFamily: 'ScoreMedium',
+                  ),
                   inputFormatters: [MaxLinesTextInputFormatter(maxLines: 4)],
                   maxLength: 50,
                   maxLines: 4,
@@ -234,6 +241,7 @@ class _AddIncomePageState extends ConsumerState<AddIncomePage> {
                     hintText: '메모 입력',
                     hintStyle: TextStyle(
                       color: MainColors.mainDark.withOpacity(0.6),
+                      fontFamily: 'ScoreMedium',
                     ),
                     border: OutlineInputBorder(borderRadius: BorderRadius.zero),
                     enabledBorder: OutlineInputBorder(
@@ -321,7 +329,13 @@ class _AddIncomePageState extends ConsumerState<AddIncomePage> {
                         }
                       }
                     },
-                    child: const Text("수입 추가"),
+                    child: Text(
+                      "수입 추가",
+                      style: TextStyle(
+                        fontFamily: 'ScoreMedium',
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ),
                 SizedBox(height: 24.hClamp),

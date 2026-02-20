@@ -49,6 +49,7 @@ class CharacterBookListDetail extends StatelessWidget {
                               style: TextStyle(
                                 color: MainColors.mainLight,
                                 fontSize: 22.spClamp,
+                                fontFamily: 'ScoreMedium',
                               ),
                             ),
                           ),
@@ -60,12 +61,14 @@ class CharacterBookListDetail extends StatelessWidget {
                         style: TextStyle(
                           color: MainColors.mainLight,
                           fontSize: 22.spClamp,
+                          fontFamily: 'ScoreMedium',
                         ),
                       ))
               : Text(
                   '?',
                   style: TextStyle(
                     color: MainColors.mainDark,
+                    fontFamily: 'ScoreMedium',
                     fontSize: 22.spClamp,
                   ),
                 ),
@@ -144,7 +147,11 @@ class CharacterBookListDetail extends StatelessWidget {
         padding: EdgeInsets.all(8.0.wClamp),
         child: Text(
           text,
-          style: TextStyle(fontSize: 14.spClamp, color: MainColors.mainDark),
+          style: TextStyle(
+            fontSize: 14.spClamp,
+            color: MainColors.mainDark,
+            fontFamily: 'ScoreMedium',
+          ),
         ),
       ),
     );

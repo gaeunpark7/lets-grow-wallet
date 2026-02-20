@@ -154,7 +154,7 @@ class _QuestPageState extends ConsumerState<QuestPage> {
 
   Widget _buildDailyQuests() {
     if (_loading)
-      return const Center(
+      return Center(
         child: CircularProgressIndicator(color: MainColors.mainLight),
       );
     return ListView.separated(

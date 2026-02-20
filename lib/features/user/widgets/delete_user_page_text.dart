@@ -4,10 +4,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class DeleteUserPageText extends StatelessWidget {
   const DeleteUserPageText({super.key});
 
-  static final _bodyStyle = TextStyle(fontSize: 16.sp);
+  static final _bodyStyle = TextStyle(
+    fontSize: 16.sp,
+    fontFamily: 'ScoreMedium',
+  );
   static final _sectionTitleStyle = TextStyle(
     fontSize: 16.sp,
     fontWeight: FontWeight.bold,
+    fontFamily: 'ScoreMedium',
   );
 
   @override
@@ -18,7 +22,7 @@ class DeleteUserPageText extends StatelessWidget {
       children: [
         Text(
           "회원 탈퇴를 진행하시면, 현재 사용 중인 계정과 관련된 모든 정보가 삭제되며 삭제된 데이터는 어떠한 경우에도 복구할 수 없습니다.",
-          style: _bodyStyle,
+          style: _bodyStyle.copyWith(fontFamily: 'ScoreMedium'),
         ),
         SizedBox(height: 12.h),
         Divider(),
@@ -76,10 +80,20 @@ class InfoSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: DeleteUserPageText._sectionTitleStyle),
+          Text(
+            title,
+            style: DeleteUserPageText._sectionTitleStyle.copyWith(
+              fontFamily: 'ScoreMedium',
+            ),
+          ),
           SizedBox(height: 6.h),
           for (final line in lines)
-            Text(line, style: DeleteUserPageText._bodyStyle),
+            Text(
+              line,
+              style: DeleteUserPageText._bodyStyle.copyWith(
+                fontFamily: 'ScoreMedium',
+              ),
+            ),
         ],
       ),
     );

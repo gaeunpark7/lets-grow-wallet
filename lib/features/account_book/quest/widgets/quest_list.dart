@@ -55,11 +55,12 @@ class _QuestListState extends ConsumerState<QuestList> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '보상 획득',
+                      '보상획득',
                       style: TextStyle(
                         color: MainColors.mainDark,
                         fontSize: 18.sp,
                         fontWeight: FontWeight.bold,
+                        fontFamily: 'ScoreMedium',
                       ),
                     ),
                     SizedBox(height: 8.hClamp),
@@ -99,6 +100,7 @@ class _QuestListState extends ConsumerState<QuestList> {
                           color: Colors.white,
                           fontSize: 16.spClamp,
                           fontWeight: FontWeight.bold,
+                          fontFamily: 'ScoreMedium',
                         ),
                       ),
                     ),
@@ -128,11 +130,19 @@ class _QuestListState extends ConsumerState<QuestList> {
       children: [
         Text(
           title,
-          style: TextStyle(fontSize: 14.sp, color: MainColors.mainDark),
+          style: TextStyle(
+            fontSize: 14.sp,
+            color: MainColors.mainDark,
+            fontFamily: 'ScoreMedium',
+          ),
         ),
         Text(
           value,
-          style: TextStyle(fontSize: 14.sp, color: MainColors.mainDark),
+          style: TextStyle(
+            fontSize: 14.sp,
+            color: MainColors.mainDark,
+            fontFamily: 'ScoreMedium',
+          ),
         ),
       ],
     );
@@ -172,7 +182,11 @@ class _QuestListState extends ConsumerState<QuestList> {
         children: [
           Text(
             subtitle,
-            style: TextStyle(fontSize: 18.sp, color: MainColors.mainDark),
+            style: TextStyle(
+              fontSize: 18.sp,
+              color: MainColors.mainDark,
+              fontFamily: 'ScoreMedium',
+            ),
           ),
           SizedBox(height: 12.hClamp),
           ClipRRect(
@@ -194,7 +208,11 @@ class _QuestListState extends ConsumerState<QuestList> {
             children: [
               Text(
                 "달성률 ${(progress * 100).toStringAsFixed(0)}%",
-                style: TextStyle(fontSize: 14.sp, color: MainColors.mainLight),
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  color: MainColors.mainLight,
+                  fontFamily: 'ScoreMedium',
+                ),
               ),
               if (canClaimReward) ...[
                 SizedBox(width: 12.wClamp),
@@ -219,7 +237,14 @@ class _QuestListState extends ConsumerState<QuestList> {
                             color: Colors.white,
                           ),
                         )
-                      : Text('보상 받기', style: TextStyle(fontSize: 14.sp)),
+                      : Text(
+                          '보상 받기',
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            fontFamily: 'ScoreMedium',
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                 ),
               ],
             ],

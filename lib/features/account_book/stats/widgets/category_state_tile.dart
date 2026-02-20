@@ -14,13 +14,13 @@ class CategoryStatList extends StatelessWidget {
     Color(0xFFC5CAE9),
     Color(0xFFE8EAF6),
     Color(0xFFF5F5FA),
-    Color.fromARGB(255, 139, 192, 217),
-    Color(0xFFB3E5FC),
-    Color(0xFFB2DFDB),
-    Color(0xFFC8E6C9),
-    Color(0xFFFFF9C4),
-    Color(0xFFFFE4B5),
-    Color.fromARGB(255, 255, 238, 238),
+    Color.fromARGB(255, 198, 230, 245),
+    Color.fromARGB(255, 211, 240, 253),
+    Color.fromARGB(255, 198, 237, 234),
+    Color.fromARGB(255, 220, 239, 221),
+    Color.fromARGB(255, 255, 251, 213),
+    Color.fromARGB(255, 253, 238, 213),
+    Color.fromARGB(255, 248, 241, 241),
   ];
 
   @override
@@ -77,6 +77,7 @@ class CategoryStatList extends StatelessWidget {
                       overflow: TextOverflow.visible,
                       style: const TextStyle(
                         color: Colors.white,
+                        fontFamily: 'ScoreMedium',
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -96,6 +97,7 @@ class CategoryStatList extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 16.spClamp,
                       color: MainColors.mainDark,
+                      fontFamily: 'ScoreMedium',
                       // fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -106,6 +108,7 @@ class CategoryStatList extends StatelessWidget {
                   style: TextStyle(
                     color: MainColors.mainDark,
                     fontSize: 16.spClamp,
+                    fontFamily: 'ScoreMedium',
                   ),
                 ),
               ],

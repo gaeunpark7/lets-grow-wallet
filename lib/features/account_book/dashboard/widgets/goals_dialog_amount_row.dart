@@ -44,7 +44,11 @@ class GoalsDialogAmountRow extends StatelessWidget {
           onPressed: enabled ? onPressed : null,
           child: Text(
             text,
-            style: TextStyle(fontSize: 16.spClamp, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              fontFamily: 'ScoreMedium',
+              fontSize: 16.spClamp,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
         SizedBox(width: 10.wClamp),
@@ -52,6 +56,10 @@ class GoalsDialogAmountRow extends StatelessWidget {
           child: SizedBox(
             height: 45,
             child: TextField(
+              style: TextStyle(
+                color: MainColors.mainDark,
+                fontFamily: 'ScoreMedium',
+              ),
               controller: textController,
               enabled: enabled && isSelected,
               keyboardType: TextInputType.number,
@@ -65,6 +73,7 @@ class GoalsDialogAmountRow extends StatelessWidget {
                 hintStyle: TextStyle(
                   color: MainColors.mainLight,
                   fontSize: 14.spClamp,
+                  fontFamily: 'ScoreMedium',
                 ),
                 border: const OutlineInputBorder(
                   borderRadius: BorderRadius.zero,

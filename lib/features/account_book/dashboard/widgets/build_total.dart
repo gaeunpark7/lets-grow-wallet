@@ -36,7 +36,11 @@ class BuildTotal extends StatelessWidget {
         text ?? "",
         textAlign: TextAlign.center,
         overflow: TextOverflow.ellipsis,
-        style: TextStyle(fontSize: 14, color: textColor),
+        style: TextStyle(
+          fontSize: 13,
+          color: textColor,
+          fontFamily: 'ScoreMedium',
+        ),
       ),
     );
   }

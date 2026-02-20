@@ -71,13 +71,18 @@ class MonthlyAllClearDialog extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 18.spClamp,
                   fontWeight: FontWeight.bold,
+                  fontFamily: 'ScoreMedium',
                   color: MainColors.mainDark,
                 ),
               ),
               Text(
                 goalTitle,
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 14.spClamp, color: Colors.grey[600]),
+                style: TextStyle(
+                  fontSize: 14.spClamp,
+                  color: Colors.grey[600],
+                  fontFamily: 'ScoreMedium',
+                ),
               ),
               SizedBox(height: 8.hClamp),
 
@@ -97,6 +102,7 @@ class MonthlyAllClearDialog extends StatelessWidget {
               ],
               _buildDialogTile("XP", "+300"),
               _buildDialogDivider(context),
+              SizedBox(height: 6.hClamp),
               // SizedBox(height: 8.hClamp),
               _buildDialogTile("Coin", "+300"),
               _buildDialogDivider(context),
@@ -109,6 +115,7 @@ class MonthlyAllClearDialog extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 16.spClamp,
                       fontWeight: FontWeight.bold,
+                      fontFamily: 'ScoreMedium',
                       color: MainColors.mainDark,
                     ),
                   ),
@@ -119,6 +126,8 @@ class MonthlyAllClearDialog extends StatelessWidget {
               SizedBox(height: 8.hClamp),
               _buildDialogTile("XP", "+50"),
               _buildDialogDivider(context),
+              SizedBox(height: 6.hClamp),
+
               _buildDialogTile("Coin", "+50"),
               _buildDialogDivider(context),
 
@@ -140,6 +149,7 @@ class MonthlyAllClearDialog extends StatelessWidget {
                     color: Colors.white,
                     fontSize: 16.spClamp,
                     fontWeight: FontWeight.bold,
+                    fontFamily: 'ScoreMedium',
                   ),
                 ),
               ),
@@ -160,11 +170,19 @@ class MonthlyAllClearDialog extends StatelessWidget {
       children: [
         Text(
           title,
-          style: TextStyle(fontSize: 14.spClamp, color: MainColors.mainDark),
+          style: TextStyle(
+            fontSize: 14.spClamp,
+            color: MainColors.mainDark,
+            fontFamily: 'ScoreMedium',
+          ),
         ),
         Text(
           value,
-          style: TextStyle(fontSize: 14.spClamp, color: MainColors.mainDark),
+          style: TextStyle(
+            fontSize: 14.spClamp,
+            color: MainColors.mainDark,
+            fontFamily: 'ScoreMedium',
+          ),
         ),
       ],
     );

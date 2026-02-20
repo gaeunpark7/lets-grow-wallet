@@ -154,7 +154,7 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(
-                      width: 150,
+                      width: 157,
                       child: DateSelector(
                         selectedDate: selectedDate,
                         onTap: () => _selectDate(context),
@@ -165,7 +165,10 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
                     Expanded(
                       child: TextField(
                         controller: titleController,
-                        style: TextStyle(color: MainColors.mainDark),
+                        style: TextStyle(
+                          color: MainColors.mainDark,
+                          fontFamily: 'ScoreMedium',
+                        ),
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.zero,
@@ -186,6 +189,7 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
                           ),
                           hintText: "제목을 입력하세요",
                           hintStyle: TextStyle(
+                            fontFamily: 'ScoreMedium',
                             color: MainColors.mainDark.withOpacity(0.6),
                           ),
                           isDense: true,
@@ -226,7 +230,10 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
                 SizedBox(height: 18.hClamp),
                 TextField(
                   controller: memoController,
-                  style: TextStyle(color: MainColors.mainDark),
+                  style: TextStyle(
+                    color: MainColors.mainDark,
+                    fontFamily: 'ScoreMedium',
+                  ),
                   inputFormatters: const [
                     MaxLinesTextInputFormatter(maxLines: 4),
                   ],
@@ -236,6 +243,7 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
                   decoration: InputDecoration(
                     hintText: '메모 입력',
                     hintStyle: TextStyle(
+                      fontFamily: 'ScoreMedium',
                       color: MainColors.mainDark.withOpacity(0.6),
                     ),
                     border: OutlineInputBorder(borderRadius: BorderRadius.zero),
@@ -334,10 +342,16 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
                     },
                     child: Text(
                       "지출 추가",
-                      style: TextStyle(color: Colors.white, fontSize: 18),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontFamily: 'ScoreMedium',
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
+
                 SizedBox(height: 24.hClamp),
               ],
             ),

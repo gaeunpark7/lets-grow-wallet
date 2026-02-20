@@ -86,6 +86,7 @@ class _LoginPageState extends State<LoginPage> {
                     color: MainColors.mainDark,
                     fontSize: 30.spClamp,
                     fontWeight: FontWeight.bold,
+                    fontFamily: 'ScoreBold',
                   ),
                 ),
                 SizedBox(height: 30.hClamp),
@@ -107,7 +108,12 @@ class _LoginPageState extends State<LoginPage> {
                   },
                   child: Text(
                     "개인정보 처리방침",
-                    style: TextStyle(color: Colors.grey, fontSize: 12.spClamp),
+                    style: TextStyle(
+                      color: Colors.grey,
+                      fontSize: 12.spClamp,
+
+                      fontFamily: 'ScoreMedium',
+                    ),
                   ),
                 ),
               ],
@@ -151,6 +157,7 @@ class LoginButton extends StatelessWidget {
             fontSize: 16.spClamp,
             color: Colors.white,
             fontWeight: FontWeight.bold,
+            fontFamily: 'ScoreMedium',
           ),
         ),
       ),

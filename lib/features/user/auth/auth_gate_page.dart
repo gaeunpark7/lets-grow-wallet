@@ -97,6 +97,7 @@ class _AuthGatePageState extends State<AuthGatePage> {
                 style: TextStyle(
                   fontSize: 26.spClamp,
                   fontWeight: FontWeight.bold,
+                  fontFamily: 'ScoreBold',
                   color: Colors.white,
                 ),
               ),

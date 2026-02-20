@@ -14,11 +14,11 @@ class TableHeader extends StatelessWidget {
         verticalInside: BorderSide(color: MainColors.point, width: 1),
       ),
       columnWidths: const {
-        0: FlexColumnWidth(1), // 날짜
-        1: FlexColumnWidth(3.5), // 내역
-        2: FlexColumnWidth(2.5), // 지출
-        3: FlexColumnWidth(1), // 카드
-        4: FlexColumnWidth(1), // 현금
+        0: FlexColumnWidth(1.0), // 날짜
+        1: FlexColumnWidth(3.4), // 내역
+        2: FlexColumnWidth(2.6), // 지출
+        3: FlexColumnWidth(1.0), // 카드
+        4: FlexColumnWidth(1.0), // 현금
       },
       children: [
         TableRow(
@@ -44,7 +44,8 @@ Widget _buildHeaderCell(String text) {
       style: TextStyle(
         fontWeight: FontWeight.bold,
         color: MainColors.mainDark,
-        fontSize: 14.spClamp,
+        fontSize: 13.spClamp,
+        fontFamily: 'ScoreMedium',
       ),
     ),
   );

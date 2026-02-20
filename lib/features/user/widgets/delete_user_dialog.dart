@@ -20,6 +20,7 @@ class DeleteUserDialog extends StatelessWidget {
               '회원탈퇴',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
+                fontFamily: 'ScoreMedium',
                 fontSize: 18.sp,
                 color: Colors.black,
               ),
@@ -27,7 +28,7 @@ class DeleteUserDialog extends StatelessWidget {
             SizedBox(height: 12.h),
             Text(
               '정말 탈퇴하시겠어요?\n삭제된 계정은 복구할 수 없습니다.',
-              style: TextStyle(fontSize: 16.sp),
+              style: TextStyle(fontSize: 16.sp, fontFamily: 'ScoreMedium'),
             ),
             SizedBox(height: 12.h),
             Row(
@@ -74,7 +75,13 @@ class DeleteUserDialog extends StatelessWidget {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         ),
         onPressed: onTap,
-        child: Text(text),
+        child: Text(
+          text,
+          style: TextStyle(
+            fontFamily: 'ScoreMedium',
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
     );
   }

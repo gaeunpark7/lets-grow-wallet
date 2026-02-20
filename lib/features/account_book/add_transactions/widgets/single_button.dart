@@ -38,6 +38,7 @@ class SingleButton extends StatelessWidget {
           style: TextStyle(
             color: selected ? Colors.white : MainColors.mainDark,
             fontWeight: FontWeight.bold,
+            fontFamily: 'ScoreMedium',
           ),
         ),
       ),

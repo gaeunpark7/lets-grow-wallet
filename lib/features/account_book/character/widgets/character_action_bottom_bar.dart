@@ -198,7 +198,11 @@ class _CharacterActionBottomBarState extends State<CharacterActionBottomBar> {
         child: Center(
           child: Text(
             text,
-            style: TextStyle(fontSize: 13.spClamp, color: MainColors.mainDark),
+            style: TextStyle(
+              fontSize: 13.spClamp,
+              color: MainColors.mainDark,
+              fontFamily: 'ScoreMedium',
+            ),
           ),
         ),
       ),

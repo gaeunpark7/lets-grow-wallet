@@ -23,6 +23,8 @@ class CharacterBookList extends StatefulWidget {
 class _CharacterBookListState extends State<CharacterBookList> {
   @override
   Widget build(BuildContext context) {
+    final items = widget.items.where((e) => e.name.trim() != '크왕').toList();
+
     return Padding(
       padding: EdgeInsets.all(12.wClamp),
       child: GridView.builder(
@@ -32,9 +34,9 @@ class _CharacterBookListState extends State<CharacterBookList> {
           mainAxisSpacing: 16.hClamp,
           childAspectRatio: 0.8, // 세로 길이 조절
         ),
-        itemCount: widget.items.length,
+        itemCount: items.length,
         itemBuilder: (context, index) {
-          final item = widget.items[index];
+          final item = items[index];
           final isSelected = item.characterId == widget.selectedCharacterId;
           final isBanHam = item.name.trim() == '반햄';
           final shouldShift = isBanHam && item.experience >= 300;

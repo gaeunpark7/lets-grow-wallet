@@ -98,6 +98,7 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                       fontWeight: FontWeight.bold,
                       fontSize: 16.spClamp,
                       color: MainColors.mainDark,
+                      fontFamily: 'ScoreMedium',
                     ),
                   ),
                   SizedBox(
@@ -130,6 +131,7 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                                 style: TextStyle(
                                   color: MainColors.mainDark,
                                   fontSize: 14.spClamp,
+                                  fontFamily: 'ScoreMedium',
                                 ),
                               ),
                             ),
@@ -149,6 +151,7 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                                 style: TextStyle(
                                   color: MainColors.mainDark,
                                   fontSize: 14.spClamp,
+                                  fontFamily: 'ScoreMedium',
                                 ),
                               ),
                             ),
@@ -199,6 +202,7 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                     style: TextStyle(
                       fontSize: 16.spClamp,
                       fontWeight: FontWeight.bold,
+                      fontFamily: 'ScoreMedium',
                     ),
                   ),
                 ),
@@ -222,6 +226,7 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
                 fontSize: 14.spClamp,
                 color: MainColors.mainDark,
                 fontWeight: FontWeight.bold,
+                fontFamily: 'ScoreMedium',
               ),
             ),
             Text(
@@ -229,6 +234,7 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
               style: TextStyle(
                 color: MainColors.mainDark,
                 fontSize: 14.spClamp,
+                fontFamily: 'ScoreMedium',
               ),
             ),
           ],
@@ -253,7 +259,11 @@ class _HomePageDetailState extends ConsumerState<HomePageDetail> {
       ),
       child: Text(
         tx.memo.isNotEmpty ? tx.memo : "작성한 메모가 없습니다.",
-        style: TextStyle(color: MainColors.mainDark, fontSize: 14.spClamp),
+        style: TextStyle(
+          color: MainColors.mainDark,
+          fontSize: 14.spClamp,
+          fontFamily: 'ScoreMedium',
+        ),
       ),
     );
   }

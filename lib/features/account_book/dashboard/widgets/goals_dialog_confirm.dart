@@ -24,9 +24,10 @@ class GoalsDialogConfirm extends StatelessWidget {
               Text(
                 "목표는 월 1회 지정할수 있으며,\n수정이 불가능합니다. 저장하시겠습니까?",
                 style: TextStyle(
-                  fontSize: 16.spClamp,
+                  fontSize: 15.spClamp,
                   color: MainColors.mainDark,
                   fontWeight: FontWeight.bold,
+                  fontFamily: 'ScoreMedium',
                 ),
               ),
               SizedBox(height: 30.hClamp),
@@ -47,6 +48,7 @@ class GoalsDialogConfirm extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 16.spClamp,
                           color: const Color.fromARGB(255, 115, 138, 180),
+                          fontFamily: 'ScoreMedium',
                         ),
                       ),
                     ),
@@ -65,6 +67,7 @@ class GoalsDialogConfirm extends StatelessWidget {
                       child: Text(
                         "저장",
                         style: TextStyle(
+                          fontFamily: 'ScoreMedium',
                           fontSize: 16.spClamp,
                           color: Colors.white,
                         ),

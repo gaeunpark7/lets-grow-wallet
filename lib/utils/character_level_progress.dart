@@ -11,12 +11,18 @@ class CharacterLevelProgress {
     required this.maxExp,
   });
 
-  double get progress => maxExp == 0 ? 0 : currentExp / maxExp;
+  double get progress {
+    if (maxExp == 0) return 0;
+    final raw = currentExp / maxExp;
+    if (raw < 0) return 0;
+    if (raw > 1) return 1;
+    return raw;
+  }
 }
 
-/// - egg: Lv.1, 0~300
-/// - child: Lv.2, 0~1000
-/// - adult: Lv.3, 항상 1000/1000
+/// egg: Lv.1, 0~300
+/// child: Lv.2, 0~1000
+/// adult: Lv.3, max=1000
 CharacterLevelProgress characterLevelProgress({
   required Stage stage,
   required int experience,
@@ -32,9 +38,9 @@ CharacterLevelProgress characterLevelProgress({
       return CharacterLevelProgress(level: 2, currentExp: current, maxExp: max);
     case Stage.adult:
       const max = 1000;
-      return const CharacterLevelProgress(
+      return CharacterLevelProgress(
         level: 3,
-        currentExp: max,
+        currentExp: experience,
         maxExp: max,
       );
   }

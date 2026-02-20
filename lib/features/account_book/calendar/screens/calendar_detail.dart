@@ -63,6 +63,7 @@ class _CalendartDetailState extends State<CalendartDetail> {
                       fontSize: 24.spClamp,
                       color: MainColors.mainDark,
                       fontWeight: FontWeight.bold,
+                      fontFamily: 'ScoreBold',
                     ),
                   ),
                   SizedBox(width: 5.wClamp),
@@ -72,6 +73,7 @@ class _CalendartDetailState extends State<CalendartDetail> {
                       fontSize: 18.spClamp,
                       color: MainColors.mainDark,
                       fontWeight: FontWeight.bold,
+                      fontFamily: 'ScoreMedium',
                     ),
                   ),
                   Spacer(),
@@ -96,7 +98,10 @@ class _CalendartDetailState extends State<CalendartDetail> {
                       return Center(
                         child: Text(
                           '데이터를 불러올 수 없습니다.',
-                          style: TextStyle(color: Colors.red),
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontFamily: 'ScoreMedium',
+                          ),
                         ),
                       );
                     }
@@ -110,6 +115,7 @@ class _CalendartDetailState extends State<CalendartDetail> {
                           style: TextStyle(
                             color: MainColors.mainDark,
                             fontSize: 14.spClamp,
+                            fontFamily: 'ScoreMedium',
                           ),
                         ),
                       );
@@ -131,6 +137,7 @@ class _CalendartDetailState extends State<CalendartDetail> {
                           style: TextStyle(
                             fontSize: 16.spClamp,
                             fontWeight: FontWeight.bold,
+                            fontFamily: 'ScoreMedium',
                             color: MainColors.income,
                           ),
                         ),
@@ -155,6 +162,7 @@ class _CalendartDetailState extends State<CalendartDetail> {
                           style: TextStyle(
                             fontSize: 16.spClamp,
                             fontWeight: FontWeight.bold,
+                            fontFamily: 'ScoreMedium',
                             color: MainColors.expense,
                           ),
                         ),
@@ -197,6 +205,8 @@ class _CalendartDetailState extends State<CalendartDetail> {
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16.spClamp,
+                        fontFamily: 'ScoreMedium',
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
@@ -229,12 +239,14 @@ class _CalendartDetailState extends State<CalendartDetail> {
                 style: TextStyle(
                   fontSize: 14.spClamp,
                   color: MainColors.mainDark,
+                  fontFamily: 'ScoreMedium',
                 ),
               ),
               Text(
                 isIncome ? '+$formattedAmount원' : '-$formattedAmount원',
                 style: TextStyle(
                   fontSize: 14.spClamp,
+                  fontFamily: 'ScoreMedium',
                   color: MainColors.mainDark,
                 ),
               ),

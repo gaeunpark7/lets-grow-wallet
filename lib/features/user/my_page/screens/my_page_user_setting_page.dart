@@ -141,7 +141,12 @@ class _MyPageSettingListTile extends StatelessWidget {
       leading: Icon(icon, color: MainColors.point, size: 28.hClamp),
       trailing: Text(
         text,
-        style: TextStyle(color: MainColors.mainDark, fontSize: 16.spClamp),
+        style: TextStyle(
+          color: MainColors.mainDark,
+          fontSize: 16.spClamp,
+
+          fontFamily: 'ScoreMedium',
+        ),
       ),
       onTap: onTap,
     );

@@ -12,19 +12,13 @@ class CategoryChartWidget extends StatelessWidget {
 
   static const _palette = <Color>[
     // Color.fromARGB(255, 92, 105, 172),
+    // Color.fromARGB(255, 112, 124, 188),
     Color(0xFF7986CB),
     Color(0xFF9FA8DA),
     Color(0xFFC5CAE9),
     Color(0xFFE8EAF6),
     Color(0xFFF5F5FA),
-    Color.fromARGB(255, 139, 192, 217),
-
-    Color(0xFFB3E5FC),
-    Color(0xFFB2DFDB),
-    Color(0xFFC8E6C9),
-    Color(0xFFFFF9C4),
-    Color(0xFFFFE4B5),
-    Color.fromARGB(255, 255, 238, 238),
+    Color.fromARGB(255, 250, 250, 250),
   ];
 
   Color _colorForIndex(int idx) => _palette[idx % _palette.length];
@@ -39,7 +33,10 @@ class CategoryChartWidget extends StatelessWidget {
         child: Center(
           child: Text(
             '데이터가 없어요.',
-            style: TextStyle(color: MainColors.mainDark),
+            style: TextStyle(
+              color: MainColors.mainDark,
+              fontFamily: 'ScoreMedium',
+            ),
           ),
         ),
       );
@@ -49,13 +46,16 @@ class CategoryChartWidget extends StatelessWidget {
     final sorted = [...data];
     sorted.sort((a, b) => b.amount.compareTo(a.amount));
 
-    // 차트 크기 키우기
+    // 차트 + 라벨을 담는 캔버스(라벨이 위/아래에서 눌리지 않도록 여백 포함)
     final chartSize = 320.0.hClamp;
     final pieRadius = 120.0.hClamp;
-    final center = Offset(chartSize / 2, chartSize / 2);
-    final labelRadius = pieRadius + 24; // 라벨 위치 반지름
     final labelWidth = 48.0.wClamp;
     final labelHeight = 28.0.hClamp;
+
+    final outerPadding = (labelHeight / 2) + 18.hClamp;
+    final outerSize = chartSize + (outerPadding * 2);
+    final center = Offset(outerSize / 2, outerSize / 2);
+    final labelRadius = pieRadius + 24.hClamp; // 라벨 위치 반지름
 
     // 파이 섹션 데이터
     final sections = List.generate(sorted.length, (i) {
@@ -79,19 +79,23 @@ class CategoryChartWidget extends StatelessWidget {
     }
 
     return SizedBox(
-      height: chartSize,
-      width: chartSize,
+      height: outerSize,
+      width: outerSize,
       child: Stack(
         clipBehavior: Clip.none,
         alignment: Alignment.center,
         children: [
-          PieChart(
-            PieChartData(
-              sections: sections,
-              centerSpaceRadius: 0,
-              sectionsSpace: 0,
-              startDegreeOffset: -90,
-              pieTouchData: PieTouchData(enabled: false),
+          SizedBox(
+            height: chartSize,
+            width: chartSize,
+            child: PieChart(
+              PieChartData(
+                sections: sections,
+                centerSpaceRadius: 0,
+                sectionsSpace: 0,
+                startDegreeOffset: -90,
+                pieTouchData: PieTouchData(enabled: false),
+              ),
             ),
           ),
           // 퍼센트 라벨 바깥에 배치 - 가운데 정렬
@@ -104,10 +108,12 @@ class CategoryChartWidget extends StatelessWidget {
             final dy = center.dy + labelRadius * sin(angle);
 
             final rawLeft = dx - (labelWidth / 2);
-            final rawTop = dy - 14;
+            final rawTop = dy - (labelHeight / 2);
 
-            final left = rawLeft.clamp(0.0, chartSize - labelWidth).toDouble();
-            final top = rawTop.clamp(0.0, chartSize - labelHeight).toDouble();
+            final left = rawLeft.clamp(0.0, outerSize - labelWidth).toDouble();
+            final top = rawTop
+                .clamp(outerPadding, outerSize - outerPadding - labelHeight)
+                .toDouble();
 
             return Positioned(
               left: left,
@@ -117,7 +123,11 @@ class CategoryChartWidget extends StatelessWidget {
                 child: Text(
                   '${percent.toStringAsFixed(0)}%',
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 18.sp, color: MainColors.mainDark),
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    color: MainColors.mainDark,
+                    fontFamily: 'ScoreMedium',
+                  ),
                 ),
               ),
             );

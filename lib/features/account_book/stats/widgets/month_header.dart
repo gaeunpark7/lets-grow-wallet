@@ -66,6 +66,7 @@ class MonthHeader extends ConsumerWidget {
               fontSize: 18.spClamp,
               color: MainColors.mainDark,
               fontWeight: FontWeight.bold,
+              fontFamily: 'ScoreMedium',
             ),
           ),
         ),

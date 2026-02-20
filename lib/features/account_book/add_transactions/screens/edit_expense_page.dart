@@ -135,6 +135,7 @@ class _EditExpensePageState extends ConsumerState<EditExpensePage> {
               fontSize: 24.spClamp,
               color: Colors.white,
               fontWeight: FontWeight.bold,
+              fontFamily: 'ScoreMedium',
             ),
           ),
           centerTitle: true,
@@ -152,7 +153,7 @@ class _EditExpensePageState extends ConsumerState<EditExpensePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(
-                      width: 150,
+                      width: 157,
                       child: DateSelector(
                         selectedDate: selectedDate,
                         onTap: () => _selectDate(context),
@@ -163,7 +164,10 @@ class _EditExpensePageState extends ConsumerState<EditExpensePage> {
                     Expanded(
                       child: TextField(
                         controller: titleController,
-                        style: const TextStyle(color: MainColors.mainDark),
+                        style: TextStyle(
+                          color: MainColors.mainDark,
+                          fontFamily: 'ScoreMedium',
+                        ),
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.zero,
@@ -171,6 +175,7 @@ class _EditExpensePageState extends ConsumerState<EditExpensePage> {
                           hintText: "제목을 입력하세요",
                           hintStyle: TextStyle(
                             color: MainColors.mainDark.withOpacity(0.6),
+                            fontFamily: 'ScoreMedium',
                           ),
                           isDense: true,
                           contentPadding: EdgeInsets.symmetric(
@@ -225,7 +230,10 @@ class _EditExpensePageState extends ConsumerState<EditExpensePage> {
                 const SizedBox(height: 18),
                 TextField(
                   controller: memoController,
-                  style: const TextStyle(color: MainColors.mainDark),
+                  style: TextStyle(
+                    color: MainColors.mainDark,
+                    fontFamily: 'ScoreMedium',
+                  ),
                   inputFormatters: [MaxLinesTextInputFormatter(maxLines: 4)],
                   maxLength: 50,
                   maxLines: 4,
@@ -234,6 +242,7 @@ class _EditExpensePageState extends ConsumerState<EditExpensePage> {
                     hintText: '메모 입력',
                     hintStyle: TextStyle(
                       color: MainColors.mainDark.withOpacity(0.6),
+                      fontFamily: 'ScoreMedium',
                     ),
                     border: OutlineInputBorder(borderRadius: BorderRadius.zero),
                     enabledBorder: OutlineInputBorder(
@@ -322,7 +331,14 @@ class _EditExpensePageState extends ConsumerState<EditExpensePage> {
                         print("수정 실패: $e");
                       }
                     },
-                    child: const Text("지출 수정"),
+                    child: Text(
+                      "지출 수정",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'ScoreMedium',
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ),
                 SizedBox(height: 24.hClamp),

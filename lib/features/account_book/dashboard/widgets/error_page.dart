@@ -27,7 +27,10 @@ class ErrorPage extends StatelessWidget {
               Text(
                 errorMessage,
                 textAlign: TextAlign.center,
-                style: TextStyle(color: MainColors.mainDark),
+                style: TextStyle(
+                  color: MainColors.mainDark,
+                  fontFamily: 'ScoreMedium',
+                ),
               ),
               SizedBox(height: 12.hClamp),
               FilledButton(
@@ -36,7 +39,13 @@ class ErrorPage extends StatelessWidget {
                   backgroundColor: MainColors.mainLight,
                   foregroundColor: Colors.white,
                 ),
-                child: const Text('다시 시도'),
+                child: Text(
+                  '다시 시도',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'ScoreMedium',
+                  ),
+                ),
               ),
             ],
           ),

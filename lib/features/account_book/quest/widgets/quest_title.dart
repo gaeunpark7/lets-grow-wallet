@@ -19,6 +19,7 @@ class QuestTitle extends StatelessWidget {
           title,
           style: TextStyle(
             color: MainColors.mainDark,
+            fontFamily: 'ScoreMedium',
             fontSize: 20.spClampBetween(min: 16, max: 20),
           ),
         ),

@@ -84,6 +84,7 @@ class _DeleteUserPageState extends State<DeleteUserPage> {
             style: TextStyle(
               color: Colors.black,
               fontWeight: FontWeight.bold,
+              fontFamily: 'ScoreMedium',
               fontSize: 18.spClampBetween(min: 16, max: 18),
             ),
           ),
@@ -165,6 +166,7 @@ class _DeleteUserFooter extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.bold,
+                      fontFamily: 'ScoreMedium',
                     ),
                   ),
                 ),
@@ -223,7 +225,11 @@ class _ActionButton extends StatelessWidget {
         onPressed: onTap,
         child: Text(
           text,
-          style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontSize: 16.sp,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'ScoreMedium',
+          ),
         ),
       ),
     );

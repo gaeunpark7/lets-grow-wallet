@@ -7,9 +7,13 @@ class DailyCategoryStatService {
   Future<List<DailyCategoryStatModel>> fetchDailyCategoryStat({
     required DateTime date,
   }) async {
+    final user = supabase.auth.currentUser;
+    if (user == null) return [];
+
     final response = await supabase
         .from('daily_category_stats')
         .select()
+        .eq('user_id', user.id)
         .eq('date', date.toIso8601String().substring(0, 10));
 
     return response

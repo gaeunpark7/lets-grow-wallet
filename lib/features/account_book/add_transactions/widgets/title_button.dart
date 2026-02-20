@@ -28,6 +28,7 @@ class TitleButton extends StatelessWidget {
             color: textColor,
             fontWeight: FontWeight.bold,
             fontSize: 18.sp,
+            fontFamily: 'ScoreMedium',
           ),
         ),
       ),

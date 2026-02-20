@@ -313,6 +313,7 @@ class _GoalDialogState extends State<GoalDialog> {
                     ),
                     labelText: "이번달의 목표는?",
                     labelStyle: TextStyle(
+                      fontFamily: 'ScoreMedium',
                       color: MainColors.mainDark,
                       fontWeight: FontWeight.bold,
                       fontSize: 18.spClamp,
@@ -381,6 +382,7 @@ class _GoalDialogState extends State<GoalDialog> {
                     style: TextStyle(
                       fontSize: 16.spClamp,
                       fontWeight: FontWeight.bold,
+                      fontFamily: 'ScoreMedium',
                     ),
                   ),
                 ),

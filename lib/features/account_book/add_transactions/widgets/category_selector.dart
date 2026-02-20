@@ -61,6 +61,7 @@ class CategorySelector extends StatelessWidget {
                   // color: isSelected ? MainColors.mainDark : Colors.black87,
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                   fontSize: 13.spClamp,
+                  fontFamily: 'ScoreMedium',
                 ),
                 textAlign: TextAlign.center,
               ),

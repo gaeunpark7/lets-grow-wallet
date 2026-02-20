@@ -79,7 +79,7 @@ class _CalendarState extends ConsumerState<Calendar> {
                       FriendlyErrorMessage.of(error),
                       style: TextStyle(
                         color: MainColors.mainDark,
-                        fontWeight: FontWeight.bold,
+                        // fontWeight: FontWeight.bold,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -130,6 +130,7 @@ class _CalendarState extends ConsumerState<Calendar> {
                           fontSize: 23.spClamp,
                           fontWeight: FontWeight.bold,
                           color: MainColors.mainDark,
+                          fontFamily: 'ScoreBold',
                         ),
                         decoration: const BoxDecoration(color: Colors.white),
                         leftChevronIcon: Icon(
@@ -148,12 +149,14 @@ class _CalendarState extends ConsumerState<Calendar> {
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                           letterSpacing: 1.2,
+                          fontFamily: 'ScoreMedium',
                         ),
                         weekendStyle: TextStyle(
                           fontSize: 15.spClamp,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                           letterSpacing: 1.2,
+                          fontFamily: 'ScoreMedium',
                         ),
                         decoration: BoxDecoration(
                           color: MainColors.mainLight,

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:lets_grow_wallet/features/account_book/notifier/month_selection_notifier.dart';
@@ -122,11 +121,12 @@ class _homePageState extends ConsumerState<HomePage> {
                       horizontal: 4.wClamp,
                     ),
                     child: Text(
-                      "$year년  $month월",
+                      "$year년 $month월",
                       style: TextStyle(
                         fontSize: 15.spClamp,
                         color: MainColors.mainDark,
                         fontWeight: FontWeight.bold,
+                        fontFamily: 'ScoreMedium',
                       ),
                     ),
                   ),

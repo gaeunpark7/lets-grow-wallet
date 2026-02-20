@@ -16,28 +16,28 @@ class ShopAppbar extends ConsumerWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        GestureDetector(
-          onTap: () async {
-            await showDialog(
-              context: context,
-              builder: (ctx) => ShopAppbarPremiumDialog(),
-            );
-          },
-          child: Container(
-            height: 40.hClamp,
-            width: 40.wClamp,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-              border: Border.all(color: MainColors.mainLight, width: 1),
-            ),
-            child: Icon(
-              Icons.workspace_premium_outlined,
-              color: MainColors.mainLight,
-              size: 24.hClamp,
-            ),
-          ),
-        ),
+        // GestureDetector(
+        //   onTap: () async {
+        //     await showDialog(
+        //       context: context,
+        //       builder: (ctx) => ShopAppbarPremiumDialog(),
+        //     );
+        //   },
+        //   child: Container(
+        //     height: 40.hClamp,
+        //     width: 40.wClamp,
+        //     decoration: BoxDecoration(
+        //       color: Colors.white,
+        //       shape: BoxShape.circle,
+        //       border: Border.all(color: MainColors.mainLight, width: 1),
+        //     ),
+        //     child: Icon(
+        //       Icons.workspace_premium_outlined,
+        //       color: MainColors.mainLight,
+        //       size: 24.hClamp,
+        //     ),
+        //   ),
+        // ),
         SizedBox(width: 10.wClamp),
         Container(
           height: 40.hClamp,

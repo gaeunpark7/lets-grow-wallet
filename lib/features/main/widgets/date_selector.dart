@@ -32,6 +32,7 @@ class DateSelector extends StatelessWidget {
               Text(
                 dateString,
                 style: const TextStyle(
+                  fontFamily: 'ScoreMedium',
                   fontSize: 16,
                   color: MainColors.mainDark,
                 ),

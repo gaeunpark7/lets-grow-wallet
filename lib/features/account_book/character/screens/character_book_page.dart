@@ -87,6 +87,7 @@ class CharacterBookPage extends ConsumerWidget {
                                 "달성률 $percent%",
                                 style: TextStyle(
                                   fontSize: 16.h,
+                                  fontFamily: 'ScoreMedium',
                                   color: MainColors.mainDark,
                                 ),
                               );
@@ -151,6 +152,7 @@ class CharacterBookPage extends ConsumerWidget {
                                       fontSize: 18.sp,
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
+                                      fontFamily: 'ScoreMedium',
                                     ),
                                   ),
                           ),

@@ -7,7 +7,6 @@ import 'package:lets_grow_wallet/features/account_book/notifier/user_notifier.da
 import 'package:lets_grow_wallet/features/user/model/user_profile_model.dart';
 import 'package:lets_grow_wallet/utils/character_interation_enum.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
-import 'package:lets_grow_wallet/utils/friendly_error_message.dart';
 import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -174,8 +173,10 @@ class _MyPageUserProfileState extends ConsumerState<MyPageUserProfilePage> {
                         Text(
                           widget.userProfile.nickname,
                           style: TextStyle(
-                            fontSize: 22.spClamp,
+                            fontSize: 20.spClamp,
                             color: MainColors.mainDark,
+                            fontFamily: 'ScoreMedium',
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                         SizedBox(height: 8.hClamp),
@@ -189,6 +190,7 @@ class _MyPageUserProfileState extends ConsumerState<MyPageUserProfilePage> {
                               style: TextStyle(
                                 fontSize: 16.spClamp,
                                 color: MainColors.mainDark,
+                                fontFamily: 'ScoreMedium',
                               ),
                             ),
                           ),
@@ -226,15 +228,17 @@ class _MyPageUserProfileState extends ConsumerState<MyPageUserProfilePage> {
                 Text(
                   "닉네임 변경",
                   style: TextStyle(
-                    fontSize: 23.spClamp,
+                    fontSize: 20.spClamp,
                     fontWeight: FontWeight.bold,
                     color: MainColors.mainDark,
+                    fontFamily: 'ScoreMedium',
                   ),
                 ),
                 SizedBox(height: 16.hClamp),
                 TextFormField(
                   controller: nicknameController,
                   style: const TextStyle(
+                    fontFamily: 'ScoreMedium',
                     color: Color.fromARGB(255, 70, 81, 100),
                   ),
                   decoration: InputDecoration(
@@ -243,6 +247,7 @@ class _MyPageUserProfileState extends ConsumerState<MyPageUserProfilePage> {
                     ),
                     hintText: "새로운 닉네임을 입력하세요.",
                     hintStyle: TextStyle(
+                      fontFamily: 'ScoreMedium',
                       color: MainColors.mainDark.withOpacity(0.5),
                     ),
                     filled: true,
@@ -271,11 +276,17 @@ class _MyPageUserProfileState extends ConsumerState<MyPageUserProfilePage> {
                 ),
                 Text(
                   "(닉네임은 7자 이하 입력 가능)",
-                  style: TextStyle(color: MainColors.mainDark),
+                  style: TextStyle(
+                    color: MainColors.mainDark,
+                    fontFamily: 'ScoreMedium',
+                  ),
                 ),
                 Text(
                   "변경 후 7일 후에 재변경 가능합니다.",
-                  style: TextStyle(color: MainColors.mainDark),
+                  style: TextStyle(
+                    color: MainColors.mainDark,
+                    fontFamily: 'ScoreMedium',
+                  ),
                 ),
                 SizedBox(height: 16.h),
                 Row(
@@ -335,7 +346,7 @@ class _buildButton extends StatelessWidget {
         elevation: 0,
       ),
       onPressed: ontap,
-      child: Text(text),
+      child: Text(text, style: TextStyle(fontFamily: 'ScoreMedium')),
     );
   }
 }

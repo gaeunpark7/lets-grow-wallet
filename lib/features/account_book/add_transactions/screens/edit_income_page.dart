@@ -132,6 +132,7 @@ class _EditIncomePageState extends ConsumerState<EditIncomePage> {
               fontSize: 24.sp,
               color: Colors.white,
               fontWeight: FontWeight.bold,
+              fontFamily: 'ScoreMedium',
             ),
           ),
           centerTitle: true,
@@ -149,7 +150,7 @@ class _EditIncomePageState extends ConsumerState<EditIncomePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(
-                      width: 150,
+                      width: 157,
                       child: DateSelector(
                         selectedDate: selectedDate,
                         onTap: () => _selectDate(context),
@@ -160,7 +161,10 @@ class _EditIncomePageState extends ConsumerState<EditIncomePage> {
                     Expanded(
                       child: TextField(
                         controller: titleController,
-                        style: const TextStyle(color: MainColors.mainDark),
+                        style: TextStyle(
+                          color: MainColors.mainDark,
+                          fontFamily: 'ScoreMedium',
+                        ),
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.zero,
@@ -168,6 +172,7 @@ class _EditIncomePageState extends ConsumerState<EditIncomePage> {
 
                           hintText: "제목을 입력하세요",
                           hintStyle: TextStyle(
+                            fontFamily: 'ScoreMedium',
                             color: MainColors.mainDark.withOpacity(0.6),
                           ),
                           isDense: true,
@@ -222,7 +227,10 @@ class _EditIncomePageState extends ConsumerState<EditIncomePage> {
                 SizedBox(height: 24.hClamp),
                 TextField(
                   controller: memoController,
-                  style: const TextStyle(color: MainColors.mainDark),
+                  style: TextStyle(
+                    color: MainColors.mainDark,
+                    fontFamily: 'ScoreMedium',
+                  ),
                   inputFormatters: [MaxLinesTextInputFormatter(maxLines: 4)],
                   maxLength: 50,
                   maxLines: 4,
@@ -231,6 +239,7 @@ class _EditIncomePageState extends ConsumerState<EditIncomePage> {
                     hintText: '메모 입력',
                     hintStyle: TextStyle(
                       color: MainColors.mainDark.withOpacity(0.6),
+                      fontFamily: 'ScoreMedium',
                     ),
                     border: OutlineInputBorder(borderRadius: BorderRadius.zero),
                     enabledBorder: OutlineInputBorder(
@@ -261,9 +270,10 @@ class _EditIncomePageState extends ConsumerState<EditIncomePage> {
                         borderRadius: BorderRadius.circular(5),
                       ),
                       elevation: 0,
-                      textStyle: const TextStyle(
-                        fontSize: 18,
+                      textStyle: TextStyle(
+                        fontSize: 18.spClamp,
                         fontWeight: FontWeight.bold,
+                        fontFamily: 'ScoreMedium',
                       ),
                     ),
                     onPressed: () async {
@@ -319,7 +329,14 @@ class _EditIncomePageState extends ConsumerState<EditIncomePage> {
                         print("수정 실패:$e");
                       }
                     },
-                    child: const Text("수입 수정"),
+                    child: Text(
+                      "수입 수정",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'ScoreMedium',
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ),
                 SizedBox(height: 24.hClamp),

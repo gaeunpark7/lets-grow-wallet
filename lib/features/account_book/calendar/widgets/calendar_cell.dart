@@ -55,6 +55,7 @@ class CalendarCell extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 16.spClamp,
                   fontWeight: FontWeight.bold,
+                  fontFamily: 'ScoreMedium',
                   color: textColor,
                 ),
               ),
@@ -76,6 +77,7 @@ class CalendarCell extends StatelessWidget {
                     '-${stat!.totalExpense}',
                     style: TextStyle(
                       fontSize: 11.spClamp,
+                      fontFamily: 'ScoreMedium',
                       color: Colors.red,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -85,6 +87,7 @@ class CalendarCell extends StatelessWidget {
                     '+${stat!.totalIncome}',
                     style: TextStyle(
                       fontSize: 11.spClamp,
+                      fontFamily: 'ScoreMedium',
                       color: Color(0xFF7986CB),
                       overflow: TextOverflow.ellipsis,
                     ),

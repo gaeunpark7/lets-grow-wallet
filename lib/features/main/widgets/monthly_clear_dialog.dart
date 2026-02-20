@@ -48,13 +48,18 @@ class MonthlyClearDialog extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 18.spClamp,
                   fontWeight: FontWeight.bold,
+                  fontFamily: 'ScoreMedium',
                   color: MainColors.mainDark,
                 ),
               ),
               Text(
                 goalTitle,
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 14.spClamp, color: Colors.grey[600]),
+                style: TextStyle(
+                  fontSize: 14.spClamp,
+                  color: Colors.grey[600],
+                  fontFamily: 'ScoreMedium',
+                ),
               ),
               SizedBox(height: 8.hClamp),
 
@@ -62,9 +67,10 @@ class MonthlyClearDialog extends StatelessWidget {
               SizedBox(height: 12.hClamp),
               _buildDialogTile(typeName, targetAmount), //소비 OR 수입, 금액
               _buildDialogDivider(context),
-              // SizedBox(height: 8.hClamp),
+              SizedBox(height: 6.hClamp),
               _buildDialogTile("XP", "+150"),
               _buildDialogDivider(context),
+              SizedBox(height: 6.hClamp),
               // SizedBox(height: 8.hClamp),
               _buildDialogTile("Coin", "+150"),
               _buildDialogDivider(context),
@@ -86,6 +92,7 @@ class MonthlyClearDialog extends StatelessWidget {
                     color: Colors.white,
                     fontSize: 16.spClamp,
                     fontWeight: FontWeight.bold,
+                    fontFamily: 'ScoreMedium',
                   ),
                 ),
               ),
@@ -106,11 +113,19 @@ class MonthlyClearDialog extends StatelessWidget {
       children: [
         Text(
           title,
-          style: TextStyle(fontSize: 14.spClamp, color: MainColors.mainDark),
+          style: TextStyle(
+            fontSize: 14.spClamp,
+            color: MainColors.mainDark,
+            fontFamily: 'ScoreMedium',
+          ),
         ),
         Text(
           value,
-          style: TextStyle(fontSize: 14.spClamp, color: MainColors.mainDark),
+          style: TextStyle(
+            fontSize: 14.spClamp,
+            color: MainColors.mainDark,
+            fontFamily: 'ScoreMedium',
+          ),
         ),
       ],
     );
