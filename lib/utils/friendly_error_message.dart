@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 enum FriendlyErrorType {
@@ -161,6 +162,22 @@ class FriendlyErrorMessage {
         type: FriendlyErrorType.auth,
         message: '인증에 실패했습니다. 다시 로그인해주세요.',
       ); // >로그인 페이지로 이동
+    }
+
+    final parts = <String>[];
+    if (e.message.isNotEmpty) parts.add(e.message);
+    final details = e.details?.toString().trim();
+    if (details != null && details.isNotEmpty) parts.add(details);
+    final hint = e.hint?.toString().trim();
+    if (hint != null && hint.isNotEmpty) parts.add(hint);
+
+    // 운영에서는 지나치게 기술적인 정보가 될 수 있어 기본 문구를 유지하되,
+    // 개발/테스트에서는 원문을 노출해서 원인 파악이 가능하도록 합니다.
+    if (kDebugMode) {
+      return FriendlyErrorMessage(
+        type: FriendlyErrorType.server,
+        message: parts.isEmpty ? e.toString() : parts.join('\n'),
+      );
     }
 
     return FriendlyErrorMessage(

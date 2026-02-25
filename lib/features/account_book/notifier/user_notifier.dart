@@ -26,9 +26,7 @@ class UserProfileNotifier extends AsyncNotifier<UserProfileModel?> {
   @override
   Future<UserProfileModel?> build() async {
     // 로그인/로그아웃 시 자동 갱신
-    ref.watch(authUserIdProvider);
-
-    final userId = Supabase.instance.client.auth.currentUser?.id;
+    final userId = ref.watch(authUserIdProvider).valueOrNull;
     if (userId == null) return null;
     return _service.getUserProfile(userId);
   }

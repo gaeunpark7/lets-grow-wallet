@@ -235,7 +235,7 @@ class _AddIncomePageState extends ConsumerState<AddIncomePage> {
                   ),
                   inputFormatters: [MaxLinesTextInputFormatter(maxLines: 4)],
                   maxLength: 50,
-                  maxLines: 4,
+                  maxLines: 3,
                   minLines: 3,
                   decoration: InputDecoration(
                     hintText: '메모 입력',

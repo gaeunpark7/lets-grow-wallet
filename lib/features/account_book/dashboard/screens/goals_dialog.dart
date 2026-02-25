@@ -144,6 +144,32 @@ class _GoalDialogState extends State<GoalDialog> {
     return selected == currentMonth;
   }
 
+  Future<bool> _didPersistAfterError({
+    required String userId,
+    required String month,
+    required bool hasExpense,
+    required bool hasIncome,
+  }) async {
+    if (!hasExpense && !hasIncome) return false;
+    try {
+      if (hasExpense) {
+        final exists = await _goalService.isGoalExists(
+          userId,
+          month,
+          'expense',
+        );
+        if (!exists) return false;
+      }
+      if (hasIncome) {
+        final exists = await _goalService.isGoalExists(userId, month, 'income');
+        if (!exists) return false;
+      }
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
   Future<void> _saveGoal() async {
     final supabase = Supabase.instance.client;
     final month =
@@ -158,9 +184,15 @@ class _GoalDialogState extends State<GoalDialog> {
 
     try {
       final title = widget.goalController.text.trim();
-      final expenseAmount = _parseAmount(widget.expenseController.text);
-      final incomeAmount = _parseAmount(widget.incomeController.text);
-      final hasAnyAmount = expenseAmount != null || incomeAmount != null;
+      final expenseAmountRaw = _parseAmount(widget.expenseController.text);
+      final incomeAmountRaw = _parseAmount(widget.incomeController.text);
+
+      final hasExpenseToSave =
+          (expenseAmountRaw != null && expenseAmountRaw > 0);
+      final hasIncomeToSave = (incomeAmountRaw != null && incomeAmountRaw > 0);
+      final hasAnyPositiveAmount = hasExpenseToSave || hasIncomeToSave;
+
+      final hasZeroAmount = expenseAmountRaw == 0 || incomeAmountRaw == 0;
 
       var hasError = false;
       if (title.isEmpty) {
@@ -170,13 +202,17 @@ class _GoalDialogState extends State<GoalDialog> {
         _titleErrorText = null;
       }
 
-      if (!hasAnyAmount) {
+      // 입력 검증: 에러 텍스트는 항상 setState로 반영
+      if (hasError) {
+        if (mounted) setState(() {});
+      }
+
+      if (!hasAnyPositiveAmount || hasZeroAmount) {
         showAppSnackBar('금액을 작성해주세요.');
         return;
       }
 
       if (hasError) {
-        if (mounted) setState(() {});
         return;
       }
 
@@ -191,20 +227,19 @@ class _GoalDialogState extends State<GoalDialog> {
       }
 
       final goalService = GoalService(supabase); //이번 달 목표가 이미 있는지 확인
-      final expenseGoals = await goalService.isGoalExists(
-        userId,
-        month,
-        'expense',
-      );
-      final incomeGoals = await goalService.isGoalExists(
-        userId,
-        month,
-        'income',
-      );
-
-      if (expenseGoals || incomeGoals) {
-        showAppSnackBar('이번 달 목표는 이미 설정되어 있습니다.');
-        return;
+      if (hasExpenseToSave) {
+        final exists = await goalService.isGoalExists(userId, month, 'expense');
+        if (exists) {
+          showAppSnackBar('이번 달 목표는 이미 설정되어 있습니다.');
+          return;
+        }
+      }
+      if (hasIncomeToSave) {
+        final exists = await goalService.isGoalExists(userId, month, 'income');
+        if (exists) {
+          showAppSnackBar('이번 달 목표는 이미 설정되어 있습니다.');
+          return;
+        }
       }
 
       final confirmed = await _showConfirmDialog();
@@ -215,29 +250,32 @@ class _GoalDialogState extends State<GoalDialog> {
         _isSaving = true;
       });
 
-      // 소비 데이터 삽입
-      if (expenseAmount != null) {
-        await supabase.from('goals').insert({
+      final rows = <Map<String, dynamic>>[];
+      final hasExpense = hasExpenseToSave;
+      final hasIncome = hasIncomeToSave;
+
+      if (hasExpense) {
+        rows.add({
           'user_id': supabase.auth.currentUser?.id,
           'month': month,
           'goal_type': 'expense',
-          'target_amount': expenseAmount,
+          'target_amount': expenseAmountRaw,
           'title': title,
-          'created_at': DateTime.now().toIso8601String(),
         });
       }
 
-      // 수입 데이터 삽입
-      if (incomeAmount != null) {
-        await supabase.from('goals').insert({
+      if (hasIncome) {
+        rows.add({
           'user_id': supabase.auth.currentUser?.id,
           'month': month,
           'goal_type': 'income',
-          'target_amount': incomeAmount, // 목표 금액
+          'target_amount': incomeAmountRaw, // 목표 금액
           'title': title,
-          'created_at': DateTime.now().toIso8601String(),
         });
       }
+
+      // 한 번의 insert로 처리해서 부분 저장/부분 실패를 방지
+      await supabase.from('goals').insert(rows);
 
       if (!mounted) return;
       if (route?.isActive == true && navigator != null && navigator.canPop()) {
@@ -246,6 +284,28 @@ class _GoalDialogState extends State<GoalDialog> {
 
       showAppSnackBar('목표가 저장되었습니다.');
     } on PostgrestException catch (e) {
+      //저장 여부 재확인 로직
+      if (userId != null) {
+        final expenseAmount = _parseAmount(widget.expenseController.text);
+        final incomeAmount = _parseAmount(widget.incomeController.text);
+        final persisted = await _didPersistAfterError(
+          userId: userId,
+          month: month,
+          hasExpense: expenseAmount != null && expenseAmount > 0,
+          hasIncome: incomeAmount != null && incomeAmount > 0,
+        );
+        if (persisted) {
+          if (mounted &&
+              route?.isActive == true &&
+              navigator != null &&
+              navigator.canPop()) {
+            navigator.pop();
+          }
+          showAppSnackBar('목표가 저장되었습니다.');
+          return;
+        }
+      }
+
       final parts = <String>[];
       if (e.message.isNotEmpty) parts.add(e.message);
       final details = e.details?.toString().trim();
@@ -254,6 +314,27 @@ class _GoalDialogState extends State<GoalDialog> {
       if (hint != null && hint.isNotEmpty) parts.add(hint);
       showAppSnackBar(parts.isEmpty ? e.toString() : parts.join('\n'));
     } catch (e) {
+      if (userId != null) {
+        final expenseAmount = _parseAmount(widget.expenseController.text);
+        final incomeAmount = _parseAmount(widget.incomeController.text);
+        final persisted = await _didPersistAfterError(
+          userId: userId,
+          month: month,
+          hasExpense: expenseAmount != null && expenseAmount > 0,
+          hasIncome: incomeAmount != null && incomeAmount > 0,
+        );
+        if (persisted) {
+          if (mounted &&
+              route?.isActive == true &&
+              navigator != null &&
+              navigator.canPop()) {
+            navigator.pop();
+          }
+          showAppSnackBar('목표가 저장되었습니다.');
+          return;
+        }
+      }
+
       showAppSnackBar('저장 중 오류가 발생했습니다.');
     } finally {
       if (mounted) {
@@ -288,6 +369,12 @@ class _GoalDialogState extends State<GoalDialog> {
                   SizedBox(height: 12.hClamp),
                 ],
                 TextField(
+                  style: TextStyle(
+                    color: const Color.fromARGB(255, 84, 99, 128),
+                    fontFamily: 'ScoreMedium',
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18.spClamp,
+                  ),
                   controller: widget.goalController,
                   enabled: !_goalAlreadySet,
                   onChanged: (value) {

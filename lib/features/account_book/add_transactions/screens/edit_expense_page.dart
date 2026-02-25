@@ -236,7 +236,7 @@ class _EditExpensePageState extends ConsumerState<EditExpensePage> {
                   ),
                   inputFormatters: [MaxLinesTextInputFormatter(maxLines: 4)],
                   maxLength: 50,
-                  maxLines: 4,
+                  maxLines: 3,
                   minLines: 3,
                   decoration: InputDecoration(
                     hintText: '메모 입력',
@@ -321,11 +321,13 @@ class _EditExpensePageState extends ConsumerState<EditExpensePage> {
                         if (!mounted) return;
 
                         final didPop = await Navigator.of(context).maybePop();
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          showAppSnackBar('수정되었습니다.');
+                        });
                         if (!didPop) {
                           if (!mounted) return;
                           context.go(Routes.home);
                         }
-                        showAppSnackBar('수정되었습니다.');
                       } catch (e) {
                         showAppSnackBar('수정에 실패하였습니다. 다시 시도해주세요.');
                         print("수정 실패: $e");

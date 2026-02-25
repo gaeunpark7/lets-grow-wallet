@@ -233,7 +233,7 @@ class _EditIncomePageState extends ConsumerState<EditIncomePage> {
                   ),
                   inputFormatters: [MaxLinesTextInputFormatter(maxLines: 4)],
                   maxLength: 50,
-                  maxLines: 4,
+                  maxLines: 3,
                   minLines: 3,
                   decoration: InputDecoration(
                     hintText: '메모 입력',
@@ -314,20 +314,26 @@ class _EditIncomePageState extends ConsumerState<EditIncomePage> {
                         createdAt: widget.transaction.createdAt,
                         type: 'income',
                       );
+
                       try {
                         await _updateTransaction(transaction, ref);
-
-                        showAppSnackBar('수정되었습니다.');
-                        if (!mounted) return;
-                        if (context.canPop()) {
-                          context.pop();
-                        } else {
-                          context.go(Routes.home);
-                        }
                       } catch (e) {
-                        showAppSnackBar('수정 실패에 실패하였습니다. 다시 시도해주세요.');
-                        print("수정 실패:$e");
+                        showAppSnackBar('수정에 실패하였습니다. 다시 시도해주세요.');
+                        print('수정 실패: $e');
+                        return;
                       }
+
+                      if (!mounted) return;
+
+                      if (context.canPop()) {
+                        context.pop();
+                      } else {
+                        context.go(Routes.home);
+                      }
+
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        showAppSnackBar('수정되었습니다.');
+                      });
                     },
                     child: Text(
                       "수입 수정",

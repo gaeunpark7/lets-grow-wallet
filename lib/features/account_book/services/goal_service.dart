@@ -11,19 +11,16 @@ class GoalService {
     String month,
     String goalType,
   ) async {
-    final response = await _client
+    final resp = await _client
         .from('goals')
-        .select()
+        .select('id')
         .eq('user_id', userId)
         .eq('month', month)
         .eq('goal_type', goalType)
-        .maybeSingle(); // 단일 결과
+        .limit(1);
 
-    if (response == null) {
-      return false;
-    }
-
-    return true;
+    final rows = (resp as List?) ?? const [];
+    return rows.isNotEmpty;
   }
 
   // 목표 저장- 중복방지

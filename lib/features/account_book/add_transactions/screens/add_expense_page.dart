@@ -237,7 +237,7 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
                   inputFormatters: const [
                     MaxLinesTextInputFormatter(maxLines: 4),
                   ],
-                  maxLines: 4,
+                  maxLines: 3,
                   minLines: 3,
                   maxLength: 50,
                   decoration: InputDecoration(

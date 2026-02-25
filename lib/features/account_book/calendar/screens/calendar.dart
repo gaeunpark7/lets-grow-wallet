@@ -107,7 +107,7 @@ class _CalendarState extends ConsumerState<Calendar> {
                       locale: 'en_US',
                       currentDay: todayKst(),
                       focusedDay: _focusedDay,
-                      firstDay: DateTime(2026, 1, 1),
+                      firstDay: DateTime(2025, 12, 1),
                       lastDay: DateTime(2035, 12, 31),
                       selectedDayPredicate: (day) =>
                           isSameDay(_selectedDay, day),

@@ -31,7 +31,7 @@ class CharacterPageLevel extends StatelessWidget {
                 level,
                 style: TextStyle(
                   color: MainColors.mainDark,
-                  // fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.bold,
                   fontFamily: 'ScoreMedium',
                   fontSize: 24.spClampBetween(min: 20, max: 24),
                 ),
@@ -43,8 +43,8 @@ class CharacterPageLevel extends StatelessWidget {
                     characterName,
                     style: TextStyle(
                       color: MainColors.mainDark,
-                      // fontWeight: FontWeight.bold,
                       fontFamily: 'ScoreMedium',
+                      fontWeight: FontWeight.bold,
                       fontSize: 24.spClampBetween(min: 20, max: 24),
                     ),
                   ),

@@ -118,16 +118,27 @@ class _MyPageUserProfileState extends ConsumerState<MyPageUserProfilePage> {
 
                       final isBanHam =
                           (activeCharacter?.characterName.trim() ?? '') == '반햄';
+
                       final shouldShift =
                           isBanHam && (activeCharacter?.stage != Stage.egg);
 
+                      final isTomato =
+                          (activeCharacter?.characterName.trim() ?? '') ==
+                          '멋쟁이 토마토';
+
+                      final shouldScaleDownTomato =
+                          isTomato && (activeCharacter?.stage != Stage.egg);
+
+                      final imageSize = shouldScaleDownTomato
+                          ? 60.rClamp
+                          : 80.rClamp;
                       if (imageUrl.isEmpty)
                         return _buildProfileAvatarFallbackIcon();
 
                       final image = Image.network(
                         imageUrl,
-                        width: 80.rClamp,
-                        height: 80.rClamp,
+                        width: imageSize,
+                        height: imageSize,
                         fit: BoxFit.contain,
                         gaplessPlayback: true,
                         errorBuilder: (context, error, stackTrace) {

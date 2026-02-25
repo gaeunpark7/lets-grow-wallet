@@ -29,8 +29,8 @@ class UserProfileModel {
           ? DateTime.tryParse(map['premium_purchased_at'].toString())
           : null,
       characterImageUrl: map['character_image_url'] ?? '',
-      createdAt: map['created_at'] != null
-          ? DateTime.parse(map['created_at'])
+      createdAt: map['create_at'] != null
+          ? DateTime.parse(map['create_at'])
           : null,
       updatedAt: map['updated_at'] != null
           ? DateTime.parse(map['updated_at'])
@@ -46,7 +46,7 @@ class UserProfileModel {
       'is_premium': isPremium,
       'premium_purchased_at': premiumPurchasedAt?.toIso8601String(),
       'character_image_url': characterImageUrl,
-      'created_at': createdAt?.toIso8601String(),
+      'create_at': createdAt?.toIso8601String(),
       'updated_at': updatedAt?.toIso8601String(),
     };
   }

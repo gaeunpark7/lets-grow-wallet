@@ -15,11 +15,8 @@ class UserProfileService {
   Future<UserProfileModel?> getUserProfile(String userId) async {
     final response = await supabase
         .from('user')
-        .select(
-          '''id, nickname, email, is_premium, premium_purchased_at, user_characters!inner(is_active, characters(character_images(image_url)))''',
-        )
+        .select('id, nickname, email, is_premium, premium_purchased_at')
         .eq('id', userId)
-        .eq('user_characters.is_active', true)
         .maybeSingle();
 
     if (response == null) return null;

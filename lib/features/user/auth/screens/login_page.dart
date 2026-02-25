@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lets_grow_wallet/app/router/route_paths.dart';
@@ -14,7 +16,10 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  String redrectUrl = 'com.example.letsgrowwallet://login-callback';
+  static const String _redirectUrl =
+      'com.example.letsgrowwallet://login-callback';
+
+  StreamSubscription<AuthState>? _authStateSub;
 
   @override
   void initState() {
@@ -22,8 +27,21 @@ class _LoginPageState extends State<LoginPage> {
     _setupAuthListener();
   }
 
+  @override
+  void dispose() {
+    _authStateSub?.cancel();
+    super.dispose();
+  }
+
   void _setupAuthListener() {
-    Supabase.instance.client.auth.onAuthStateChange.listen((data) {
+    _authStateSub?.cancel();
+    _authStateSub = Supabase.instance.client.auth.onAuthStateChange.listen((
+      data,
+    ) {
+      debugPrint(
+        'Auth event: ${data.event} user: ${data.session?.user.email ?? '(none)'}',
+      );
+
       if (data.event == AuthChangeEvent.signedIn && mounted) {
         context.go(Routes.loginCallback);
       }
@@ -35,7 +53,8 @@ class _LoginPageState extends State<LoginPage> {
     try {
       await Supabase.instance.client.auth.signInWithOAuth(
         OAuthProvider.google,
-        redirectTo: redrectUrl,
+        redirectTo: _redirectUrl,
+        queryParams: const {'prompt': 'select_account'},
       );
     } catch (e) {
       print('구글 로그인 시작 오류: $e');
@@ -51,7 +70,7 @@ class _LoginPageState extends State<LoginPage> {
     try {
       await Supabase.instance.client.auth.signInWithOAuth(
         OAuthProvider.kakao,
-        redirectTo: redrectUrl,
+        redirectTo: _redirectUrl,
       );
     } catch (e) {
       if (mounted) {
