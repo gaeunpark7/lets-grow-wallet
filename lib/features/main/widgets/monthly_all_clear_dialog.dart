@@ -102,7 +102,7 @@ class MonthlyAllClearDialog extends StatelessWidget {
               ],
               _buildDialogTile("XP", "+300"),
               _buildDialogDivider(context),
-              SizedBox(height: 6.hClamp),
+              // SizedBox(height: 6.hClamp),
               // SizedBox(height: 8.hClamp),
               _buildDialogTile("Coin", "+300"),
               _buildDialogDivider(context),

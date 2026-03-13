@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lets_grow_wallet/app/router/route_paths.dart';
 import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
@@ -82,61 +83,69 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        body: Center(
-          child: Padding(
-            padding: EdgeInsets.all(18.wClamp),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset(
-                  'assets/icons/app_icon2.png',
-                  color: MainColors.mainLight,
-                  width: 120.wClamp,
-                  height: 130.hClamp,
-                ),
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.white,
+        systemNavigationBarColor: Colors.white,
+      ),
+    );
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Center(
+        child: Padding(
+          padding: EdgeInsets.all(18.wClamp),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                'assets/icons/app_icon2.png',
+                color: MainColors.mainLight,
+                width: 120.wClamp,
+                height: 130.hClamp,
+              ),
 
-                SizedBox(height: 10.hClamp),
-                Text(
-                  "레츠고 가계부",
+              SizedBox(height: 20.hClamp),
+              Text(
+                "레츠고 가계부",
+                style: TextStyle(
+                  color: MainColors.mainDark,
+                  fontSize: 30.spClamp,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'ScoreBold',
+                ),
+              ),
+              SizedBox(height: 30.hClamp),
+              LoginButton(
+                backcolor: Colors.white,
+                borderColor: Colors.black,
+                text: "구글 계정으로 계속하기",
+                assetPath: 'assets/login/google_icon.png',
+                onPressed: _signInWithGoogle,
+              ),
+              SizedBox(height: 10.hClamp),
+              LoginButton(
+                backcolor: Color(0xFFfee500),
+                borderColor: Color(0xFFfee500),
+                text: "카카오 계정으로 계속하기",
+                assetPath: 'assets/login/kakao_icon.png',
+                onPressed: _signInWithKakao,
+              ),
+
+              SizedBox(height: 5.hClamp),
+              GestureDetector(
+                onTap: () {
+                  context.push(Routes.privacyPolicy);
+                },
+                child: Text(
+                  "개인정보 처리방침",
                   style: TextStyle(
-                    color: MainColors.mainDark,
-                    fontSize: 30.spClamp,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'ScoreBold',
+                    color: Colors.grey,
+                    fontSize: 12.spClamp,
+                    fontFamily: 'ScoreMedium',
                   ),
                 ),
-                SizedBox(height: 30.hClamp),
-                LoginButton(
-                  backcolor: Color(0xFF7da8ff),
-                  text: "구글 계정으로 로그인",
-                  onPressed: _signInWithGoogle,
-                ),
-                SizedBox(height: 10.hClamp),
-                LoginButton(
-                  backcolor: Color(0xFFf6e762),
-                  text: "카카오톡 계정으로 로그인",
-                  onPressed: _signInWithKakao,
-                ),
-                SizedBox(height: 5.hClamp),
-                GestureDetector(
-                  onTap: () {
-                    context.push(Routes.privacyPolicy);
-                  },
-                  child: Text(
-                    "개인정보 처리방침",
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 12.spClamp,
-
-                      fontFamily: 'ScoreMedium',
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -146,13 +155,17 @@ class _LoginPageState extends State<LoginPage> {
 
 class LoginButton extends StatelessWidget {
   final Color backcolor;
+  final Color borderColor;
   final String text;
+  final String assetPath;
   final VoidCallback onPressed;
 
   const LoginButton({
     super.key,
     required this.backcolor,
+    required this.borderColor,
     required this.text,
+    required this.assetPath,
     required this.onPressed,
   });
 
@@ -165,19 +178,27 @@ class LoginButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: backcolor,
           shape: RoundedRectangleBorder(
+            side: BorderSide(color: borderColor, width: 0.5),
             borderRadius: BorderRadius.circular(5.rClamp),
           ),
           shadowColor: Colors.transparent,
         ),
         onPressed: onPressed,
-        child: Text(
-          text,
-          style: TextStyle(
-            fontSize: 16.spClamp,
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontFamily: 'ScoreMedium',
-          ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(assetPath, width: 24.wClamp, height: 24.hClamp),
+            SizedBox(width: 10.wClamp),
+            Text(
+              text,
+              style: TextStyle(
+                fontSize: 16.spClamp,
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'ScoreMedium',
+              ),
+            ),
+          ],
         ),
       ),
     );

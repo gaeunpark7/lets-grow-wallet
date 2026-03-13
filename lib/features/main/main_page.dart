@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lets_grow_wallet/app/router/route_paths.dart';
 import 'package:lets_grow_wallet/features/account_book/services/daily_quest_service.dart';
@@ -25,7 +26,13 @@ class _MainPageState extends State<MainPage> {
   void initState() {
     super.initState();
     final user = Supabase.instance.client.auth.currentUser;
-
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        // statusBarColor: Colors.black,0
+        systemNavigationBarColor: Colors.white,
+        systemNavigationBarIconBrightness: Brightness.dark,
+      ),
+    );
     if (user != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         try {

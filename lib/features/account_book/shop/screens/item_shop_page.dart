@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
 import 'package:lets_grow_wallet/features/account_book/model/character_model.dart';
@@ -30,7 +31,12 @@ class _ItemShopPageState extends ConsumerState<ItemShopPage> {
   @override
   void initState() {
     super.initState();
-
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: MainColors.mainLight,
+        systemNavigationBarColor: Colors.white,
+      ),
+    );
     _premiumSubscription = ref.listenManual<bool>(isPremiumProvider, (
       prev,
       next,
@@ -78,90 +84,89 @@ class _ItemShopPageState extends ConsumerState<ItemShopPage> {
   Widget build(BuildContext context) {
     final isPremium = ref.watch(isPremiumProvider);
     final shopAsync = ref.watch(characterShopNotifierProvider);
-    return SafeArea(
-      child: Scaffold(
+
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        scrolledUnderElevation: 0,
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          scrolledUnderElevation: 0,
-          backgroundColor: Colors.white,
-          elevation: 0,
-          title: const ShopAppbar(),
-          iconTheme: IconThemeData(color: MainColors.mainDark),
-        ),
-        body: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24.wClamp),
-          child: shopAsync.when(
-            loading: () => Center(
-              child: CircularProgressIndicator(color: MainColors.mainLight),
-            ),
-            error: (e, st) {
-              final error = FriendlyErrorMessage.resolve(e);
-              return StatsErrorPage(
-                errorMessage: error.message,
-                onRetry: () =>
-                    ref.read(characterShopNotifierProvider.notifier).refresh(),
-              );
-            },
-            data: (shop) {
-              final items = shop.items;
-              final CharacterModel? selectedItem = shop.selectedItem;
-
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  ShopItemGridview(
-                    items: items,
-                    onItemSelected: (item) {
-                      ref
-                          .read(characterShopNotifierProvider.notifier)
-                          .selectItem(item);
-                    },
-                  ),
-                  SizedBox(height: 12.hClamp),
-                  selectedItem == null
-                      ? const Center(
-                          child: CircularProgressIndicator(
-                            color: MainColors.mainLight,
-                          ),
-                        )
-                      : ShopItemDetail(item: selectedItem),
-
-                  SizedBox(height: 12.hClamp),
-                  ShopItemBuyButton(
-                    isPurchased: selectedItem?.isPurchased ?? false,
-                    onPressed: shop.isPurchasing
-                        ? null
-                        : () async {
-                            try {
-                              await ref
-                                  .read(characterShopNotifierProvider.notifier)
-                                  .purchaseSelected();
-                            } on InsufficientCoinException {
-                              showAppSnackBar('코인이 부족합니다.');
-                            } catch (e) {
-                              showAppSnackBar('구매에 실패하였습니다.');
-                              print('아이템 구매 실패: $e');
-                            }
-                          },
-                  ),
-                  SizedBox(height: 12.hClamp),
-                ],
-              );
-            },
+        elevation: 0,
+        title: const ShopAppbar(),
+        iconTheme: IconThemeData(color: MainColors.mainDark),
+      ),
+      body: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 24.wClamp),
+        child: shopAsync.when(
+          loading: () => Center(
+            child: CircularProgressIndicator(color: MainColors.mainLight),
           ),
+          error: (e, st) {
+            final error = FriendlyErrorMessage.resolve(e);
+            return StatsErrorPage(
+              errorMessage: error.message,
+              onRetry: () =>
+                  ref.read(characterShopNotifierProvider.notifier).refresh(),
+            );
+          },
+          data: (shop) {
+            final items = shop.items;
+            final CharacterModel? selectedItem = shop.selectedItem;
+
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                ShopItemGridview(
+                  items: items,
+                  onItemSelected: (item) {
+                    ref
+                        .read(characterShopNotifierProvider.notifier)
+                        .selectItem(item);
+                  },
+                ),
+                SizedBox(height: 12.hClamp),
+                selectedItem == null
+                    ? const Center(
+                        child: CircularProgressIndicator(
+                          color: MainColors.mainLight,
+                        ),
+                      )
+                    : ShopItemDetail(item: selectedItem),
+
+                SizedBox(height: 12.hClamp),
+                ShopItemBuyButton(
+                  isPurchased: selectedItem?.isPurchased ?? false,
+                  onPressed: shop.isPurchasing
+                      ? null
+                      : () async {
+                          try {
+                            await ref
+                                .read(characterShopNotifierProvider.notifier)
+                                .purchaseSelected();
+                          } on InsufficientCoinException {
+                            showAppSnackBar('코인이 부족합니다.');
+                          } catch (e) {
+                            showAppSnackBar('구매에 실패하였습니다.');
+                            print('아이템 구매 실패: $e');
+                          }
+                        },
+                ),
+                SizedBox(height: 12.hClamp),
+              ],
+            );
+          },
         ),
-        // 구매 버튼 하단 광고
-        bottomNavigationBar: SafeArea(
-          top: false,
-          child: Container(
-            width: double.infinity,
-            height: 60.hClamp,
-            alignment: Alignment.center,
-            child: (!isPremium && _bannerAd != null)
-                ? AdWidget(ad: _bannerAd!)
-                : const SizedBox.shrink(),
-          ),
+      ),
+      // 구매 버튼 하단 광고
+      bottomNavigationBar: SafeArea(
+        top: false,
+        child: Container(
+          width: double.infinity,
+          height: 60.hClamp,
+          alignment: Alignment.center,
+          child: (!isPremium && _bannerAd != null)
+              ? AdWidget(ad: _bannerAd!)
+              : const SizedBox.shrink(),
         ),
       ),
     );

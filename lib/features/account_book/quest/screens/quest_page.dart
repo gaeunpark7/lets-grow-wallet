@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
@@ -30,7 +31,12 @@ class _QuestPageState extends ConsumerState<QuestPage> {
   @override
   void initState() {
     super.initState();
-
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.white,
+        systemNavigationBarColor: Colors.white,
+      ),
+    );
     _premiumSubscription = ref.listenManual<bool>(isPremiumProvider, (
       prev,
       next,
@@ -206,58 +212,59 @@ class _QuestPageState extends ConsumerState<QuestPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          iconTheme: IconThemeData(color: MainColors.mainDark),
-          title: const ShopAppbar(),
-        ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.only(
-              top: 0,
-              left: 12.wClamp,
-              right: 12.wClamp,
-              bottom: 12.hClamp,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 20.wClamp,
-                    vertical: 18.hClamp,
-                  ),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: MainColors.mainLight),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      QuestTitle(title: "일일 미션"),
-                      SizedBox(height: 6.hClamp),
-                      QuestStar(
-                        claimedCount: _todayQuests
-                            .where((q) => q.isCompleted && q.rewardGiven)
-                            .length,
-                      ),
-                      SizedBox(height: 12.hClamp),
-                      _buildDailyQuests(),
-
-                      // const SizedBox(height: 12),
-                      // QuestTitle(title: "월별 미션"),
-                      // const SizedBox(height: 12),
-                      // _buildMonthlyGoals(MediaQuery.of(context).size.width),
-                    ],
-                  ),
+        iconTheme: IconThemeData(color: MainColors.mainDark),
+        title: const ShopAppbar(),
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.only(
+            top: 0,
+            left: 12.wClamp,
+            right: 12.wClamp,
+            bottom: 12.hClamp,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 20.wClamp,
+                  vertical: 18.hClamp,
                 ),
-              ],
-            ),
+                decoration: BoxDecoration(
+                  border: Border.all(color: MainColors.mainLight),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    QuestTitle(title: "일일 미션"),
+                    SizedBox(height: 6.hClamp),
+                    QuestStar(
+                      claimedCount: _todayQuests
+                          .where((q) => q.isCompleted && q.rewardGiven)
+                          .length,
+                    ),
+                    SizedBox(height: 12.hClamp),
+                    _buildDailyQuests(),
+
+                    // const SizedBox(height: 12),
+                    // QuestTitle(title: "월별 미션"),
+                    // const SizedBox(height: 12),
+                    // _buildMonthlyGoals(MediaQuery.of(context).size.width),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
-        bottomNavigationBar: SizedBox(
+      ),
+      bottomNavigationBar: SafeArea(
+        top: false,
+        child: SizedBox(
           height: 80.hClamp,
           width: _bannerAd?.size.width.toDouble() ?? 0,
           child: _bannerAd != null

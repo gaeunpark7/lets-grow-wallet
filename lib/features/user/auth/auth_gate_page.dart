@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lets_grow_wallet/app/router/route_paths.dart';
 import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
@@ -74,55 +75,59 @@ class _AuthGatePageState extends State<AuthGatePage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: MainColors.mainLight,
-        body: Padding(
-          padding: EdgeInsets.all(12.wClamp),
-          child: Column(
-            // mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Spacer(),
-              SizedBox(height: 20.hClamp),
-              Image.asset(
-                'assets/icons/app_icon2.png',
-                width: 120.wClamp,
-                height: 120.hClamp,
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: MainColors.mainLight,
+        systemNavigationBarColor: MainColors.mainLight,
+      ),
+    );
+    return Scaffold(
+      backgroundColor: MainColors.mainLight,
+      body: Padding(
+        padding: EdgeInsets.all(12.wClamp),
+        child: Column(
+          // mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Spacer(),
+            // SizedBox(height: 20.hClamp),
+            Image.asset(
+              'assets/icons/app_icon2.png',
+              width: 120.wClamp,
+              height: 120.hClamp,
+            ),
+            SizedBox(height: 10.hClamp),
+            Text(
+              "레츠고 가계부",
+              style: TextStyle(
+                fontSize: 26.spClamp,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'ScoreBold',
+                color: Colors.white,
               ),
-              SizedBox(height: 8.hClamp),
-              Text(
-                "레츠고 가계부",
-                style: TextStyle(
-                  fontSize: 26.spClamp,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'ScoreBold',
-                  color: Colors.white,
+            ),
+            SizedBox(height: 15.hClamp),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 80.wClamp),
+              child: Visibility(
+                visible: _isLoading,
+                maintainSize: true,
+                maintainAnimation: true,
+                maintainState: true,
+                child: LinearProgressIndicator(
+                  minHeight: 12.hClamp,
+                  backgroundColor: Colors.white.withOpacity(0.25),
+                  valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+                  borderRadius: BorderRadius.circular(999),
                 ),
               ),
-              SizedBox(height: 24.hClamp),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 80.wClamp),
-                child: Visibility(
-                  visible: _isLoading,
-                  maintainSize: true,
-                  maintainAnimation: true,
-                  maintainState: true,
-                  child: LinearProgressIndicator(
-                    minHeight: 10.hClamp,
-                    backgroundColor: Colors.white.withOpacity(0.25),
-                    valueColor: const AlwaysStoppedAnimation<Color>(
-                      Colors.white,
-                    ),
-                    borderRadius: BorderRadius.circular(999),
-                  ),
-                ),
-              ),
-              Spacer(),
-              Spacer(),
-            ],
-          ),
+            ),
+            Spacer(),
+            SizedBox(height: 60.hClamp),
+
+            // Spacer(),
+          ],
         ),
       ),
     );

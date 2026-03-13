@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lets_grow_wallet/app/router/route_paths.dart';
@@ -72,58 +73,62 @@ class _DeleteUserPageState extends State<DeleteUserPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.white,
+        systemNavigationBarColor: Colors.white,
+      ),
+    );
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        scrolledUnderElevation: 0,
+        centerTitle: true,
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          scrolledUnderElevation: 0,
-          centerTitle: true,
-          backgroundColor: Colors.white,
-          title: Text(
-            '회원탈퇴',
-            style: TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-              fontFamily: 'ScoreMedium',
-              fontSize: 18.spClampBetween(min: 16, max: 18),
-            ),
+        title: Text(
+          '회원탈퇴',
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'ScoreMedium',
+            fontSize: 18.spClampBetween(min: 16, max: 18),
           ),
         ),
-        body: Column(
-          children: [
-            if (_isDeleting) const LinearProgressIndicator(minHeight: 2),
-            Expanded(
+      ),
+      body: Column(
+        children: [
+          if (_isDeleting) const LinearProgressIndicator(minHeight: 2),
+          Expanded(
+            child: AbsorbPointer(
+              absorbing: _isDeleting,
+              child: SingleChildScrollView(
+                child: const Padding(
+                  padding: EdgeInsets.fromLTRB(12, 12, 12, 180),
+                  child: DeleteUserPageText(),
+                ),
+              ),
+            ),
+          ),
+          SafeArea(
+            top: false,
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
+              // decoration: const BoxDecoration(
+              //   color: Colors.white,
+              //   border: Border(top: BorderSide(color: Color(0xFFE0E0E0))),
+              // ),
               child: AbsorbPointer(
                 absorbing: _isDeleting,
-                child: SingleChildScrollView(
-                  child: const Padding(
-                    padding: EdgeInsets.fromLTRB(12, 12, 12, 180),
-                    child: DeleteUserPageText(),
-                  ),
+                child: _DeleteUserFooter(
+                  agreed: _agreedToDelete,
+                  onAgreeChanged: _toggleAgree,
+                  onCancel: () => Navigator.pop(context, false),
+                  onDelete: _confirmDelete,
                 ),
               ),
             ),
-            SafeArea(
-              top: false,
-              child: Container(
-                padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
-                // decoration: const BoxDecoration(
-                //   color: Colors.white,
-                //   border: Border(top: BorderSide(color: Color(0xFFE0E0E0))),
-                // ),
-                child: AbsorbPointer(
-                  absorbing: _isDeleting,
-                  child: _DeleteUserFooter(
-                    agreed: _agreedToDelete,
-                    onAgreeChanged: _toggleAgree,
-                    onCancel: () => Navigator.pop(context, false),
-                    onDelete: _confirmDelete,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

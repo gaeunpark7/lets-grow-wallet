@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lets_grow_wallet/app/router/route_paths.dart';
@@ -35,7 +36,6 @@ class _CharacterPageState extends ConsumerState<CharacterPage> {
   @override
   void initState() {
     super.initState();
-
     _activeCharacterSubscription = ref
         .listenManual<AsyncValue<UserCharacterModel?>>(
           activeCharacterNotifierProvider,
@@ -129,14 +129,18 @@ class _CharacterPageState extends ConsumerState<CharacterPage> {
   @override
   Widget build(BuildContext context) {
     final activeCharacterAsync = ref.watch(activeCharacterNotifierProvider);
+    const overlayStyle = SystemUiOverlayStyle(
+      statusBarColor: Colors.white,
+      statusBarIconBrightness: Brightness.dark,
+      systemNavigationBarColor: Colors.white,
+      systemNavigationBarIconBrightness: Brightness.dark,
+    );
 
     return activeCharacterAsync.when(
-      loading: () => SafeArea(
-        child: Scaffold(
-          backgroundColor: Colors.white,
-          body: Center(
-            child: CircularProgressIndicator(color: MainColors.mainLight),
-          ),
+      loading: () => Scaffold(
+        backgroundColor: Colors.white,
+        body: Center(
+          child: CircularProgressIndicator(color: MainColors.mainLight),
         ),
       ),
       error: (e, _) => ErrorPage(
@@ -153,52 +157,56 @@ class _CharacterPageState extends ConsumerState<CharacterPage> {
             activeCharacter?.imageUrlForEmotion(_currentEmotion) ?? '';
         final backgroundUrl = activeCharacter?.characterBackground ?? '';
 
-        return SafeArea(
+        return AnnotatedRegion<SystemUiOverlayStyle>(
+          value: overlayStyle,
           child: Scaffold(
             backgroundColor: Colors.white,
-            body: activeCharacter == null
-                ? NotCharacter()
-                : LayoutBuilder(
-                    builder: (context, constraints) {
-                      return SingleChildScrollView(
-                        child: ConstrainedBox(
-                          constraints: BoxConstraints(
-                            minHeight: constraints.maxHeight,
-                          ),
-                          child: IntrinsicHeight(
-                            child: Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SizedBox(height: 40.hClamp),
-                                  CharacterPageLevel(
-                                    level: "Lv.${levelProgress.level}",
-                                    characterName:
-                                        activeCharacter.characterName,
-                                    progress: levelProgress.progress,
-                                    currentExp: levelProgress.currentExp
-                                        .toDouble(),
-                                    maxExp: levelProgress.maxExp.toDouble(),
-                                  ),
-                                  SizedBox(height: 60.hClamp),
-                                  CharacterPageCharacter(
-                                    imageUrl: imageUrl,
-                                    backgroundUrl: backgroundUrl,
-                                    characterName:
-                                        activeCharacter.characterName,
-                                    isEggStage:
-                                        activeCharacter.stage == Stage.egg,
-                                    isAdultStage:
-                                        activeCharacter.stage == Stage.adult,
-                                  ),
-                                ],
+            body: SafeArea(
+              bottom: false,
+              child: activeCharacter == null
+                  ? NotCharacter()
+                  : LayoutBuilder(
+                      builder: (context, constraints) {
+                        return SingleChildScrollView(
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              minHeight: constraints.maxHeight,
+                            ),
+                            child: IntrinsicHeight(
+                              child: Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    SizedBox(height: 40.hClamp),
+                                    CharacterPageLevel(
+                                      level: "Lv.${levelProgress.level}",
+                                      characterName:
+                                          activeCharacter.characterName,
+                                      progress: levelProgress.progress,
+                                      currentExp: levelProgress.currentExp
+                                          .toDouble(),
+                                      maxExp: levelProgress.maxExp.toDouble(),
+                                    ),
+                                    SizedBox(height: 60.hClamp),
+                                    CharacterPageCharacter(
+                                      imageUrl: imageUrl,
+                                      backgroundUrl: backgroundUrl,
+                                      characterName:
+                                          activeCharacter.characterName,
+                                      isEggStage:
+                                          activeCharacter.stage == Stage.egg,
+                                      isAdultStage:
+                                          activeCharacter.stage == Stage.adult,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      );
-                    },
-                  ),
+                        );
+                      },
+                    ),
+            ),
             floatingActionButton: FloatingActionButton(
               heroTag: 'character-detail-fab',
               onPressed: () =>

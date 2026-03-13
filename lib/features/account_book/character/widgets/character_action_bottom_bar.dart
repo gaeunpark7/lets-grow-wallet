@@ -143,18 +143,17 @@ class _CharacterActionBottomBarState extends State<CharacterActionBottomBar> {
   @override
   Widget build(BuildContext context) {
     final mainButtonSize = 80.rClamp;
+    final bottomInset = MediaQuery.of(context).viewPadding.bottom;
     return Stack(
       clipBehavior: Clip.none,
       alignment: Alignment.bottomCenter,
       children: [
         // 바텀
-        SafeArea(
-          child: Container(height: 70.hClamp, color: MainColors.mainLight),
-        ),
+        Container(height: 70.hClamp + bottomInset, color: MainColors.mainLight),
 
         // 메인 버튼
         Positioned(
-          bottom: 30.hClamp,
+          bottom: 30.hClamp + bottomInset,
           child: GestureDetector(
             onTap: _toggleActions,
             child: CompositedTransformTarget(

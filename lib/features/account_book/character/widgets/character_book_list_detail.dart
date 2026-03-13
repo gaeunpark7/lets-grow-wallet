@@ -116,7 +116,6 @@ class CharacterBookListDetail extends StatelessWidget {
             ],
           ),
           SizedBox(height: 12.hClamp),
-          SizedBox(height: 12.hClamp),
           _buildIntro(context, 40.hClamp, item.name),
           SizedBox(height: 12.hClamp),
           _buildIntro(context, 80.hClamp, item.description),
