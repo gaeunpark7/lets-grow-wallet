@@ -44,7 +44,7 @@
             android:value="2" />
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-9106516185321528~1778509070" />
+            android:value="ca-app-pub-7674313922715874~4548611170" />
     </application>
 
     <!-- 텍스트 처리 플러그인용 -->

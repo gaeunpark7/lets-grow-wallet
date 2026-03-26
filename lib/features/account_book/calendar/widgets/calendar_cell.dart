@@ -34,11 +34,10 @@ class CalendarCell extends StatelessWidget {
         width: 110.wClamp,
         child: Container(
           decoration: BoxDecoration(
-            color: isSelected
-                ? const Color(0xFF9FA8DA)
-                : isToday
-                ? const Color(0xFFF5F5FA)
-                : Colors.white,
+            // color: isSelected
+            //     ? const Color(0xFF9FA8DA)
+            //     :
+            color: isToday ? const Color(0xFFF5F5FA) : Colors.white,
             borderRadius: BorderRadius.zero,
             border: Border.all(color: Color(0xFFE8EAF6)),
           ),

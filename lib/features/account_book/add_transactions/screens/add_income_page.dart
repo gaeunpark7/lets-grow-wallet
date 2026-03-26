@@ -117,7 +117,7 @@ class _AddIncomePageState extends ConsumerState<AddIncomePage> {
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.wClamp),
+            padding: EdgeInsets.symmetric(horizontal: 15.wClamp),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -137,7 +137,7 @@ class _AddIncomePageState extends ConsumerState<AddIncomePage> {
                         ),
                       ),
                     ),
-                    SizedBox(width: 12.wClamp),
+                    SizedBox(width: 15.wClamp),
                     Expanded(
                       child: TitleButton(
                         color: MainColors.mainLight,
@@ -195,7 +195,10 @@ class _AddIncomePageState extends ConsumerState<AddIncomePage> {
                             vertical: 10,
                             horizontal: 12,
                           ),
-                          // counterText: '', // 카운터 제거로 높이 변경 방지, 어떻게 할지.
+                          counterStyle: TextStyle(
+                            fontFamily: 'ScoreMedium',
+                            color: MainColors.mainDark.withOpacity(0.7),
+                          ),
                         ),
                         maxLength: 8,
                       ),
@@ -255,6 +258,10 @@ class _AddIncomePageState extends ConsumerState<AddIncomePage> {
                         color: MainColors.mainDark,
                         width: 2,
                       ),
+                    ),
+                    counterStyle: TextStyle(
+                      fontFamily: 'ScoreMedium',
+                      color: MainColors.mainDark.withOpacity(0.7),
                     ),
                   ),
                 ),

@@ -47,70 +47,78 @@ class CategoryStatList extends StatelessWidget {
           final e = sorted[idx];
           final percent = total == 0 ? 0 : (e.amount / total * 100).round();
           final color = _palette[idx % _palette.length]; // 내림차순 순서대로 색상 적용
-          return Container(
-            padding: EdgeInsets.symmetric(
-              vertical: 8.hClamp,
-              horizontal: 16.wClamp,
-            ),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.grey.shade200),
-            ),
-            child: Row(
+          return Padding(
+            padding: EdgeInsets.symmetric(horizontal: 2.wClamp),
+            child: Column(
               children: [
-                // 퍼센트와 색상 박스
                 Container(
-                  width: 40.wClamp,
-                  height: 28.hClamp,
-                  alignment: Alignment.center,
+                  padding: EdgeInsets.symmetric(
+                    vertical: 5.hClamp,
+                    horizontal: 12.wClamp,
+                  ),
                   decoration: BoxDecoration(
-                    color: color,
-                    borderRadius: BorderRadius.circular(6),
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(5),
+                    border: Border.all(color: Colors.grey.shade200),
                   ),
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(
-                      "$percent%",
-                      maxLines: 1,
-                      softWrap: false,
-                      overflow: TextOverflow.visible,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'ScoreMedium',
-                        fontWeight: FontWeight.bold,
+                  child: Row(
+                    children: [
+                      // 퍼센트와 색상 박스
+                      Container(
+                        width: 40.wClamp,
+                        height: 28.hClamp,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: color,
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            "$percent%",
+                            maxLines: 1,
+                            softWrap: false,
+                            overflow: TextOverflow.visible,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontFamily: 'ScoreMedium',
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
+                      SizedBox(width: 12.wClamp),
+                      // 아이콘/이모지
+                      // Text(
+                      //   _emojiForCategory(e.name),
+                      //   style: const TextStyle(fontSize: 22),
+                      // ),
+                      // const SizedBox(width: 8),
+                      // 카테고리
+                      Expanded(
+                        child: Text(
+                          e.name,
+                          style: TextStyle(
+                            fontSize: 16.spClamp,
+                            color: MainColors.mainDark,
+                            fontFamily: 'ScoreMedium',
+                            // fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      // 금액
+                      Text(
+                        "${f.format(e.amount)}원",
+                        style: TextStyle(
+                          color: MainColors.mainDark,
+                          fontSize: 16.spClamp,
+                          fontFamily: 'ScoreMedium',
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                SizedBox(width: 12.wClamp),
-                // 아이콘/이모지
-                // Text(
-                //   _emojiForCategory(e.name),
-                //   style: const TextStyle(fontSize: 22),
-                // ),
-                // const SizedBox(width: 8),
-                // 카테고리
-                Expanded(
-                  child: Text(
-                    e.name,
-                    style: TextStyle(
-                      fontSize: 16.spClamp,
-                      color: MainColors.mainDark,
-                      fontFamily: 'ScoreMedium',
-                      // fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                // 금액
-                Text(
-                  "${f.format(e.amount)}원",
-                  style: TextStyle(
-                    color: MainColors.mainDark,
-                    fontSize: 16.spClamp,
-                    fontFamily: 'ScoreMedium',
-                  ),
-                ),
+                SizedBox(height: 2.hClamp),
               ],
             ),
           );

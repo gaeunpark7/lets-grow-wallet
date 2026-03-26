@@ -95,7 +95,7 @@ class _ItemShopPageState extends ConsumerState<ItemShopPage> {
         iconTheme: IconThemeData(color: MainColors.mainDark),
       ),
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 24.wClamp),
+        padding: EdgeInsets.symmetric(horizontal: 15.wClamp),
         child: shopAsync.when(
           loading: () => Center(
             child: CircularProgressIndicator(color: MainColors.mainLight),
@@ -124,7 +124,7 @@ class _ItemShopPageState extends ConsumerState<ItemShopPage> {
                         .selectItem(item);
                   },
                 ),
-                SizedBox(height: 12.hClamp),
+                SizedBox(height: 15.hClamp),
                 selectedItem == null
                     ? const Center(
                         child: CircularProgressIndicator(
@@ -133,7 +133,7 @@ class _ItemShopPageState extends ConsumerState<ItemShopPage> {
                       )
                     : ShopItemDetail(item: selectedItem),
 
-                SizedBox(height: 12.hClamp),
+                SizedBox(height: 15.hClamp),
                 ShopItemBuyButton(
                   isPurchased: selectedItem?.isPurchased ?? false,
                   onPressed: shop.isPurchasing
@@ -151,7 +151,7 @@ class _ItemShopPageState extends ConsumerState<ItemShopPage> {
                           }
                         },
                 ),
-                SizedBox(height: 12.hClamp),
+                SizedBox(height: 15.hClamp),
               ],
             );
           },

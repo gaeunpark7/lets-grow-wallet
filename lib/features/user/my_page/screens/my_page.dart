@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -143,101 +142,94 @@ class _MyPageState extends ConsumerState<MyPage> {
           automaticallyImplyLeading: false,
         ),
       ),
-      body: Column(
-        children: [
-          if (_isLoggingOut) LinearProgressIndicator(minHeight: 2.hClamp),
-          Expanded(
-            child: AbsorbPointer(
-              absorbing: _isLoggingOut,
-              child: userProfileAsync.when(
-                loading: () => Center(child: CircularProgressIndicator()),
-                error: (e, _) {
-                  //로그아웃 중 > 토근 완료로 인한 에러 발생시 에러뷰 대신
-                  if (_isLoggingOut || _redirectedToLogin) {
-                    return const Center(
-                      child: CircularProgressIndicator(
-                        color: MainColors.mainLight,
-                      ),
+      body: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 15.wClamp),
+        child: Column(
+          children: [
+            if (_isLoggingOut) LinearProgressIndicator(minHeight: 2.hClamp),
+            Expanded(
+              child: AbsorbPointer(
+                absorbing: _isLoggingOut,
+                child: userProfileAsync.when(
+                  loading: () => Center(child: CircularProgressIndicator()),
+                  error: (e, _) {
+                    //로그아웃 중 > 토근 완료로 인한 에러 발생시 에러뷰 대신
+                    if (_isLoggingOut || _redirectedToLogin) {
+                      return const Center(
+                        child: CircularProgressIndicator(
+                          color: MainColors.mainLight,
+                        ),
+                      );
+                    }
+                    return MyPageErrorView(
+                      message: FriendlyErrorMessage.of(e),
+                      onRetry: () => ref
+                          .read(userProfileNotifierProvider.notifier)
+                          .refresh(),
+                      onLogout: _logout,
                     );
-                  }
-                  return MyPageErrorView(
-                    message: FriendlyErrorMessage.of(e),
-                    onRetry: () => ref
-                        .read(userProfileNotifierProvider.notifier)
-                        .refresh(),
-                    onLogout: _logout,
-                  );
-                },
-                data: (userProfile) {
-                  if (userProfile == null) {
-                    // 로그인 정보가 없거나 아직 provider가 갱신 중인 상태
-                    return const Center(
-                      child: CircularProgressIndicator(
-                        color: MainColors.mainLight,
-                      ),
+                  },
+                  data: (userProfile) {
+                    if (userProfile == null) {
+                      // 로그인 정보가 없거나 아직 provider가 갱신 중인 상태
+                      return const Center(
+                        child: CircularProgressIndicator(
+                          color: MainColors.mainLight,
+                        ),
+                      );
+                    }
+
+                    return ListView(
+                      padding: EdgeInsets.zero,
+                      children: [
+                        SizedBox(height: 32.hClamp),
+                        MyPageUserProfilePage(userProfile: userProfile),
+                        SizedBox(height: 25.hClamp),
+                        // Divider(color: MainColors.mainDark, thickness: 0.5),
+                        // buildListTile(
+                        //   icon: Icons.workspace_premium_outlined,
+                        //   text: "프리미엄",
+                        //   onTap: () async {
+                        //     await showDialog(
+                        //       context: context,
+                        //       builder: (ctx) => ShopAppbarPremiumDialog(),
+                        //     );
+                        //   },
+                        // ),
+                        Divider(color: MainColors.mainDark, thickness: 0.5),
+                        buildListTile(
+                          icon: Icons.privacy_tip_outlined,
+                          text: "개인정보",
+                          onTap: () {
+                            context.push(
+                              '${Routes.mypage}/${Routes.myPageUserSetting}',
+                            );
+                          },
+                        ),
+                        Divider(color: MainColors.mainDark, thickness: 0.5),
+                        buildListTile(
+                          icon: Icons.feedback_outlined,
+                          text: "오류문의",
+                          onTap: _openFeedbackForm,
+                        ),
+                        Divider(color: MainColors.mainDark, thickness: 0.5),
+                        buildListTile(
+                          icon: Icons.logout,
+                          text: _isLoggingOut ? "로그아웃 중..." : "로그아웃",
+                          onTap: _isLoggingOut ? null : _logout,
+                        ),
+                        Divider(color: MainColors.mainDark, thickness: 0.5),
+                      ],
                     );
-                  }
-
-                  return ListView(
-                    padding: EdgeInsets.zero,
-                    children: [
-                      SizedBox(height: 32.hClamp),
-                      MyPageUserProfilePage(userProfile: userProfile),
-                      SizedBox(height: 32.hClamp),
-                      // Divider(color: MainColors.mainDark, thickness: 0.5),
-                      // buildListTile(
-                      //   icon: Icons.workspace_premium_outlined,
-                      //   text: "프리미엄",
-                      //   onTap: () async {
-                      //     await showDialog(
-                      //       context: context,
-                      //       builder: (ctx) => ShopAppbarPremiumDialog(),
-                      //     );
-                      //   },
-                      // ),
-                      Divider(color: MainColors.mainDark, thickness: 0.5),
-                      buildListTile(
-                        icon: Icons.privacy_tip_outlined,
-                        text: "개인정보",
-                        onTap: () {
-                          context.push(
-                            '${Routes.mypage}/${Routes.myPageUserSetting}',
-                          );
-                        },
-                      ),
-                      Divider(color: MainColors.mainDark, thickness: 0.5),
-                      buildListTile(
-                        icon: Icons.feedback_outlined,
-                        text: "오류문의",
-                        onTap: _openFeedbackForm,
-                      ),
-                      Divider(color: MainColors.mainDark, thickness: 0.5),
-                      buildListTile(
-                        icon: Icons.logout,
-                        text: _isLoggingOut ? "로그아웃 중..." : "로그아웃",
-                        onTap: _isLoggingOut ? null : _logout,
-                      ),
-                      Divider(color: MainColors.mainDark, thickness: 0.5),
-
-                      // buildListTile(
-                      //   icon: Icons.delete_forever_outlined,
-                      //   text: "회원탈퇴",
-                      //   onTap: _isLoggingOut
-                      //       ? null
-                      //       : () {
-                      //           context.push(Routes.deleteUser);
-                      //         },
-                      // ),
-                      // Divider(color: MainColors.mainDark, thickness: 0.5),
-                    ],
-                  );
-                },
+                  },
+                ),
               ),
             ),
-          ),
-
-          if (!isPremium)
-            SafeArea(
+          ],
+        ),
+      ),
+      bottomNavigationBar: !isPremium
+          ? SafeArea(
               top: false,
               child: Container(
                 width: double.infinity,
@@ -247,9 +239,8 @@ class _MyPageState extends ConsumerState<MyPage> {
                     ? AdWidget(ad: _bannerAd!)
                     : const SizedBox.shrink(),
               ),
-            ),
-        ],
-      ),
+            )
+          : null,
     );
   }
 }

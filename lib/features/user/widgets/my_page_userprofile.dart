@@ -72,7 +72,7 @@ class _MyPageUserProfileState extends ConsumerState<MyPageUserProfilePage> {
     final activeCharacterAsync = ref.watch(activeCharacterNotifierProvider);
 
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16.wClamp, vertical: 16.hClamp),
+      // margin: EdgeInsets.symmetric(vertical: 16.hClamp),
       padding: EdgeInsets.all(16.h),
       color: MainColors.main,
       child: Stack(
@@ -268,6 +268,10 @@ class _MyPageUserProfileState extends ConsumerState<MyPageUserProfilePage> {
                         color: MainColors.mainDark,
                         width: 2,
                       ),
+                    ),
+                    counterStyle: TextStyle(
+                      fontFamily: 'ScoreMedium',
+                      color: MainColors.mainDark.withOpacity(0.7),
                     ),
                   ),
                   maxLength: 7,

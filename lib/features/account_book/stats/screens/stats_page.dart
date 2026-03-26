@@ -84,12 +84,15 @@ class _StatsPageState extends ConsumerState<StatsPage>
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(56.hClamp),
           child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.hClamp),
+            padding: EdgeInsets.symmetric(
+              vertical: 8.hClamp,
+              horizontal: 15.wClamp,
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 _buildSelectButton(context, 0, "지출"),
-                const SizedBox(width: 12),
+                SizedBox(width: 15.wClamp),
                 _buildSelectButton(context, 1, "수입"),
               ],
             ),
@@ -132,28 +135,30 @@ class _StatsPageState extends ConsumerState<StatsPage>
   }
 
   _buildSelectButton(BuildContext context, int index, String text) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: _tabController.index == index
-            ? MainColors.mainLight
-            : MainColors.main,
-        foregroundColor: _tabController.index == index
-            ? Colors.white
-            : MainColors.mainDark,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-        minimumSize: Size(MediaQuery.of(context).size.width * 0.4, 45.hClamp),
-        elevation: 0,
-        shadowColor: Colors.transparent,
-      ),
-      onPressed: () {
-        setState(() => _tabController.index = index);
-      },
-      child: Text(
-        text,
-        style: TextStyle(
-          fontSize: 16.spClamp,
-          fontFamily: 'ScoreMedium',
-          fontWeight: FontWeight.bold,
+    return Expanded(
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: _tabController.index == index
+              ? MainColors.mainLight
+              : MainColors.main,
+          foregroundColor: _tabController.index == index
+              ? Colors.white
+              : MainColors.mainDark,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          // minimumSize: Size(MediaQuery.of(context).size.width * 0.4, 45.hClamp),
+          elevation: 0,
+          shadowColor: Colors.transparent,
+        ),
+        onPressed: () {
+          setState(() => _tabController.index = index);
+        },
+        child: Text(
+          text,
+          style: TextStyle(
+            fontSize: 16.spClamp,
+            fontFamily: 'ScoreMedium',
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );

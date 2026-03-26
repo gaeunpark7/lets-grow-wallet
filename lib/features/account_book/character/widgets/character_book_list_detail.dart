@@ -84,7 +84,7 @@ class CharacterBookListDetail extends StatelessWidget {
     final adultUnlocked = item.hasAdultUnlocked;
 
     return Container(
-      padding: EdgeInsets.all(12.wClamp),
+      padding: EdgeInsets.all(15.wClamp),
       decoration: BoxDecoration(
         border: Border.all(color: MainColors.mainLight),
       ),

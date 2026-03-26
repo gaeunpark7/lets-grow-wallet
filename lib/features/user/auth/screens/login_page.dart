@@ -97,6 +97,7 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              // SizedBox(height: 120.hClamp),
               Image.asset(
                 'assets/icons/app_icon2.png',
                 color: MainColors.mainLight,
@@ -104,11 +105,11 @@ class _LoginPageState extends State<LoginPage> {
                 height: 130.hClamp,
               ),
 
-              SizedBox(height: 20.hClamp),
+              SizedBox(height: 15.hClamp),
               Text(
                 "레츠고 가계부",
                 style: TextStyle(
-                  color: MainColors.mainDark,
+                  color: MainColors.mainLight,
                   fontSize: 30.spClamp,
                   fontWeight: FontWeight.bold,
                   fontFamily: 'ScoreBold',
@@ -171,6 +172,8 @@ class LoginButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isGoogle = assetPath.contains('google');
+
     return SizedBox(
       height: 55.hClamp,
       width: MediaQuery.of(context).size.width,
@@ -187,7 +190,11 @@ class LoginButton extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(assetPath, width: 24.wClamp, height: 24.hClamp),
+            Image.asset(
+              assetPath,
+              width: isGoogle ? 28.wClamp : 24.wClamp,
+              height: isGoogle ? 28.hClamp : 24.hClamp,
+            ),
             SizedBox(width: 10.wClamp),
             Text(
               text,

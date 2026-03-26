@@ -19,7 +19,12 @@ class TitleButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(color: color, border: border),
+      decoration: BoxDecoration(
+        color: color,
+        border: border,
+        borderRadius: BorderRadius.circular(5),
+      ),
+
       padding: EdgeInsets.symmetric(vertical: 12.hClamp),
       child: Center(
         child: Text(
@@ -27,7 +32,7 @@ class TitleButton extends StatelessWidget {
           style: TextStyle(
             color: textColor,
             fontWeight: FontWeight.bold,
-            fontSize: 18.sp,
+            fontSize: 18.spClamp,
             fontFamily: 'ScoreMedium',
           ),
         ),

@@ -12,6 +12,7 @@ class FloatingMenuButton extends StatefulWidget {
 
 class _FloatingMenuButtonState extends State<FloatingMenuButton> {
   bool _isFabExpanded = false;
+  bool _ignoreMiniFabPointer = false;
 
   @override
   Widget build(BuildContext context) {
@@ -26,15 +27,19 @@ class _FloatingMenuButtonState extends State<FloatingMenuButton> {
             Positioned(
               right: 65,
               bottom: 5,
-              child: FloatingActionButton(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(50),
+              child: IgnorePointer(
+                ignoring: _ignoreMiniFabPointer,
+                child: FloatingActionButton(
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                  heroTag: "fab1",
+                  mini: true,
+                  backgroundColor: MainColors.mainLight,
+                  onPressed: () => context.push(Routes.character),
+                  child: const Icon(Icons.pets, color: Colors.white),
                 ),
-                heroTag: "fab1",
-                mini: true,
-                backgroundColor: MainColors.mainLight,
-                onPressed: () => context.push(Routes.character),
-                child: const Icon(Icons.pets, color: Colors.white),
               ),
             ),
 
@@ -43,15 +48,19 @@ class _FloatingMenuButtonState extends State<FloatingMenuButton> {
             Positioned(
               right: 50,
               bottom: 55,
-              child: FloatingActionButton(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(50),
+              child: IgnorePointer(
+                ignoring: _ignoreMiniFabPointer,
+                child: FloatingActionButton(
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                  heroTag: "fab2",
+                  mini: true,
+                  backgroundColor: MainColors.mainLight,
+                  onPressed: () => context.push(Routes.quest),
+                  child: const Icon(Icons.star, color: Colors.white),
                 ),
-                heroTag: "fab2",
-                mini: true,
-                backgroundColor: MainColors.mainLight,
-                onPressed: () => context.push(Routes.quest),
-                child: const Icon(Icons.star, color: Colors.white),
               ),
             ),
 
@@ -60,15 +69,19 @@ class _FloatingMenuButtonState extends State<FloatingMenuButton> {
             Positioned(
               right: 0,
               bottom: 65,
-              child: FloatingActionButton(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(50),
+              child: IgnorePointer(
+                ignoring: _ignoreMiniFabPointer,
+                child: FloatingActionButton(
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                  heroTag: "fab3",
+                  mini: true,
+                  backgroundColor: MainColors.mainLight,
+                  onPressed: () => context.push(Routes.shop),
+                  child: const Icon(Icons.shopping_cart, color: Colors.white),
                 ),
-                heroTag: "fab3",
-                mini: true,
-                backgroundColor: MainColors.mainLight,
-                onPressed: () => context.push(Routes.shop),
-                child: const Icon(Icons.shopping_cart, color: Colors.white),
               ),
             ),
 
@@ -79,7 +92,21 @@ class _FloatingMenuButtonState extends State<FloatingMenuButton> {
             child: FloatingActionButton(
               onPressed: () {
                 setState(() {
-                  _isFabExpanded = !_isFabExpanded;
+                  final willExpand = !_isFabExpanded;
+                  _isFabExpanded = willExpand;
+
+                  if (willExpand) {
+                    _ignoreMiniFabPointer = true;
+                    Future.delayed(const Duration(milliseconds: 200), () {
+                      if (!mounted) return;
+                      if (!_isFabExpanded) return;
+                      setState(() {
+                        _ignoreMiniFabPointer = false;
+                      });
+                    });
+                  } else {
+                    _ignoreMiniFabPointer = false;
+                  }
                 });
               },
               shape: RoundedRectangleBorder(

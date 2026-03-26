@@ -118,7 +118,7 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.wClamp),
+            padding: EdgeInsets.symmetric(horizontal: 15.wClamp),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -133,7 +133,7 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
                         text: "지출",
                       ),
                     ),
-                    SizedBox(width: 12.wClamp),
+                    SizedBox(width: 15.wClamp),
                     Expanded(
                       child: GestureDetector(
                         onTap: () =>
@@ -192,6 +192,11 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
                             fontFamily: 'ScoreMedium',
                             color: MainColors.mainDark.withOpacity(0.6),
                           ),
+                          //maxlength 스타일
+                          counterStyle: TextStyle(
+                            fontFamily: 'ScoreMedium',
+                            color: MainColors.mainDark.withOpacity(0.6),
+                          ),
                           isDense: true,
                           contentPadding: EdgeInsets.symmetric(
                             vertical: 10,
@@ -244,7 +249,7 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
                     hintText: '메모 입력',
                     hintStyle: TextStyle(
                       fontFamily: 'ScoreMedium',
-                      color: MainColors.mainDark.withOpacity(0.6),
+                      color: MainColors.mainDark.withOpacity(0.7),
                     ),
                     border: OutlineInputBorder(borderRadius: BorderRadius.zero),
                     enabledBorder: OutlineInputBorder(
@@ -260,6 +265,10 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
                         color: MainColors.mainDark,
                         width: 2,
                       ),
+                    ),
+                    counterStyle: TextStyle(
+                      fontFamily: 'ScoreMedium',
+                      color: MainColors.mainDark.withOpacity(0.7),
                     ),
                   ),
                 ),

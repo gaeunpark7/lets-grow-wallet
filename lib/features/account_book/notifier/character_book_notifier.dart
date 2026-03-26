@@ -10,19 +10,37 @@ class CharacterBookState {
   final String? selectedCharacterId;
   final bool isSaving;
 
+  static const Set<String> _excludedNames = {'크왕'};
+
   const CharacterBookState({
     required this.items,
     required this.selectedCharacterId,
     required this.isSaving,
   });
 
+  CharacterBookItem? _firstAllowedItem() {
+    for (final item in items) {
+      if (!_excludedNames.contains(item.name.trim())) return item;
+    }
+    return null;
+  }
+
   CharacterBookItem? get selectedItem {
     final id = selectedCharacterId;
-    if (id == null) return items.isNotEmpty ? items.first : null;
+    if (items.isEmpty) return null;
+
+    final fallback = _firstAllowedItem();
+    if (fallback == null) return null;
+
+    if (id == null) return fallback;
+
     for (final item in items) {
-      if (item.characterId == id) return item;
+      if (item.characterId != id) continue;
+      if (_excludedNames.contains(item.name.trim())) return fallback;
+      return item;
     }
-    return items.isNotEmpty ? items.first : null;
+
+    return fallback;
   }
 
   CharacterBookState copyWith({
@@ -42,6 +60,15 @@ class CharacterBookNotifier extends AsyncNotifier<CharacterBookState> {
   final _service = CharacterBookService();
   final _userCharacterService = UserCharacterService();
 
+  static const Set<String> _excludedNames = {'크왕'};
+
+  String? _firstAllowedId(List<CharacterBookItem> items) {
+    for (final item in items) {
+      if (!_excludedNames.contains(item.name.trim())) return item.characterId;
+    }
+    return null;
+  }
+
   @override
   Future<CharacterBookState> build() async {
     // 로그인/로그아웃/계정 변경 시 자동 갱신
@@ -50,9 +77,20 @@ class CharacterBookNotifier extends AsyncNotifier<CharacterBookState> {
     final previous = state.valueOrNull;
     final items = await _service.fetchCharacterBookItems();
 
-    final selectedId =
-        previous?.selectedCharacterId ??
-        (items.isNotEmpty ? items.first.characterId : null);
+    final preservedSelectedId = previous?.selectedCharacterId;
+    final hasPreservedAndAllowed =
+        preservedSelectedId != null &&
+        items.any(
+          (it) =>
+              it.characterId == preservedSelectedId &&
+              !_excludedNames.contains(it.name.trim()),
+        );
+
+    final firstAllowedId = _firstAllowedId(items);
+
+    final selectedId = hasPreservedAndAllowed
+        ? preservedSelectedId
+        : firstAllowedId;
 
     return CharacterBookState(
       items: items,
@@ -64,6 +102,7 @@ class CharacterBookNotifier extends AsyncNotifier<CharacterBookState> {
   void selectItem(CharacterBookItem item) {
     final current = state.valueOrNull;
     if (current == null) return;
+    if (_excludedNames.contains(item.name.trim())) return;
     state = AsyncValue.data(
       current.copyWith(selectedCharacterId: item.characterId),
     );

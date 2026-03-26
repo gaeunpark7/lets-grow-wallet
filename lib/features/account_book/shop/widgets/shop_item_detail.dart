@@ -16,12 +16,12 @@ class ShopItemDetail extends StatelessWidget {
           border: Border.all(color: MainColors.mainLight),
         ),
         child: Padding(
-          padding: EdgeInsets.all(12.wClamp),
+          padding: EdgeInsets.all(15.wClamp),
           child: Row(
             children: [
               Container(
                 height: 150.hClamp,
-                width: 96.wClamp,
+                width: 100.wClamp,
                 decoration: BoxDecoration(
                   border: Border.all(color: MainColors.mainLight),
                 ),
@@ -43,7 +43,7 @@ class ShopItemDetail extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(width: 10.wClamp),
+              SizedBox(width: 15.wClamp),
               Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,

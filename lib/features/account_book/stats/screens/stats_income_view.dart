@@ -6,6 +6,7 @@ import 'package:lets_grow_wallet/features/account_book/stats/widgets/category_st
 import 'package:lets_grow_wallet/features/account_book/stats/widgets/stats_error_page.dart';
 import 'package:lets_grow_wallet/utils/colors.dart';
 import 'package:lets_grow_wallet/utils/friendly_error_message.dart';
+import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 
 class StatsIncomeView extends ConsumerWidget {
   const StatsIncomeView({super.key});
@@ -35,7 +36,11 @@ class StatsIncomeView extends ConsumerWidget {
             child: Column(
               children: [
                 CategoryChartWidget(data: data),
-                const Divider(),
+                Divider(
+                  thickness: 1,
+                  height: 5.hClamp,
+                  color: MainColors.point,
+                ),
                 CategoryStatList(data: data),
               ],
             ),

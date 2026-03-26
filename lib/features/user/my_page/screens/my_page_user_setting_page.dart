@@ -81,27 +81,30 @@ class _MyPageUserSettingPageState extends ConsumerState<MyPageUserSettingPage> {
           iconTheme: const IconThemeData(color: Colors.white),
         ),
       ),
-      body: Column(
-        children: [
-          SizedBox(height: 32.hClamp),
-          Divider(color: MainColors.mainDark, thickness: 0.5),
-          _MyPageSettingListTile(
-            icon: Icons.privacy_tip_outlined,
-            text: '개인정보 처리방침',
-            onTap: () {
-              context.push(Routes.privacyPolicy);
-            },
-          ),
-          Divider(color: MainColors.mainDark, thickness: 0.5),
-          _MyPageSettingListTile(
-            icon: Icons.delete_forever_outlined,
-            text: '회원탈퇴',
-            onTap: () {
-              context.push(Routes.deleteUser);
-            },
-          ),
-          Divider(color: MainColors.mainDark, thickness: 0.5),
-        ],
+      body: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 15.wClamp),
+        child: Column(
+          children: [
+            SizedBox(height: 32.hClamp),
+            Divider(color: MainColors.mainDark, thickness: 0.5),
+            _MyPageSettingListTile(
+              icon: Icons.privacy_tip_outlined,
+              text: '개인정보 처리방침',
+              onTap: () {
+                context.push(Routes.privacyPolicy);
+              },
+            ),
+            Divider(color: MainColors.mainDark, thickness: 0.5),
+            _MyPageSettingListTile(
+              icon: Icons.delete_forever_outlined,
+              text: '회원탈퇴',
+              onTap: () {
+                context.push(Routes.deleteUser);
+              },
+            ),
+            Divider(color: MainColors.mainDark, thickness: 0.5),
+          ],
+        ),
       ),
       bottomNavigationBar: !isPremium
           ? SafeArea(

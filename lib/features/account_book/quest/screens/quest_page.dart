@@ -167,7 +167,7 @@ class _QuestPageState extends ConsumerState<QuestPage> {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: _todayQuests.length,
-      separatorBuilder: (_, __) => SizedBox(height: 12.hClamp),
+      separatorBuilder: (_, __) => SizedBox(height: 15.hClamp),
       itemBuilder: (context, index) {
         return QuestList(
           quest: _todayQuests[index],
@@ -222,18 +222,17 @@ class _QuestPageState extends ConsumerState<QuestPage> {
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.only(
-            top: 0,
-            left: 12.wClamp,
-            right: 12.wClamp,
-            bottom: 12.hClamp,
+            left: 15.wClamp,
+            right: 15.wClamp,
+            bottom: 15.hClamp,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Container(
                 padding: EdgeInsets.symmetric(
-                  horizontal: 20.wClamp,
-                  vertical: 18.hClamp,
+                  horizontal: 15.wClamp,
+                  vertical: 15.hClamp,
                 ),
                 decoration: BoxDecoration(
                   border: Border.all(color: MainColors.mainLight),
@@ -242,13 +241,13 @@ class _QuestPageState extends ConsumerState<QuestPage> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     QuestTitle(title: "일일 미션"),
-                    SizedBox(height: 6.hClamp),
+                    SizedBox(height: 15.hClamp),
                     QuestStar(
                       claimedCount: _todayQuests
                           .where((q) => q.isCompleted && q.rewardGiven)
                           .length,
                     ),
-                    SizedBox(height: 12.hClamp),
+                    SizedBox(height: 15.hClamp),
                     _buildDailyQuests(),
 
                     // const SizedBox(height: 12),

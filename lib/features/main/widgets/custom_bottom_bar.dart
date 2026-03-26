@@ -17,51 +17,48 @@ class CustomBottomBar extends StatelessWidget {
       shape: const CircularNotchedRectangle(),
       notchMargin: 3.0,
       color: MainColors.mainLight,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            // 왼쪽 아이콘 2개
-            Row(
-              children: [
-                _BottomIcon(
-                  icon: Icons.home,
-                  index: 0,
-                  selectedIndex: selectedIndex,
-                  onTap: onTabSelected,
-                  iconSize: 42,
-                ),
-                _BottomIcon(
-                  icon: Icons.pie_chart,
-                  index: 1,
-                  selectedIndex: selectedIndex,
-                  onTap: onTabSelected,
-                  iconSize: 40,
-                ),
-              ],
-            ),
-            // 오른쪽 아이콘 2개
-            Row(
-              children: [
-                _BottomIcon(
-                  icon: Icons.calendar_today,
-                  index: 2,
-                  selectedIndex: selectedIndex,
-                  onTap: onTabSelected,
-                  iconSize: 40,
-                ),
-                _BottomIcon(
-                  icon: Icons.account_circle,
-                  index: 3,
-                  selectedIndex: selectedIndex,
-                  onTap: onTabSelected,
-                  iconSize: 42,
-                ),
-              ],
-            ),
-          ],
-        ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          // 왼쪽 아이콘 2개
+          Row(
+            children: [
+              _BottomIcon(
+                icon: Icons.home,
+                index: 0,
+                selectedIndex: selectedIndex,
+                onTap: onTabSelected,
+                iconSize: 42,
+              ),
+              _BottomIcon(
+                icon: Icons.pie_chart,
+                index: 1,
+                selectedIndex: selectedIndex,
+                onTap: onTabSelected,
+                iconSize: 40,
+              ),
+            ],
+          ),
+          // 오른쪽 아이콘 2개
+          Row(
+            children: [
+              _BottomIcon(
+                icon: Icons.calendar_today,
+                index: 2,
+                selectedIndex: selectedIndex,
+                onTap: onTabSelected,
+                iconSize: 40,
+              ),
+              _BottomIcon(
+                icon: Icons.account_circle,
+                index: 3,
+                selectedIndex: selectedIndex,
+                onTap: onTabSelected,
+                iconSize: 42,
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

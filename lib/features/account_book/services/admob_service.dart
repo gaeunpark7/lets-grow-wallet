@@ -5,7 +5,8 @@ class AdmobService {
   //전면 광고
   static String? get InterstitialAdUnitId {
     if (Platform.isAndroid) {
-      return 'ca-app-pub-9106516185321528/4397751794';
+      return 'ca-app-pub-7674313922715874/1521457732';
+      // return 'ca-app-pub-3940256099942544/1033173712'; //테스트 광고
     } else if (Platform.isIOS) {
       return 'ca-app-pub-3940256099942544/4411468910';
     }
@@ -25,7 +26,8 @@ class AdmobService {
   //배너 광고
   static String? get BannerAdUnitId {
     if (Platform.isAndroid) {
-      return 'ca-app-pub-9106516185321528/5686784673';
+      return 'ca-app-pub-7674313922715874/9621241351';
+      // return 'ca-app-pub-3940256099942544/6300978111'; //테스트 광고
     } else if (Platform.isIOS) {
       return 'ca-app-pub-3940256099942544/2934735716';
     }

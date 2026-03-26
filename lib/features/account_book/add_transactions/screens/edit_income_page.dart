@@ -140,7 +140,7 @@ class _EditIncomePageState extends ConsumerState<EditIncomePage> {
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.wClamp),
+            padding: EdgeInsets.symmetric(horizontal: 15.wClamp),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -193,6 +193,10 @@ class _EditIncomePageState extends ConsumerState<EditIncomePage> {
                               color: MainColors.mainDark,
                               width: 2,
                             ),
+                          ),
+                          counterStyle: TextStyle(
+                            fontFamily: 'ScoreMedium',
+                            color: MainColors.mainDark.withOpacity(0.7),
                           ),
                         ),
                         maxLength: 8,
@@ -255,6 +259,10 @@ class _EditIncomePageState extends ConsumerState<EditIncomePage> {
                         color: MainColors.mainDark,
                         width: 2,
                       ),
+                    ),
+                    counterStyle: TextStyle(
+                      fontFamily: 'ScoreMedium',
+                      color: MainColors.mainDark.withOpacity(0.7),
                     ),
                   ),
                 ),

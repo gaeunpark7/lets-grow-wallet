@@ -29,16 +29,16 @@ class ShopItemGridview extends StatelessWidget {
         ),
         child: Padding(
           padding: EdgeInsets.symmetric(
-            horizontal: 12.wClamp,
-            vertical: 12.hClamp,
+            horizontal: 15.wClamp,
+            vertical: 15.hClamp,
           ),
           //그리드 뷰
           child: GridView.builder(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3,
-              crossAxisSpacing: 10.wClamp,
+              crossAxisSpacing: 16.wClamp,
               mainAxisSpacing: 10.hClamp,
-              childAspectRatio: 0.58,
+              childAspectRatio: 0.60,
             ),
             itemCount: filteredItems.length,
             itemBuilder: (context, index) {

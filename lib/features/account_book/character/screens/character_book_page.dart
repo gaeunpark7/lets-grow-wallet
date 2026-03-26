@@ -35,14 +35,14 @@ class CharacterBookPage extends ConsumerWidget {
       ),
       body: Padding(
         padding: EdgeInsets.only(
-          left: 24.wClamp,
-          right: 24.wClamp,
-          bottom: 24.hClamp + MediaQuery.of(context).padding.bottom,
+          left: 15.wClamp,
+          right: 15.wClamp,
+          bottom: 15.hClamp + MediaQuery.of(context).padding.bottom,
         ),
         child: Column(
           children: [
             QuestTitle(title: "도감"),
-            SizedBox(height: 12.hClamp),
+            SizedBox(height: 15.hClamp),
             Expanded(
               child: Container(
                 padding: EdgeInsets.all(12.wClamp),
@@ -103,7 +103,7 @@ class CharacterBookPage extends ConsumerWidget {
                 ),
               ),
             ),
-            SizedBox(height: 12.h),
+            SizedBox(height: 15.hClamp),
             asyncState.when(
               loading: () => const SizedBox.shrink(),
               error: (_, __) => const SizedBox.shrink(),
@@ -126,7 +126,7 @@ class CharacterBookPage extends ConsumerWidget {
                 return Column(
                   children: [
                     CharacterBookListDetail(item: selected),
-                    SizedBox(height: 12.h),
+                    SizedBox(height: 15.hClamp),
                     GestureDetector(
                       onTap: canActivate
                           ? () => ref

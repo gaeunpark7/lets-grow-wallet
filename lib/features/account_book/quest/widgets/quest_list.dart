@@ -172,7 +172,7 @@ class _QuestListState extends ConsumerState<QuestList> {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
         border: Border.all(color: MainColors.mainLight),
         borderRadius: BorderRadius.circular(8),

@@ -71,6 +71,9 @@ final characterShopNotifierProvider =
 class CharacterShopNotifier extends AsyncNotifier<CharacterShopState> {
   final _service = CharacterService();
 
+  // 상점 화면에서 제외할 캐릭터
+  static const Set<String> _excludedNames = {'크왕', '꽃개'};
+
   @override
   Future<CharacterShopState> build() async {
     // 로그인/로그아웃 시 자동 갱신
@@ -78,12 +81,20 @@ class CharacterShopNotifier extends AsyncNotifier<CharacterShopState> {
 
     final previous = state.valueOrNull;
     final items = await _service.fetchCharactersWithPurchase();
+    final filteredItems = items
+        .where((item) => !_excludedNames.contains(item.name.trim()))
+        .toList();
+
     final preservedSelectedId = previous?.selectedCharacterId;
+
     final selectedId =
-        preservedSelectedId ?? (items.isNotEmpty ? items.first.id : null);
+        preservedSelectedId != null &&
+            filteredItems.any((it) => it.id == preservedSelectedId)
+        ? preservedSelectedId
+        : (filteredItems.isNotEmpty ? filteredItems.first.id : null);
 
     return CharacterShopState(
-      items: items,
+      items: filteredItems,
       selectedCharacterId: selectedId,
       isPurchasing: false,
     );
@@ -92,6 +103,7 @@ class CharacterShopNotifier extends AsyncNotifier<CharacterShopState> {
   void selectItem(CharacterModel item) {
     final current = state.valueOrNull;
     if (current == null) return;
+    if (_excludedNames.contains(item.name.trim())) return;
     state = AsyncValue.data(current.copyWith(selectedCharacterId: item.id));
   }
 

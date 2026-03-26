@@ -18,7 +18,7 @@ class FirstCharacterDialog extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Align(
-                alignment: Alignment.topLeft,
+                alignment: Alignment.center,
                 child: Text(
                   "캐릭터 획득",
                   style: TextStyle(
