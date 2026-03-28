@@ -1,11 +1,10 @@
-import 'package:uuid/uuid.dart';
-
 class TransactionModel {
   final String id;
   final String userId;
   final String title;
   final int amount;
   final String categoryId;
+  final String? categoryName;
   final int paymentMethod; // 0: 카드, 1: 현금 등
   final String memo;
   final DateTime date;
@@ -18,6 +17,7 @@ class TransactionModel {
     required this.title,
     required this.amount,
     required this.categoryId,
+    this.categoryName,
     required this.paymentMethod,
     required this.memo,
     required this.date,
@@ -32,6 +32,7 @@ class TransactionModel {
       title: map['title'] ?? '',
       amount: map['amount'] ?? 0,
       categoryId: map['category_id'] as String,
+      categoryName: map['categories']?['name'],
       paymentMethod: map['payment_method'] ?? 0,
       memo: map['memo'] ?? '',
       date: DateTime.parse(map['date']),
@@ -41,6 +42,7 @@ class TransactionModel {
   }
 
   Map<String, dynamic> toMap() {
+    final dateOnly = date.toIso8601String().substring(0, 10);
     return {
       'id': id,
       'user_id': userId,
@@ -49,8 +51,7 @@ class TransactionModel {
       'category_id': categoryId,
       'payment_method': paymentMethod,
       'memo': memo,
-      'date': date.toIso8601String(),
-      'created_at': createdAt.toIso8601String(),
+      'date': dateOnly,
       'type': type,
     };
   }

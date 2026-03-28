@@ -1,24 +1,85 @@
-import 'package:lets_grow_wallet/features/account_book/model/montyle_stat_model.dart';
+import 'package:lets_grow_wallet/features/account_book/model/daily_stat_model.dart';
+import 'package:lets_grow_wallet/features/account_book/model/monthly_category_stat_model.dart';
+import 'package:lets_grow_wallet/features/account_book/model/monthly_stat_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class StatService {
   final supabase = Supabase.instance.client;
-
-  Future<MonthlyStat?> fetchMonthlyStat(DateTime date) async {
+  //월별 통계
+  Future<MonthlyStat?> fetchMonthlyStat(DateTime date, DateTime lastDay) async {
     final start = DateTime(date.year, date.month);
     final end = DateTime(date.year, date.month + 1);
 
     final user = supabase.auth.currentUser;
+    if (user == null) return null;
 
     final result = await supabase
         .from('monthly_stats')
         .select()
-        .eq('user_id', user!.id)
+        .eq('user_id', user.id)
         .gte('month', start.toIso8601String())
         .lt('month', end.toIso8601String());
 
     if (result.isEmpty) return null;
 
     return MonthlyStat.fromMap(result.first);
+  }
+
+  // 한 달의 일별 통계 가져오기
+  Future<Map<DateTime, DailyStat>> fetchDailyStatsForMonth(
+    DateTime month,
+  ) async {
+    final user = supabase.auth.currentUser;
+    if (user == null) return {};
+    final start = DateTime(month.year, month.month, 1);
+    final end = DateTime(month.year, month.month + 1, 1);
+
+    final rows = await supabase
+        .from('daily_stats')
+        .select()
+        .eq('user_id', user.id)
+        .gte('day', start.toIso8601String().split('T')[0])
+        .lt('day', end.toIso8601String().split('T')[0]);
+
+    // Map<DateTime, DailyStat> 형태로 변환
+    return {
+      for (var row in rows) DateTime.parse(row['day']): DailyStat.fromMap(row),
+    };
+  }
+
+  //일별 통계 - X
+  // Future<DailyStat? fetchDailyStat(DateTime date) async {
+  //   final user = supabase.auth.currentUser;
+
+  //   final result = await supabase
+  //       .from('daily_stats')
+  //       .select()
+  //       .eq('user_id', user!.id)
+  //       .eq('day', date.toIso8601String().split('T')[0]); // '2025-08-08'
+
+  //   if (result.isEmpty) return null;
+
+  //   return DailyStat.fromMap(result.first);
+  // }
+
+  // 카테고리 별 통계
+  Future<List<MonthlyCategoryStat>> fetchMonthlyCategoryStats(
+    DateTime month,
+  ) async {
+    final user = supabase.auth.currentUser;
+    if (user == null) return [];
+    final start = DateTime(month.year, month.month, 1);
+    final end = DateTime(month.year, month.month + 1, 1);
+
+    final rows = await supabase
+        .from('monthly_category_stats')
+        .select()
+        .eq('user_id', user.id)
+        .gte('month', start.toIso8601String())
+        .lt('month', end.toIso8601String());
+
+    return (rows as List)
+        .map((m) => MonthlyCategoryStat.fromMap(m as Map<String, dynamic>))
+        .toList();
   }
 }

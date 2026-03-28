@@ -1,33 +1,37 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:lets_grow_wallet/features/account_book/add_transactions/screens/add_income_page.dart';
-import 'package:lets_grow_wallet/features/account_book/main/main_page.dart';
+import 'package:lets_grow_wallet/features/account_book/add_transactions/screens/add_expense_page.dart';
+import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/calendar_design.dart';
+import 'package:lets_grow_wallet/features/account_book/notifier/transaction_notifier.dart';
 import 'package:lets_grow_wallet/features/account_book/services/transaction_service.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/category_selector.dart';
-import 'package:lets_grow_wallet/features/account_book/main/widgets/date_selector.dart';
+import 'package:lets_grow_wallet/features/main/widgets/date_selector.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/payment_amount_row.dart';
-import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/single_button.dart';
-import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/title_button.dart';
+import 'package:lets_grow_wallet/utils/colors.dart';
+import 'package:lets_grow_wallet/app/scaffold_messenger_key.dart';
+import 'package:lets_grow_wallet/app/router/route_paths.dart';
+import 'package:lets_grow_wallet/utils/kst_time.dart';
+import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:uuid/uuid.dart';
 import '../../model/transaction_model.dart';
 import '../../model/category_model.dart';
 
-class EditExpensePage extends StatefulWidget {
+class EditExpensePage extends ConsumerStatefulWidget {
   final TransactionModel transaction;
   const EditExpensePage({super.key, required this.transaction});
 
   @override
-  State<EditExpensePage> createState() => _EditExpensePageState();
+  ConsumerState<EditExpensePage> createState() => _EditExpensePageState();
 }
 
-class _EditExpensePageState extends State<EditExpensePage> {
+class _EditExpensePageState extends ConsumerState<EditExpensePage> {
   final titleController = TextEditingController();
   final amountController = TextEditingController();
   final memoController = TextEditingController();
 
-  DateTime selectedDate = DateTime.now();
+  DateTime selectedDate = todayKst();
   int? selectedCategoryIdx;
   int selectedPayType = 0; // 0: 카드, 1: 현금
   List<Category> categories = [];
@@ -64,6 +68,7 @@ class _EditExpensePageState extends State<EditExpensePage> {
   Future<void> loadCategories(String? currentCategoryId) async {
     final service = TransactionService();
     final fetched = await service.fetchCategories();
+    if (!mounted) return;
     int? idx;
     if (currentCategoryId != null) {
       idx = fetched.indexWhere((c) => c.id == currentCategoryId);
@@ -76,30 +81,26 @@ class _EditExpensePageState extends State<EditExpensePage> {
   }
 
   Future<void> _selectDate(BuildContext context) async {
+    final now = nowKst();
+    final first = DateTime(2026, 1, 1);
+    final last = DateTime(now.year, now.month, now.day); //오늘까지만 선택 가능
+
+    final initial = selectedDate.isBefore(first)
+        ? first
+        : (selectedDate.isAfter(last) ? last : selectedDate);
+
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: selectedDate,
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
+      currentDate: todayKst(),
+      initialDate: initial,
+      firstDate: first,
+      lastDate: last,
       locale: const Locale('ko'),
       builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(
-              primary: Colors.blue.shade400,
-              onPrimary: Colors.white,
-              onSurface: Colors.black87,
-            ),
-            textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(
-                foregroundColor: Colors.blue.shade400,
-              ),
-            ),
-          ),
-          child: child!,
-        );
+        return CalendarDesign(child: child!);
       },
     );
+    // if (!mounted) return;
     if (picked != null && picked != selectedDate) {
       setState(() {
         selectedDate = picked;
@@ -107,14 +108,14 @@ class _EditExpensePageState extends State<EditExpensePage> {
     }
   }
 
-  //수정
-  Future<void> updateTransaction(TransactionModel transaction) async {
+  Future<void> _updateTransaction(
+    TransactionModel transaction,
+    WidgetRef ref,
+  ) async {
     try {
-      final supabase = Supabase.instance.client;
-      await supabase
-          .from('transactions')
-          .update(transaction.toMap())
-          .eq('id', transaction.id);
+      await ref
+          .read(transactionNotifierProvider.notifier)
+          .updateTransaction(transaction);
     } catch (e) {
       rethrow;
     }
@@ -125,44 +126,88 @@ class _EditExpensePageState extends State<EditExpensePage> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.blue,
-          title: const Text(
+          scrolledUnderElevation: 0,
+          backgroundColor: MainColors.mainLight,
+          iconTheme: IconThemeData(color: Colors.white),
+          title: Text(
             '지출 수정',
-            style: TextStyle(fontSize: 20, color: Colors.white),
+            style: TextStyle(
+              fontSize: 24.spClamp,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'ScoreMedium',
+            ),
           ),
           centerTitle: true,
-          automaticallyImplyLeading: false,
         ),
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: EdgeInsets.symmetric(horizontal: 15.wClamp),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 18),
-                // 지출/수입 선택 (지출만 파란색)
-
+                SizedBox(height: 18.hClamp),
                 // 날짜 선택
-                DateSelector(
-                  selectedDate: selectedDate,
-                  onTap: () => _selectDate(context),
-                ),
-                const SizedBox(height: 18),
-                // 제목 입력
-                TextField(
-                  controller: titleController,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: "제목을 입력하세요",
-                    isDense: true,
-                    contentPadding: EdgeInsets.symmetric(
-                      vertical: 10,
-                      horizontal: 12,
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: 157,
+                      child: DateSelector(
+                        selectedDate: selectedDate,
+                        onTap: () => _selectDate(context),
+                      ),
                     ),
-                  ),
+                    SizedBox(width: 12.wClamp),
+                    // 제목 입력
+                    Expanded(
+                      child: TextField(
+                        controller: titleController,
+                        style: TextStyle(
+                          color: MainColors.mainDark,
+                          fontFamily: 'ScoreMedium',
+                        ),
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.zero,
+                          ),
+                          hintText: "제목을 입력하세요",
+                          hintStyle: TextStyle(
+                            color: MainColors.mainDark.withOpacity(0.6),
+                            fontFamily: 'ScoreMedium',
+                          ),
+                          isDense: true,
+                          contentPadding: EdgeInsets.symmetric(
+                            vertical: 10,
+                            horizontal: 12.wClamp,
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.zero,
+                            borderSide: BorderSide(
+                              color: MainColors.mainDark,
+                              width: 0.5,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.zero,
+                            borderSide: BorderSide(
+                              color: MainColors.mainDark,
+                              width: 2,
+                            ),
+                          ),
+                          counterStyle: TextStyle(
+                            fontFamily: 'ScoreMedium',
+                            color: MainColors.mainDark.withOpacity(0.7),
+                          ),
+                        ),
+                        maxLength: 8,
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 18),
+
+                SizedBox(height: 10.hClamp),
                 // 카테고리 선택
                 CategorySelector(
                   categories: categories,
@@ -173,7 +218,7 @@ class _EditExpensePageState extends State<EditExpensePage> {
                     });
                   },
                 ),
-                const SizedBox(height: 18),
+                // SizedBox(height: 8.hClamp),
                 // 결제수단 + 금액 입력
                 PaymentAmountRow(
                   selectedPayType: selectedPayType,
@@ -186,28 +231,56 @@ class _EditExpensePageState extends State<EditExpensePage> {
                   formatAmount: formatAmount,
                 ),
 
-                const SizedBox(height: 24),
+                const SizedBox(height: 18),
                 TextField(
                   controller: memoController,
+                  style: TextStyle(
+                    color: MainColors.mainDark,
+                    fontFamily: 'ScoreMedium',
+                  ),
+                  inputFormatters: [MaxLinesTextInputFormatter(maxLines: 4)],
                   maxLength: 50,
-                  maxLines: 4,
+                  maxLines: 3,
                   minLines: 3,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     hintText: '메모 입력',
-                    border: OutlineInputBorder(),
+                    hintStyle: TextStyle(
+                      color: MainColors.mainDark.withOpacity(0.6),
+                      fontFamily: 'ScoreMedium',
+                    ),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.zero),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.zero,
+                      borderSide: BorderSide(
+                        color: MainColors.mainDark,
+                        width: 0.5,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.zero,
+                      borderSide: BorderSide(
+                        color: MainColors.mainDark,
+                        width: 2,
+                      ),
+                    ),
+                    counterStyle: TextStyle(
+                      fontFamily: 'ScoreMedium',
+                      color: MainColors.mainDark.withOpacity(0.7),
+                    ),
                   ),
                 ),
-                const SizedBox(height: 18),
+                SizedBox(height: 18.hClamp),
                 SizedBox(
                   width: double.infinity,
                   height: 48,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
+                      backgroundColor: MainColors.mainLight,
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(5),
                       ),
+                      elevation: 0,
                       textStyle: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -218,29 +291,27 @@ class _EditExpensePageState extends State<EditExpensePage> {
                           Supabase.instance.client.auth.currentUser?.id;
                       if (userId == null) {
                         // 로그인 안 된 경우 처리
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('로그인이 필요합니다.')),
-                        );
+                        showAppSnackBar('로그인이 필요합니다.');
                         return;
                       }
                       if (selectedCategoryIdx == null) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('카테고리를 선택해주세요.')),
-                        );
+                        showAppSnackBar('카테고리를 선택해주세요.');
                         return;
                       }
 
                       if (amountController.text.trim().isEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('금액을 입력해주세요.')),
-                        );
+                        showAppSnackBar('금액을 입력해주세요.');
                         return;
                       }
                       if (selectedCategoryIdx == null) return;
+
+                      final titleText = titleController.text.trim().isEmpty
+                          ? categories[selectedCategoryIdx!].label
+                          : titleController.text.trim();
                       final transaction = TransactionModel(
                         id: widget.transaction.id,
-                        userId: userId, // 실제 로그인 유저 uuid로 대체
-                        title: titleController.text,
+                        userId: userId,
+                        title: titleText,
                         amount:
                             int.tryParse(
                               amountController.text.replaceAll(',', ''),
@@ -253,20 +324,34 @@ class _EditExpensePageState extends State<EditExpensePage> {
                         createdAt: widget.transaction.createdAt,
                         type: 'expense',
                       );
-                      await updateTransaction(transaction);
-                      ScaffoldMessenger.of(
-                        context,
-                      ).showSnackBar(const SnackBar(content: Text('수정되었습니다.')));
+                      try {
+                        await _updateTransaction(transaction, ref);
+                        if (!mounted) return;
 
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (ctx) => MainPage()),
-                      );
+                        final didPop = await Navigator.of(context).maybePop();
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          showAppSnackBar('수정되었습니다.');
+                        });
+                        if (!didPop) {
+                          if (!mounted) return;
+                          context.go(Routes.home);
+                        }
+                      } catch (e) {
+                        showAppSnackBar('수정에 실패하였습니다. 다시 시도해주세요.');
+                        print("수정 실패: $e");
+                      }
                     },
-                    child: const Text("지출 추가"),
+                    child: Text(
+                      "지출 수정",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'ScoreMedium',
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ),
-                const SizedBox(height: 24),
+                SizedBox(height: 24.hClamp),
               ],
             ),
           ),

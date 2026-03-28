@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lets_grow_wallet/features/account_book/model/category_model.dart';
+import 'package:lets_grow_wallet/utils/colors.dart';
+import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 
 class CategorySelector extends StatelessWidget {
   final List<Category> categories;
@@ -23,7 +26,7 @@ class CategorySelector extends StatelessWidget {
         crossAxisCount: 4,
         // mainAxisSpacing: 12,
         crossAxisSpacing: 12,
-        // childAspectRatio: 0.85,
+        childAspectRatio: 0.85,
       ),
       itemBuilder: (context, idx) {
         final category = categories[idx];
@@ -38,25 +41,27 @@ class CategorySelector extends StatelessWidget {
                 height: 48,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: isSelected ? Colors.blueAccent : Colors.grey[300],
+                  color: isSelected ? MainColors.mainLight : MainColors.main,
                   border: Border.all(
-                    color: isSelected ? Colors.blue : Colors.transparent,
+                    color: isSelected ? MainColors.mainLight : MainColors.main,
                     width: 2,
                   ),
                 ),
                 child: Icon(
                   category.icon,
-                  color: isSelected ? Colors.white : Colors.black54,
+                  color: isSelected ? Colors.white : MainColors.mainLight,
                   size: 28,
                 ),
               ),
-              const SizedBox(height: 6),
+              SizedBox(height: 6.hClamp),
               Text(
                 category.label,
                 style: TextStyle(
-                  color: isSelected ? Colors.blue : Colors.black87,
+                  color: MainColors.mainDark,
+                  // color: isSelected ? MainColors.mainDark : Colors.black87,
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                  fontSize: 13,
+                  fontSize: 13.spClamp,
+                  fontFamily: 'ScoreMedium',
                 ),
                 textAlign: TextAlign.center,
               ),

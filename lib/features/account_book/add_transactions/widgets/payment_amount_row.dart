@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lets_grow_wallet/features/account_book/add_transactions/widgets/single_button.dart';
+import 'package:lets_grow_wallet/utils/colors.dart';
+import 'package:lets_grow_wallet/utils/screenutil_clamp.dart';
 
 class PaymentAmountRow extends StatelessWidget {
   final int selectedPayType;
@@ -24,28 +26,48 @@ class PaymentAmountRow extends StatelessWidget {
           selected: selectedPayType == 0,
           onTap: () => onPayTypeChanged(0),
         ),
+        SizedBox(width: 5.wClamp),
         SingleButton(
           text: "현금",
           selected: selectedPayType == 1,
           onTap: () => onPayTypeChanged(1),
         ),
-        const SizedBox(width: 10),
+        SizedBox(width: 10.wClamp),
         Expanded(
           flex: 2,
           child: SizedBox(
             height: 38,
             child: TextFormField(
+              style: TextStyle(
+                color: MainColors.mainDark,
+                fontFamily: 'ScoreMedium',
+              ),
               controller: amountController,
               keyboardType: TextInputType.number,
               maxLength: 12,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                border: OutlineInputBorder(borderRadius: BorderRadius.zero),
                 hintText: "금액",
+                hintStyle: TextStyle(
+                  fontFamily: 'ScoreMedium',
+                  color: MainColors.mainDark.withOpacity(0.6),
+                ),
                 isDense: true,
                 counterText: "",
                 contentPadding: EdgeInsets.symmetric(
                   vertical: 8,
-                  horizontal: 12,
+                  horizontal: 12.wClamp,
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.zero,
+                  borderSide: BorderSide(
+                    color: MainColors.mainDark,
+                    width: 0.5,
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.zero,
+                  borderSide: BorderSide(color: MainColors.mainDark, width: 2),
                 ),
               ),
               onChanged: (value) {
