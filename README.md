@@ -11,7 +11,7 @@
 
 ---
 ## 다운로드
-<p align="center">
+<p align="left">
   <a href="여기에_구글_플레이스토어_링크_입력">
     <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" height="80">
   </a>
@@ -34,22 +34,23 @@
 
 ```text
 lib/
-├── app/
-├── features/
-│   ├── account_book/
-│   │   ├── add_transaction/
-│   │   ├── calendar/
-│   │   ├── character/
+├── app/                
+├── features/            
+│   ├── account_book/    
 │   │   ├── dashboard/
-│   │   ├── quest/
+│   │   ├── transactions/
+│   │   ├── stats/
+│   │   └── calendart/
+│   ├── gamification/     
+│   │   ├── character/
 │   │   ├── shop/
-│   │   └── stats/
-│   ├── user/
+│   │   └── quest/
+│   ├── user/             
 │   │   ├── auth/
 │   │   └── my_page/
-├── core/
-│   ├── model/
-│   ├── notifier/
-│   ├── services/
-│   └── utils/
+│   └── shared/        
+│       ├── model/       
+│       ├── notifier/   
+│       └── service/    
+├── utils/               
 └── main.dart
