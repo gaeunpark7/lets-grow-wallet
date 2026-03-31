@@ -1,4 +1,4 @@
-# 캐릭터 성장형 가계부: 레츠고 가계부 (Let's Go Wallet)
+# 캐릭터 성장형 가계부: 레츠고 가계부
 
 <p align="center">
   <img width="900" height="500" alt="나만의 펫과" src="https://github.com/user-attachments/assets/69f735d3-d2ef-46aa-8784-b543b669c0f6" />
