@@ -17,7 +17,11 @@
   </a>
 </p>
 
-## 주요 기능 
+## 소개
+<p align="center">
+
+<img width="1500" height="400" alt="소개 이미지" src="https://github.com/user-attachments/assets/32bddbb7-20ff-40ee-8c74-60533eca6c7b" />
+
 - 수입/지출 기록
 - 소비 통계 및 월별 캘린더
 - 캐릭터 성장 및 수집 시스템
@@ -30,7 +34,7 @@
 <img src="https://img.shields.io/badge/Dart-0175C2?style=for-the-badge&logo=dart&logoColor=white">
 <img src="https://img.shields.io/badge/Supabase-000000?style=for-the-badge&logo=supabase&logoColor=3FCF8E">
 
-## 프로젝트 구조 
+## :gear: 프로젝트 구조 
 
 ```text
 lib/
