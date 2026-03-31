@@ -54,6 +54,14 @@ class _MyPageState extends ConsumerState<MyPage> {
     if (!ref.read(isPremiumProvider)) {
       _createBannerAd();
     }
+    // ref.listen<AsyncValue<String?>>(authUserIdProvider, (prev, next) {
+    //   next.whenData((userId) {
+    //     if (userId == null && !_redirectedToLogin) {
+    //       _redirectedToLogin = true;
+    //       context.go(Routes.login);
+    //     }
+    //   });
+    // });
   }
 
   @override
@@ -64,6 +72,7 @@ class _MyPageState extends ConsumerState<MyPage> {
   }
 
   void _createBannerAd() {
+    _bannerAd?.dispose();
     final adUnitId = AdmobService.BannerAdUnitId;
     if (adUnitId == null) return;
 
@@ -76,7 +85,12 @@ class _MyPageState extends ConsumerState<MyPage> {
   }
 
   Future<void> _logout() async {
+    if (_isLoggingOut) return;
     try {
+      //광고 정리
+      _bannerAd?.dispose();
+      _bannerAd = null;
+
       if (mounted) {
         setState(() {
           _isLoggingOut = true;
@@ -186,7 +200,7 @@ class _MyPageState extends ConsumerState<MyPage> {
                         MyPageUserProfilePage(userProfile: userProfile),
                         SizedBox(height: 25.hClamp),
                         // Divider(color: MainColors.mainDark, thickness: 0.5),
-                        // buildListTile(
+                        // BuildListTile(
                         //   icon: Icons.workspace_premium_outlined,
                         //   text: "프리미엄",
                         //   onTap: () async {
@@ -197,7 +211,7 @@ class _MyPageState extends ConsumerState<MyPage> {
                         //   },
                         // ),
                         Divider(color: MainColors.mainDark, thickness: 0.5),
-                        buildListTile(
+                        BuildListTile(
                           icon: Icons.privacy_tip_outlined,
                           text: "개인정보",
                           onTap: () {
@@ -207,13 +221,13 @@ class _MyPageState extends ConsumerState<MyPage> {
                           },
                         ),
                         Divider(color: MainColors.mainDark, thickness: 0.5),
-                        buildListTile(
+                        BuildListTile(
                           icon: Icons.feedback_outlined,
                           text: "오류문의",
                           onTap: _openFeedbackForm,
                         ),
                         Divider(color: MainColors.mainDark, thickness: 0.5),
-                        buildListTile(
+                        BuildListTile(
                           icon: Icons.logout,
                           text: _isLoggingOut ? "로그아웃 중..." : "로그아웃",
                           onTap: _isLoggingOut ? null : _logout,
@@ -245,12 +259,12 @@ class _MyPageState extends ConsumerState<MyPage> {
   }
 }
 
-class buildListTile extends StatelessWidget {
+class BuildListTile extends StatelessWidget {
   final IconData icon;
   final String text;
   final void Function()? onTap;
 
-  const buildListTile({
+  const BuildListTile({
     super.key,
     required this.icon,
     required this.text,

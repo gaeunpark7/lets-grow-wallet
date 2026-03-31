@@ -82,9 +82,13 @@ class _CharacterPageState extends ConsumerState<CharacterPage> {
     }
 
     for (final url in urls) {
+      final ctx = context;
+      if (!mounted) break;
+
       try {
-        await precacheImage(NetworkImage(url), context);
+        await precacheImage(NetworkImage(url), ctx);
       } catch (_) {}
+      if (!mounted) break;
     }
   }
 

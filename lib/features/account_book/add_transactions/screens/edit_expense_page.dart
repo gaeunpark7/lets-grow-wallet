@@ -100,7 +100,7 @@ class _EditExpensePageState extends ConsumerState<EditExpensePage> {
         return CalendarDesign(child: child!);
       },
     );
-    // if (!mounted) return;
+    if (!mounted) return;
     if (picked != null && picked != selectedDate) {
       setState(() {
         selectedDate = picked;

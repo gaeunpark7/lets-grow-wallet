@@ -62,7 +62,7 @@ class _homePageState extends ConsumerState<HomePage> {
       initialMonth: selectedMonth,
       firstYear: 2026,
     );
-
+    if (!mounted) return;
     if (picked == null) return;
     _setSelectedMonth(year: picked.year, month: picked.month);
   }
