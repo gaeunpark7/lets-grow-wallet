@@ -243,9 +243,8 @@ class _GoalDialogState extends State<GoalDialog> {
       }
 
       final confirmed = await _showConfirmDialog();
-      if (!confirmed) return;
+      if (!confirmed || !mounted) return;
 
-      if (!mounted) return;
       setState(() {
         _isSaving = true;
       });

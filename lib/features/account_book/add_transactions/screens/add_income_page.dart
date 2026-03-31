@@ -33,6 +33,7 @@ class _AddIncomePageState extends ConsumerState<AddIncomePage> {
   final titleController = TextEditingController();
   final amountController = TextEditingController();
   final memoController = TextEditingController();
+  bool _isSaving = false;
 
   DateTime selectedDate = todayKst();
   int? selectedCategoryIdx;
@@ -102,6 +103,7 @@ class _AddIncomePageState extends ConsumerState<AddIncomePage> {
         return CalendarDesign(child: child!);
       },
     );
+    if (!mounted) return;
 
     if (picked != null && picked != selectedDate) {
       setState(() {
@@ -282,67 +284,89 @@ class _AddIncomePageState extends ConsumerState<AddIncomePage> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    onPressed: () async {
-                      final userId =
-                          Supabase.instance.client.auth.currentUser?.id;
-                      if (userId == null) {
-                        // 로그인 안 된 경우 처리
-                        showAppSnackBar('로그인이 필요합니다.');
-                        return;
-                      }
-                      if (selectedCategoryIdx == null) {
-                        showAppSnackBar('카테고리를 선택해주세요.');
-                        return;
-                      }
+                    onPressed: _isSaving
+                        ? null
+                        : () async {
+                            final userId =
+                                Supabase.instance.client.auth.currentUser?.id;
+                            if (userId == null) {
+                              // 로그인 안 된 경우 처리
+                              showAppSnackBar('로그인이 필요합니다.');
+                              return;
+                            }
+                            if (selectedCategoryIdx == null) {
+                              showAppSnackBar('카테고리를 선택해주세요.');
+                              return;
+                            }
 
-                      if (amountController.text.trim().isEmpty) {
-                        showAppSnackBar('금액을 입력해주세요.');
-                        return;
-                      }
+                            if (amountController.text.trim().isEmpty) {
+                              showAppSnackBar('금액을 입력해주세요.');
+                              return;
+                            }
 
-                      try {
-                        final titleText = titleController.text.trim().isEmpty
-                            ? categories[selectedCategoryIdx!].label
-                            : titleController.text.trim();
-                        final transaction = TransactionModel(
-                          id: Uuid().v4(),
-                          userId: userId,
-                          title: titleText,
-                          amount:
-                              int.tryParse(
-                                amountController.text.replaceAll(',', ''),
-                              ) ??
-                              0, //콤마제거
-                          categoryId: categories[selectedCategoryIdx!].id,
-                          paymentMethod: selectedPayType,
-                          memo: memoController.text,
-                          date: selectedDate,
-                          createdAt: nowKst(),
-                          type: 'income',
-                        );
-                        await _addTransaction(transaction, ref);
+                            try {
+                              setState(() {
+                                _isSaving = true;
+                              });
+                              final titleText =
+                                  titleController.text.trim().isEmpty
+                                  ? categories[selectedCategoryIdx!].label
+                                  : titleController.text.trim();
+                              final transaction = TransactionModel(
+                                id: Uuid().v4(),
+                                userId: userId,
+                                title: titleText,
+                                amount:
+                                    int.tryParse(
+                                      amountController.text.replaceAll(',', ''),
+                                    ) ??
+                                    0, //콤마제거
+                                categoryId: categories[selectedCategoryIdx!].id,
+                                paymentMethod: selectedPayType,
+                                memo: memoController.text,
+                                date: selectedDate,
+                                createdAt: nowKst(),
+                                type: 'income',
+                              );
+                              await _addTransaction(transaction, ref);
 
-                        // 3번마다 전면 광고
-                        await ref
-                            .read(interstitialAdControllerProvider.notifier)
-                            .onTransactionAdded();
+                              // 3번마다 전면 광고
+                              await ref
+                                  .read(
+                                    interstitialAdControllerProvider.notifier,
+                                  )
+                                  .onTransactionAdded();
 
-                        if (mounted) {
-                          context.go(Routes.home);
-                        }
-                      } catch (e) {
-                        if (mounted) {
-                          showAppSnackBar(FriendlyErrorMessage.of(e));
-                        }
-                      }
-                    },
-                    child: Text(
-                      "수입 추가",
-                      style: TextStyle(
-                        fontFamily: 'ScoreMedium',
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                              if (mounted) {
+                                context.go(Routes.home);
+                              }
+                            } catch (e) {
+                              if (mounted) {
+                                showAppSnackBar(FriendlyErrorMessage.of(e));
+                              }
+                            } finally {
+                              if (mounted) {
+                                setState(() {
+                                  _isSaving = false;
+                                });
+                              }
+                            }
+                          },
+                    child: _isSaving
+                        ? SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              color: MainColors.mainLight,
+                            ),
+                          )
+                        : Text(
+                            "수입 추가",
+                            style: TextStyle(
+                              fontFamily: 'ScoreMedium',
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                   ),
                 ),
                 SizedBox(height: 24.hClamp),

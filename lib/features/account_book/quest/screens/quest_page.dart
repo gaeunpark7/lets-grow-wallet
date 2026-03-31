@@ -59,15 +59,21 @@ class _QuestPageState extends ConsumerState<QuestPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       try {
         await _questService.createTodayQuestsIfNeeded();
+        if (!context.mounted) return;
       } catch (e) {
+        if (!context.mounted) return;
         print('오늘의 미션 생성 실패: $e');
         showAppSnackBar('오늘의 미션 생성에 실패했습니다.');
+        return;
       }
+      if (!context.mounted) return;
       await _loadQuests();
       // await _loadMonthlyGoals();
+      if (!context.mounted) return;
 
       if (!ref.read(isPremiumProvider)) {
         _createBannerAd();
+        if (!context.mounted) return;
         if (mounted) setState(() {});
       }
     });
@@ -128,9 +134,11 @@ class _QuestPageState extends ConsumerState<QuestPage> {
 
   // 일별 목표 로드
   Future<void> _loadQuests() async {
+    if (!mounted) return;
     setState(() => _loading = true);
     try {
       final list = await _questService.getTodayQuests();
+      if (!mounted) return;
       final order = [
         'register_transaction',
         'character_interaction',
@@ -150,10 +158,12 @@ class _QuestPageState extends ConsumerState<QuestPage> {
         _todayQuests = padded;
       });
     } catch (e) {
+      if (!mounted) return;
       _todayQuests = [];
       print('오늘의 미션 로드 실패: $e');
       showAppSnackBar('오늘의 미션을 불러오는 중 오류가 발생했습니다.');
     } finally {
+      if (!mounted) return;
       setState(() => _loading = false);
     }
   }

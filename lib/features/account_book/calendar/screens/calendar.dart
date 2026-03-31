@@ -28,6 +28,7 @@ class _CalendarState extends ConsumerState<Calendar> {
     );
 
     // 다이얼로그에서 감정/수입/지출이 변경될 수 있으므로 닫힌 뒤 갱신
+    if (!mounted) return;
     final month = DateTime(day.year, day.month, 1);
     ref.invalidate(emotionsByMonthProvider(month));
     ref.read(calendarStatNotifierProvider.notifier).refreshDailyStats();

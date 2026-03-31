@@ -28,7 +28,11 @@ class CalendarStatNotifier extends AsyncNotifier<Map<DateTime, DailyStat>> {
   Future<void> changeMonth(DateTime month) async {
     _focusedMonth = month;
     state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() => _fetchDailyStatsForMonth(month));
+    final result = await AsyncValue.guard(
+      () => _fetchDailyStatsForMonth(month),
+    );
+
+    state = result;
   }
 
   // 특정 달의 일별 통계 불러오기(소비, 수입, 감정 등)

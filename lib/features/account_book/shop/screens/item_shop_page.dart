@@ -143,9 +143,13 @@ class _ItemShopPageState extends ConsumerState<ItemShopPage> {
                             await ref
                                 .read(characterShopNotifierProvider.notifier)
                                 .purchaseSelected();
+                            if (!context.mounted) return;
                           } on InsufficientCoinException {
+                            if (!context.mounted) return;
+
                             showAppSnackBar('코인이 부족합니다.');
                           } catch (e) {
+                            if (!context.mounted) return;
                             showAppSnackBar('구매에 실패하였습니다.');
                             print('아이템 구매 실패: $e');
                           }
