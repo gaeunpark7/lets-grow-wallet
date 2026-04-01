@@ -17,6 +17,8 @@
   </a>
 </p>
 
+
+<br>
 ## 소개
 <p align="center">
 
@@ -28,24 +30,28 @@
 - 일일 퀘스트 및 보상
 - 감정 기반 소비 기록
   </p>
----
+
+</br>
+
+<br>
 ## 🛠 기술 스택
 <p>
 <img src="https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white">
 <img src="https://img.shields.io/badge/Dart-0175C2?style=for-the-badge&logo=dart&logoColor=white">
 <img src="https://img.shields.io/badge/Supabase-000000?style=for-the-badge&logo=supabase&logoColor=3FCF8E">
 </p>
+</br>
 
-
+<br>
 ## 👩‍💻 Developer
 
  | <img width="250px" alt="가은" src="https://avatars.githubusercontent.com/u/127672696?v=4"><br>[박가은](https://github.com/gaeunpark7) |
 |:----:|
-
+</br>
 
 ## :gear: 프로젝트 구조 
 
-```text
+```
 lib/
 ├── app/                
 ├── features/            
@@ -67,3 +73,4 @@ lib/
 │       └── service/    
 ├── utils/               
 └── main.dart
+```
