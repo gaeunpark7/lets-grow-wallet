@@ -27,7 +27,7 @@
 
 ## 📥 Download
 <p align="center">
-  <a href="여기에_구글_플레이스토어_링크_입력">
+  <a href="https://play.google.com/store/apps/details?id=com.ag.letsgrowwallet">
     <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" height="120">
   </a>
 </p>
